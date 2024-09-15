@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="" type="stylesheet"></script>
+    <title>Форма за добавяне на студент</title>
+</head>
+
+<body>
+
+    <div class="section-addbook">
+        <div class="right">
+            <form action="#" method="post" enctype="multipart/form-data">
+                <h1>Добавяне на студент</h1>
+                <table>
+                    <tr>
+                        <td>Пълно име</td>
+                        <td><input type="text" name="fullName" placeholder="Пълното име на студента"
+                                oninvalid="this.setCustomValidity('Задължително поле.')">
+                        </td>
+                    </tr>
+                    <tr>
+
+                        <td>Факултет</td>
+                        <td>
+                            <select class="faculty" id="selectFaculty" name="faculty"
+                                oninvalid="this.setCustomValidity('Моля, попълнете.')" onchange="showHide()">
+                                <option value="none" selected disabled hidden>Изберете факултет</option>
+                                <option value="fita">ФАКУЛТЕТ ПО ИЗЧИСЛИТЕЛНА ТЕХНИКА И АВТОМАТИЗАЦИЯ</option>
+                                <option value="ef">ЕЛЕКТРОТЕХНИЧЕСКИ ФАКУЛТЕТ</option>
+                                <option value="kf">КОРАБОСТРОИТЕЛЕН ФАКУЛТЕТ</option>
+                                <option value="mtf">МАШИННО-ТЕХНОЛОГИЧЕН ФАКУЛТЕТ</option>
+
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+
+                        <td>Специалност</td>
+                        <td>
+                            <select class="specialty" id="selectSpecialty" name="specialty"
+                                oninvalid="this.setCustomValidity('Моля, попълнете.')" onchange="showHide()">
+                                <option value="none" selected disabled hidden>Изберете специалност</option>
+                                <option value="aiuks">Автоматика, информационни и управляващи компютърни системи (АИУКС)
+                                </option>
+                                <option value="its">Автомобилна електроника - Интелигентни транспортни системи (ИТС)
+                                </option>
+                                <option value="at">Автомобилна техника (АТ)</option>
+                                <option value="a">Агрономство (А)</option>
+                                <option value="vei">Възобновяеми енергийни източници (ВЕИ)</option>
+                                <option value="sit">Софтуерни и интернет технологии (СИТ)</option>
+
+
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Степен на обучение</td>
+                        <td>
+                            <select class="educationDegree" name="educationDegree" id="educationDegree">
+                                <option value="bachelor">Бакалавър</option>
+                                <option value="master">Магистър</option>
+                                <option value="doctor">Доктор</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+
+                        <td>Курс</td>
+                        <td>
+                            <input type="number" min="1" max="5" name="courseNum" value="1"
+                                oninvalid="this.setCustomValidity('Моля, попълнете.')">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Група</td>
+                        <td>
+                            <select class="group" name="group" id="group">
+                                <option value="one">1</option>
+                                <option value="two">2</option>
+                                <option value="three">3</option>
+                                <option value="four">4</option>
+                                <option value="five">5</option>
+                                <option value="six">6</option>
+                            </select>
+                        </td>
+                        <td>Половинка</td>
+                        <td>
+                            <!-- <div> -->
+                            <input type="radio" id="halfA" name="half" value="a" checked>
+                            <label for="a">a</label>
+                            <!-- </div>
+                            <div> -->
+                            <input type="radio" id="halfB" name="half" value="b">
+                            <label for="b">b</label>
+                            <!-- </div> -->
+
+                        </td>
+                    </tr>
+
+                    </tr>
+                    <tr>
+                        <td>Факултетен номер</td>
+                        <td>
+                            <input type="number" name="facultyNum" placeholder="Факултетен номер" min="11111111"
+                                max="99999999" value="20621619" oninvalid="this.setCustomValidity('Моля, попълнете.')">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Статус</td>
+                        <td>
+                            <input type="checkbox" name="status" checked>
+                            <label for="status">Активен</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Потребителско име</td>
+                        <td>
+                            <input type="text" name="studentUsername" id="studentUsername" placeholder="username">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Парола</td>
+                        <td>
+                            <input type="password" name="studentPassword" id="studentPassword" placeholder="password">
+                        </td>
+                        <td><input type="checkbox">Показване</td>
+                    </tr>
+                    <tr>
+                        <td>Служебен имейл</td>
+                        <td>
+                            <input type="email" name="studentEmail" id="studentEmail" placeholder="s__@tu-varna.bg">
+                        </td>
+                    </tr>
+
+
+                </table>
+                <input class='submit' type="submit" name="submit" value="Добавяне">
+            </form>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

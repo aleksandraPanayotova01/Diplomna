@@ -1,0 +1,258 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+    display: block;
+}
+
+body {
+    line-height: 1;
+}
+
+ol,
+ul {
+    list-style: none;
+}
+
+blockquote,
+q {
+    quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+    content: '';
+    content: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+table {
+    table-layout: fixed;
+    width: 82%;
+    border-collapse: collapse;
+    border: 3px solid purple;
+    margin-left: 9%;
+    margin-right: 9%;
+    margin-top: 2%;
+    background-color: antiquewhite;
+
+    justify-content: center;
+    /* font-size: 12px; */
+
+}
+
+caption {
+    /* display: none; */
+    font-weight: bold;
+    font-size: large;
+    padding-bottom: 2%;
+    /* justify-content: flex-start; */
+}
+
+
+th,
+td {
+    padding: 20px;
+    border: 3px solid purple;
+}
+
+
+
+
+
+#academicYear {
+    /* background-color: gray; */
+    font-weight: bold;
+    text-decoration: underline double rebeccapurple;
+}
+
+#typeOfSemester {
+    background-color: yellow;
+    vertical-align: middle;
+    /* display: flex;
+    align-items: center; */
+
+}
+
+.hour {
+    padding-left: 10%;
+    font-size: 13px;
+    font-family: Arial, sans-serif;
+    color: #333;
+    position: relative;
+
+}
+
+.minutes {
+    font-size: 9px;
+    color: #333;
+    position: absolute;
+    top: -8px;
+    right: -7px;
+}
+
+td {
+    padding-left: 1%;
+}
+
+
+#teacherName {
+    font-weight: bold;
+}
+
+.laterStart {
+    /* display: none; */
+    /* display: flex; */
+    /* grid-area: laterStart; */
+    /* padding-right: 1%; */
+    width: 10%;
+    /* border-radius: var(--main); */
+    /* padding-top: var(--main); */
+    /* flex-direction: row;
+    justify-content: center;
+    transform: rotate(-90deg)translate(-100%, 0%); */
+    /* flex-grow: 1; */
+    /* transform-origin: 0 0; */
+    /* margin: 0%; */
+    /* align-items: baseline; */
+    /* flex-grow: 1; */
+    /* flex-direction: column; */
+
+    /*
+    width: 100%;
+    height: 100%;
+    transform-origin: center;
+    white-space: nowrap;
+    border: 3px solid purple;
+    transform: rotate(-90deg); */
+
+}
+
+#web1 {
+    margin-left: 60%;
+    display: flex;
+    justify-content: center;
+    /* width: 150%; */
+    transform-origin: translate(-100%, 0%);
+    /* border: none; */
+    /* float: left; */
+    /* width: 100%; */
+    border: 3px solid purple;
+}
+
+/* thead th :nth-of-type(1),
+tbody td:nth-of-type(1) {
+    width: 25%;
+} */
+/* .dayOfWeek tr {} */
+.row {
+    flex-direction: row;
+}
