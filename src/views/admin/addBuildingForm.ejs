@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <!--script for the menu item in navbar-->
+    <title>Форма за добавяне на сграда</title>
+</head>
+
+<body>
+    <div class="section-addBuilding">
+        <%- include('../partials/adminHeader') %>
+            <%- include('../partials/flashMessages') %>
+                <form id="addBuildingForm" name="addBuildingForm" action="/admin/add/building" method="post">
+                    <h1>Добавяне на сграда</h1>
+                    <div class="formInput">
+                        <label for="buildingName">Име на сградата</label>
+                        <input id="buildingName" name="buildingName" type="text" required
+                            oninvalid="this.setCustomValidity('Задължително поле.')">
+
+                    </div>
+                    <input class='submit' type="submit" name="submit" value="Добавяне">
+                </form>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/schedule.css" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <script src="/js/fillSchedule.js"></script>
+    <title>Седмично разписание</title>
+    <style>
+        button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            width: 20rem;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('../partials/studentHeader') %>
+        <!-- <h1>Седмично разписание</h1> -->
+        <h1 id="studentGroupInfo"></h1>
+        <div class="container1">
+            <section id="container">
+                <section class="header">
+                    <div id="monday">Понеделник
+                        <section id="classesM"></section>
+                    </div>
+                    <div id="tuesday">Вторник
+                        <section id="classesT"></section>
+                    </div>
+                    <div id="wednesday">Сряда
+                        <section id="classesW"></section>
+                    </div>
+                    <div id="thursday">Четвъртък
+                        <section id="classesTh"></section>
+                    </div>
+                    <div id="friday">Петък
+                        <section id="classesF"></section>
+                    </div>
+                    <div id="saturday">Събота
+                        <section id="classesS"></section>
+                    </div>
+                    <div id="sunday">Неделя
+                        <section id="classesSu"></section>
+                    </div>
+                </section>
+            </section>
+        </div>
+        <div class="button-container">
+            <a id="profile" href="/student/homePage">
+                <button>Назад</button>
+            </a>
+        </div>
+</body>
+
+</html>

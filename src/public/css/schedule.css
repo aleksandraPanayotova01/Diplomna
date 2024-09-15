@@ -1,0 +1,345 @@
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+    display: block;
+}
+
+body {
+    line-height: 1;
+}
+
+ol,
+ul {
+    list-style: none;
+}
+
+blockquote,
+q {
+    quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+    content: '';
+    content: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+h1 {
+    margin-top: 20px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#container {
+    background-color: #003049;
+    width: 90%;
+    height: 570px;
+    /* margin: 0 auto; */
+    border: 5px solid #003049;
+    display: flex;
+    justify-content: space-evenly;
+    /* margin-top: 10px; */
+    margin-left: 5%;
+    margin-right: 5%;
+
+}
+
+#container .header {
+    height: 10vh;
+    /*80px*/
+    width: 100%;
+    line-height: 60px;
+    /* background-color: aliceblue; */
+    display: flex;
+    justify-content: space-evenly;
+    border-bottom: 2px solid whitesmoke;
+
+}
+
+.header div {
+    text-align: center;
+    /* line-height: 60px; */
+    background-color: #5390d9;
+    width: 130px;
+    /* height: var(--monday--height); */
+    height: 60px;
+    /* display: none; */
+}
+
+#monday {
+    background-color: #80ffdb;
+}
+
+#tuesday {
+    background-color: #64dfdf;
+
+}
+
+#wednesday {
+    background-color: #5390d9;
+
+}
+
+#thursday {
+    background-color: #48bfe3;
+
+}
+
+#friday {
+    background-color: #5390d9;
+
+}
+
+#saturday {
+    background-color: #64dfdf;
+
+}
+
+#sunday {
+    background-color: #80ffdb;
+
+}
+
+#classesM,
+/* Monday */
+#classesT,
+/* Tuesday */
+#classesW,
+/* Wednesday */
+#classesTh,
+/* Thursday */
+#classesF,
+/* Friday */
+#classesS,
+/* Saturday */
+#classesSu,
+#classesMonday,
+/* Monday */
+#classesTuesday,
+/* Tuesday */
+#classesWednesday,
+/* Wednesday */
+#classesThursday,
+/* Thursday */
+#classesFriday,
+/* Friday */
+#classesSaturday,
+/* Saturday */
+#classesSunday {
+    height: 100%;
+    margin-top: 20%;
+
+}
+
+#classesM div,
+#classesT div,
+#classesW div,
+#classesTh div,
+#classesF div,
+#classesS div,
+#classesSu div,
+#classesMonday div,
+#classesThursday div,
+#classesWednesday div,
+#classesTuesday div,
+#classesFriday div,
+#classesSaturday div,
+#classesSunday div {
+    height: 100px;
+    margin-top: 3%;
+    border-radius: 5%;
+    /* border-radius: 0 7%; */
+}
+
+@media (max-width: 768px) {
+    #container {
+        margin-left: 0;
+        margin-right: 0;
+        height: calc(100vh - 20px);
+        width: 100%;
+    }
+
+    #header {
+        width: 100%;
+        height: max-content;
+    }
+
+
+}
+
+
+.container1 {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+
+}
+
+
+
+
+.cd-schedule__timeline {
+    color: white;
+    margin-top: 100px;
+
+}
+
+.cd-schedule__timeline ul {
+    position: absolute;
+    align-items: end;
+    padding-left: 1.3%;
+    height: 100%;
+}
+
+.cd-schedule__timeline li {
+    height: 40px;
+}
+
+
+@media (max-width: 480px) {
+    .js .cd-schedule__timeline {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        padding-top: 50px;
+        padding-top: var(--schedule-rows-height)
+    }
+}
+
+/* .js .cd-schedule__timeline li {
+        position: relative;
+        height: 50px;
+        height: var(--schedule-rows-height)
+    } */
+
+
+.period {
+    /*dynamically added*/
+    font-size: 13px;
+    line-height: 1.2;
+    color: #333;
+    margin: 5px 0;
+
+}
+
+
+
+
+.container1 {
+    background-color: #003049;
+    margin-left: 5%;
+    margin-right: 5%;
+
+}

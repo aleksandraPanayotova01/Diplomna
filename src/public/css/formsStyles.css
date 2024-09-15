@@ -1,0 +1,16 @@
+ #addStudentForm,
+ #addLecturerForm {
+     display: flex;
+     flex-direction: column;
+     margin: 1.5%;
+     /* align-items: center;
+     justify-content: center; */
+     /* justify-content: center; */
+
+
+ }
+
+ #addBuildingForm,
+ #addLecturerForm {
+     margin: 1.5%;
+ }

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A list of all curent students</title>
+
+</head>
+
+<body>
+    <% for(const student of students){%>
+        <p>
+            <%= student.student_fac_num%>
+        </p>
+        <p>
+            <%= student.student_egn%>
+        </p>
+        <%} %>
+</body>
+
+</html>

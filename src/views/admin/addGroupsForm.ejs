@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <!--script for the menu item in navbar-->
+    <title>Добавяне на групи в даден курс</title>
+</head>
+
+<body>
+    <div class="section-addGroups">
+        <%- include('../partials/adminHeader') %>
+            <%- include('../partials/flashMessages') %>
+                <form id="addGroupsForm" name="addGroupsForm" action="/admin/add/groups" method="post">
+                    <h1>Добавяне на групи в даден курс</h1>
+                    <div class="formInput">
+                        <label for="selectFaculty">Факултет</label>
+                        <select id="selectFaculty" type="text" name="faculty" required>
+                            <% for(const faculty of faculties){%>
+                                <option value="<%=faculty.faculty_abbreviation%>">
+                                    <%= faculty.faculty_name%>
+                                </option>
+                                <%} %>
+                        </select>
+                    </div>
+                    <div class="formInput">
+                        <label for="selectDepartment">Катедра</label>
+                        <select id="selectDepartment" name="department">
+                        </select>
+                    </div>
+                    <div class="formInput">
+                        <label for="selectSpecialty">Специалност</label>
+                        <select id="selectSpecialty" name="selectSpecialty">
+                            <option value="none" selected disabled hidden>Изберете специалност</option>
+                        </select>
+                    </div>
+                    <div class="formInput">
+                        <label for="courseNum">Курс</label>
+                        <input type="number" min="1" max="5" id="courseNum" name="courseNum" value="1">
+                    </div>
+                    <div class="formInput">
+                        <label for="groupsNum">Брой групи</label>
+                        <input type="number" id="groupsNum" name="groupsNum" value="1">
+                    </div>
+                    <div>
+                    <input class='submit' type="submit" name="submit" value="Добавяне">
+                    
+                </form>
+    </div>
+    <script src="\js\addStudentFormSelects.js"></script>
+</body>
+
+</html>

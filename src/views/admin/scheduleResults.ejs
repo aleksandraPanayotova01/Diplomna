@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/schedule.css" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <title>Седмично разписание</title>
+</head>
+
+<body>
+    <%- include('../partials/adminHeader') %>
+
+        <h1 id="studentGroupInfo"></h1>
+        <div class="container1">
+            <section id="container">
+                <section class="header">
+                    <div id="monday">Понеделник
+                        <section id="classesMonday"></section>
+                    </div>
+                    <div id="tuesday">Вторник
+                        <section id="classesTuesday"></section>
+                    </div>
+                    <div id="wednesday">Сряда
+                        <section id="classesWednesday"></section>
+                    </div>
+                    <div id="thursday">Четвъртък
+                        <section id="classesThursday"></section>
+                    </div>
+                    <div id="friday">Петък
+                        <section id="classesFriday"></section>
+                    </div>
+                    <div id="saturday">Събота
+                        <section id="classesSaturday"></section>
+                    </div>
+                    <div id="sunday">Неделя
+                        <section id="classesSunday"></section>
+                    </div>
+                </section>
+            </section>
+        </div>
+        
+        <!-- Add the schedule data as a JSON string in a hidden div's data attribute -->
+        <div id="scheduleData" data-schedule="<%= periods %>"></div>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const scheduleDataElement = document.getElementById('scheduleData');
+                const schedule = JSON.parse(scheduleDataElement.getAttribute('data-schedule'));
+
+                schedule.forEach(entry => {
+                    const dayId = getDayId(entry.weekday_name);
+                    const section = document.getElementById(
+                        `classes${dayId.charAt(0).toUpperCase() + dayId.slice(1)}`);
+
+                    if (section) {
+                        const classInfo = document.createElement('div');
+                        classInfo.classList.add('period');
+                        classInfo.innerHTML = `
+                            <div class="period">
+                                ${formatTime(entry.period_start_time)} - ${formatTime(entry.period_end_time)}<br>
+                                ${entry.subject_name} (${entry.period_type_name})
+                                ${entry.room_number} ${entry.building_abbreviation}
+                                ${entry.title_name} ${entry.surname}
+                            </div>
+                        `;
+                        section.appendChild(classInfo);
+                    }
+                });
+            });
+
+            function formatTime(timeString) {
+                const [hours, minutes] = timeString.split(':');
+                return `${hours}:${minutes}`;
+            }
+
+            function getDayId(weekday_name) {
+                const days = {
+                    'Понеделник': 'Monday',
+                    'Вторник': 'Tuesday',
+                    'Сряда': 'Wednesday',
+                    'Четвъртък': 'Thursday',
+                    'Петък': 'Friday',
+                    'Събота': 'Saturday',
+                    'Неделя': 'Sunday'
+                };
+                return days[weekday_name];
+            }
+        </script>
+</body>
+
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/schedule.css" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <title>Начална страница за администратор</title>
+    <style>
+        .container {
+            flex: 1 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 90vh;
+            flex-direction: column;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 10px;
+            /* Add space between buttons */
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropbtn {
+            padding: 30px 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            margin: 15px;
+            width: 20rem;
+            border: black;
+            /* Add space between buttons */
+        }
+
+        .dropbtn:hover {
+            background-color: #555;
+        }
+
+        button {
+            padding: 35px 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            margin: 10px;
+            width: 20rem;
+            border: black;
+            /* Add some space between the buttons */
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('../partials/adminHeader') %>
+        <div class="container">
+            <div class="dropdown">
+                <button class="dropbtn" onclick="toggleDropdown('addOptions')">Добавяне</button>
+                <div id="addOptions" class="dropdown-content">
+                    <a href="/admin/add/subject">Добавяне на предмет</a>
+                    <a href="/admin/add/subjectToHalfs">Добавяне на предмети за половинка и преподавател</a>
+                    <a href="/admin/add/periodSchedule">Добавяне на час в учебната програма</a>
+                    <!-- <a href="/admin/add/groups">Добавяне на групи в даден курс</a> -->
+                    <a href="/admin/add/marks">Добавяне на оценки за студент</a>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button class="dropbtn" onclick="toggleDropdown('registrationOptions')">Регистрация</button>
+                <div id="registrationOptions" class="dropdown-content">
+                    <a href="/admin/studentRegister">Регистрация на студент</a>
+                    <a href="/admin/lecturerRegister">Регистрация на преподавател</a>
+                    <a href="/admin/adminRegister">Регистрация на администратор</a>
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button class="dropbtn" onclick="toggleDropdown('reviewOptions')">Прегледи</button>
+                <div id="reviewOptions" class="dropdown-content">
+                    <a href="/admin/reviewSchedules">Преглед на учебни програми</a>
+                    <a href="/admin/review/studentMarks">Преглед на оценки за студент</a>
+                    <a href="/admin/review/subjectsHalf">Преглед на предмети за половинка</a>
+                    <!-- <a href="#">Преглед на групи в курс</a> -->
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function toggleDropdown(id) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                for (var i = 0; i < dropdowns.length; i++) {
+                    if (dropdowns[i].id !== id) {
+                        dropdowns[i].style.display = "none";
+                    }
+                }
+
+                var content = document.getElementById(id);
+                if (content.style.display === 'none' || content.style.display === '') {
+                    content.style.display = 'block';
+                } else {
+                    content.style.display = 'none';
+                }
+            }
+
+            // Close dropdowns if the user clicks outside of them
+            window.onclick = function (event) {
+                if (!event.target.matches('.dropbtn')) {
+                    var dropdowns = document.getElementsByClassName("dropdown-content");
+                    for (var i = 0; i < dropdowns.length; i++) {
+                        var openDropdown = dropdowns[i];
+                        if (openDropdown.style.display === 'block') {
+                            openDropdown.style.display = 'none';
+                        }
+                    }
+                }
+            }
+        </script>
+</body>
+
+</html>

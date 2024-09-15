@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <title>Оценки за студент</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+        }
+
+        .marks-info {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #e2e2e2;
+        }
+
+        p {
+            text-align: center;
+            color: #666;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            width: 20rem;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .average-mark {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('../partials/adminHeader') %>
+        <div class="marks-info">
+            <h1>Оценки за студент <%=facultyNumbersSelect%>
+            </h1>
+
+            <% if (marks && marks.length> 0) { %>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Предмет</th>
+                            <th>Оценка</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% marks.forEach(function(mark) { %>
+                            <tr>
+                                <td>
+                                    <%= mark.subject_name %>
+                                </td>
+                                <td>
+                                    <%= mark.mark_value %>
+                                </td>
+                            </tr>
+                            <% }); %>
+                    </tbody>
+                </table>
+
+                <!-- Изчисляване на средния успех -->
+                <% var totalMarks=0; marks.forEach(function(mark) { totalMarks +=mark.mark_value; }); var
+                    averageMark=(marks.length> 0) ? (totalMarks / marks.length).toFixed(2) : "Няма оценки";
+                    %>
+
+                    <!-- Показване на средния успех -->
+                    <div class="average-mark">
+                        Среден успех: <%= averageMark %>
+                    </div>
+
+                    <% } else { %>
+                        <p>Няма налични оценки.</p>
+                        <% } %>
+
+                            <div class="button-container">
+                                <a class="submit" href="/admin/review/studentMarks">Назад
+                                </a>
+                            </div>
+        </div>
+</body>
+
+</html>

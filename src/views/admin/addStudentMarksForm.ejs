@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <title>Форма за добавяне на оценки за студент</title>
+</head>
+
+<body>
+    <div class="section-addMark">
+        <%- include('../partials/adminHeader') %>
+            <%- include('../partials/flashMessages') %>
+            <div class="page-content">
+                <form id="addMarkForm" name="addMarkForm" action="/admin/add/marks" method="post">
+                    <h1>Добавяне на оценки за студент</h1>
+
+                    <div class="formInput">
+                        <label for="selectFaculty">Факултет</label>
+                        <select id="selectFaculty" name="faculty" required>
+                            <% for(const faculty of faculties){ %>
+                                <option value="<%= faculty.faculty_abbreviation %>">
+                                    <%= faculty.faculty_name %>
+                                </option>
+                                <% } %>
+                        </select>
+                    </div>
+
+                    <div class="formInput">
+                        <label for="selectDepartment">Катедра</label>
+                        <select id="selectDepartment" name="department"></select>
+                    </div>
+
+                    <div class="formInput">
+                        <label for="selectSpecialty">Специалност</label>
+                        <select id="selectSpecialty" name="specialty">
+                            <option value="none" selected disabled hidden>Изберете специалност</option>
+                        </select>
+                    </div>
+                    <div class="formInput">
+                        <label for="selectCourse">Семестър</label>
+                        <select name="selectCourse" id="selectCourse">
+                            <option value="none" selected disabled hidden>Изберете курс</option>
+                        </select>
+                    </div>
+
+
+
+                </form>
+            </div>
+    </div>
+
+    <script src="/js/addStudentFormSelects.js"></script>
+    <script src="/js/addMarksSelect.js"></script>
+</body>
+
+</html>

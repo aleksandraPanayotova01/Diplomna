@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <title>Регистрация на преподавател</title>
+</head>
+
+<body>
+    <%- include('../partials/adminHeader') %>
+        <div class="page-content">
+
+            <div class="content">
+
+                <h2>Регистрация на преподавател</h2>
+
+                <div class="formDiv">
+                    <form class="lecturer-registration" action="/admin/lecturerRegister" method="POST">
+                        <%- include('../partials/registrationForm') %>
+                            <div class="formInput">
+                                <label for="firstName">Име</label>
+                                <input id="firstName" type="text" name="firstName" required">
+
+                            </div>
+                            <div class="formInput">
+                                <label for="fathersName">Презиме</label>
+                                <input id="fathersName" type="text" name="fathersName" required">
+
+                            </div>
+                            <div class="formInput">
+                                <label for="surname">Фамилия</label>
+                                <input id="surname" type="text" name="surname" required">
+
+                            </div>
+                            <div class="formInput">
+                                <label for="selectTitle">Титла</label>
+                                <select id="selectTitle" name="title">
+                                    <!--   <option value="асистент">асистент</option> -->
+                                    <% for(const title of titles){%>
+                                        <option value="<%=title.title_name%>">
+                                            <%=title.title_name%>
+                                        </option>
+                                        <%} %>
+                                </select>
+                            </div>
+                            <div class="formInput">
+                                <label for="egn">ЕГН</label>
+                                <input type="text" id="egn" name="egn" placeholder="ЕГН" value="8104286705"
+                                    maxlength="10">
+                            </div>
+                            <div class="formInput">
+                                <label for="selectFaculty">Факултет</label>
+                                <select id="selectFaculty" type="text" name="faculty" required>
+                                    <% for(const faculty of faculties){%>
+                                        <option value="<%=faculty.faculty_abbreviation%>">
+                                            <%= faculty.faculty_name%>
+                                        </option>
+                                        <%} %>
+                                </select>
+                            </div>
+                            <div class="formInput">
+                                <label for="selectDepartment">Катедра</label>
+                                <select id="selectDepartment" name="department">
+                                </select>
+                            </div>
+                            <br>
+                            <button class="signButton">Регистрация</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script src="\js\addStudentFormSelects.js"></script>
+</body>
+
+</html>

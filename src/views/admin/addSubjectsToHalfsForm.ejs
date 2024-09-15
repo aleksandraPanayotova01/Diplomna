@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <!-- <style>
+        .additional-checkboxes {
+            display: none;
+            margin-left: 20px;
+        }
+    </style> -->
+    <title>Форма за добавяне на предмети за половинка</title>
+</head>
+
+<body>
+    <div class="section-addSubjectToHalf">
+        <%- include('../partials/adminHeader') %>
+            <%- include('../partials/flashMessages') %>
+            <div class="page-content">
+                <form id="addSubjectForm" action="/admin/add/subjectToHalfs" method="POST">
+                    <h1>Добавяне на предмети за половинка</h1>
+                    <!-- <div class="formInput">
+                        <label for="subjectName">Име на предмета</label>
+                        <input id="subjectName" name="subjectName" type="text" required>
+                    </div>
+                    <div class="formInput">
+                        <label for="subjectAbbreviation">Съкращение на името на предмета</label>
+                        <input id="subjectAbbreviation" name="subjectAbbreviation" type="text" required>
+                    </div> -->
+                    <div class="formInput">
+                        <label for="selectSubject">Име на предмета</label>
+                        <select name="selectSubject" id="selectSubject" type="text" required>
+                            <% for(const subject of subjects){%>
+                                <option value="<%=subject.subject_abbreviation%>">
+                                    <%= subject.subject_name%>
+                                </option>
+                                <%} %>
+                        </select>
+                    </div>
+                    <div class="formInput">
+                        <label for="selectFaculty">Факултет</label>
+                        <select id="selectFaculty" type="text" name="faculty" required>
+                            <% for(const faculty of faculties){%>
+                                <option value="<%=faculty.faculty_abbreviation%>">
+                                    <%= faculty.faculty_name%>
+                                </option>
+                                <%} %>
+                        </select>
+                    </div>
+                    <div class="formInput">
+                        <label for="selectDepartment">Катедра</label>
+                        <select id="selectDepartment" name="department">
+                        </select>
+                    </div>
+                    <div class="formInput">
+                        <label for="selectSpecialty">Специалност</label>
+                        <select id="selectSpecialty" name="selectSpecialty">
+                            <option value="none" selected disabled hidden>Изберете специалност</option>
+
+                        </select>
+                    </div>
+                    <div class="formInput">
+                        <label for="selectCourse">Семестър</label>
+                        <select name="selectCourse" id="selectCourse">
+                            <option value="none" selected disabled hidden>Изберете семестър</option>
+                        </select>
+                    </div>
+
+                    <!-- <div class="formInput">
+                        <label for="groupHalfs">За половинки</label>
+                        <div class="groupHalfs">
+                            <select name="groupHalfs" id="groupHalfs">
+                                <option value="none" selected disabled hidden>Изберете половинка</option>
+                            </select>
+                        </div>
+                    </div> -->
+                    <!-- <div class="formInput lecturers">
+                        <span>Преподавател</span>
+                        <select class="selectLecturer" name="selectLecturer" type="text">
+                            <option value="none" selected disabled hidden>Изберете преподавател</option>
+                           
+                        </select>
+                    </div> -->
+
+    </div>
+
+
+    <!-- <div>
+        <input class='submit' type="submit" name="submit" value="Добавяне">
+    </div> -->
+            </form>
+        </div>
+    </div>
+    <script src="\js\addSubjectToHalfs.js"></script>
+    <script src="\js\addStudentFormSelects.js"></script>
+    <!-- <script src="\js\addLecturerToSubject.js"></script> -->
+
+</body>
+
+</html>

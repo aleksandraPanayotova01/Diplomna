@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <title>Форма за добавяне на предмет</title>
+</head>
+
+<body>
+    <div class="section-addSubject">
+        <%- include('../partials/adminHeader') %>
+            <%- include('../partials/flashMessages') %>
+            <div class="page-content">
+                <form id="addSubjectForm" action="/admin/add/subject" method="POST">
+                    <h1>Добавяне на предмет</h1>
+                    <div class="formInput">
+                        <label for="subjectName">Име на предмета</label>
+                        <input id="subjectName" name="subjectName" type="text" required>
+                    </div>
+                    <div class="formInput">
+                        <label for="subjectAbbreviation">Съкращение на името на предмета</label>
+                        <input id="subjectAbbreviation" name="subjectAbbreviation" type="text" required>
+                    </div>
+                    <div>
+                        <input class='submit' type="submit" name="submit" value="Добавяне">
+                    </div>
+                </form>
+            </div>
+    </div>
+    <!-- <script src="\js\addStudentFormSelects.js"></script> -->
+    <!-- <script src="\js\addLecturerSelects.js"></script> -->
+    <!-- <script src="\js\addLecturerToSubject.js"></script> -->
+</body>
+
+</html>

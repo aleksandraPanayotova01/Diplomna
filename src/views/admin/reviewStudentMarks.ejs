@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <title>Преглед на оценки на студенти</title>
+    <script>
+
+        async function fetchAndCreateFacNums() {
+            try {
+                const specialty = document.querySelector("#specialtySelect").value;
+                const courseNumber = document.querySelector("#courseSelect").value;
+                const groupNumber = document.querySelector("#groupSelect").value;
+                const groupHalfLetter = document.querySelector("#groupHalfSelect").value;
+                const response = await fetch(`/admin/get/facultyNumbers1`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        specialty, courseNumber,
+                        groupNumber, groupHalfLetter
+                    }),
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                console.log(response);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch faculty numbers');
+                }
+
+                const facultyNumbers = await response.json();
+                createFacNumstSelect(facultyNumbers);
+            } catch (error) {
+                console.error('Error fetching faculty numbers:', error);
+                showErrorMessage('Грешка при зареждането на факултетните номера. Моля, опитайте отново.');
+            }
+        }
+
+        function createFacNumstSelect(facultyNumbers) {
+            const submitButon = document.querySelector(".submit");
+            const form = document.querySelector("#addMarkForm");
+            const existingFacultyNumbersDiv = form.querySelector('.formInput.faculty_numbers');
+            if (existingFacultyNumbersDiv) existingFacultyNumbersDiv.remove();
+
+            const facultyNumbersDiv = document.createElement("div");
+            facultyNumbersDiv.classList.add("formInput", "faculty_numbers");
+
+            const labelFacultyNumbersSelect = document.createElement('label');
+            labelFacultyNumbersSelect.textContent = "Факултетни номера";
+            facultyNumbersDiv.appendChild(labelFacultyNumbersSelect);
+
+            const facultyNumbersSelect = document.createElement('select');
+            facultyNumbersSelect.name = "facultyNumbersSelect";
+            facultyNumbersSelect.id = "facultyNumbersSelect";
+            facultyNumbersSelect.classList.add("facultyNumbersSelect");
+            facultyNumbersSelect.required = true;
+            facultyNumbersDiv.appendChild(facultyNumbersSelect);
+
+            const defaultFacultyNumbersOption = document.createElement('option');
+            defaultFacultyNumbersOption.textContent = "Изберете факултетен номер";
+            defaultFacultyNumbersOption.value = "";
+            defaultFacultyNumbersOption.disabled = true;
+            defaultFacultyNumbersOption.selected = true;
+            facultyNumbersSelect.appendChild(defaultFacultyNumbersOption);
+
+            facultyNumbers.forEach(facultyNumber => {
+                const facultyNumberOption = document.createElement('option');
+                facultyNumberOption.textContent = facultyNumber.student_fac_num;
+                facultyNumberOption.value = facultyNumber.student_fac_num;
+                facultyNumbersSelect.appendChild(facultyNumberOption);
+            });
+
+            form.insertBefore(facultyNumbersDiv, submitButon);
+        }
+
+        function showErrorMessage(message) {
+            const form = document.querySelector("#addMarkForm");
+            const existingErrorDiv = form.querySelector('.error-message');
+            if (existingErrorDiv) existingErrorDiv.remove();
+
+            const errorDiv = document.createElement('div');
+            errorDiv.classList.add('error-message');
+            errorDiv.textContent = message;
+            form.appendChild(errorDiv);
+        }
+    </script>
+</head>
+
+<body>
+    <%- include('../partials/adminHeader') %>
+
+    <div class="container page-content">
+        <h1>Преглед на оценки на студенти</h1>
+
+        <form id="addMarkForm" method="POST" action="/admin/review/studentMarks">
+            <div class="formInput">
+                <label for="specialtySelect">Специалност</label>
+                <select name="specialty" id="specialtySelect" required>
+                    <option value="" disabled selected>Изберете специалност</option>
+                    <% studentMarksInfo.specialties.forEach(function(specialty) { %>
+                        <option value="<%= specialty.specialty_id %>">
+                            <%= specialty.specialty_name %>
+                        </option>
+                        <% }) %>
+                </select>
+            </div>
+
+            <div class="formInput">
+                <label for="courseSelect">Курс</label>
+                <select name="courseNumber" id="courseSelect" required>
+                    <option value="" disabled selected>Изберете курс</option>
+                    <% studentMarksInfo.courses.forEach(function(course) { %>
+                        <option value="<%= course.course_number %>">
+                            <%= course.course_number %>
+                        </option>
+                        <% }) %>
+                </select>
+            </div>
+
+            <div class="formInput">
+                <label for="groupSelect">Група</label>
+                <select name="groupNumber" id="groupSelect" required>
+                    <option value="" disabled selected>Изберете група</option>
+                    <% studentMarksInfo.groups.forEach(function(group) { %>
+                        <option value="<%= group.group_number %>">
+                            <%= group.group_number %>
+                        </option>
+                        <% }) %>
+                </select>
+            </div>
+
+            <div class="formInput">
+                <label for="groupHalfSelect">Половинка на група</label>
+                <select name="groupHalfLetter" id="groupHalfSelect" onchange="fetchAndCreateFacNums()" required>
+                    <option value="" disabled selected>Изберете половинка на група</option>
+                    <% studentMarksInfo.groupHalves.forEach(function(groupHalf) { %>
+                        <option value="<%= groupHalf.group_half_letter %>">
+                            <%= groupHalf.group_half_letter %>
+                        </option>
+                        <% }) %>
+                </select>
+            </div>
+
+        <!-- Тук ще се добавя динамичният селектор за факултетни номера -->
+
+            <button type="submit" class="submit">Преглед на оценки</button>
+        </form>
+    </div>
+</body>
+
+</html>

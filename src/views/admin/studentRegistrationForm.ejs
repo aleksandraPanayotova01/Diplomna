@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <title>Регистрация на студент</title>
+</head>
+
+<body>
+    <%- include('../partials/adminHeader') %>
+        <div class="page-content">
+
+            <div class="content">
+
+                <h2>Регистрация на студент</h2>
+           
+                <div class="formDiv">
+                    <form class="student-registration" action="/admin/studentRegister" method="POST"> <!--vremmeno-->
+                        <%- include('../partials/registrationForm') %>
+
+                            <div class="formInput">
+                                <label for="name">Име</label>
+                                <input id="name" type="text" name="name" required">
+
+                            </div>
+                            <div class="formInput">
+                                <label for="fathersName">Презиме</label>
+                                <input id="fathersName" type="text" name="fathersName" required">
+
+                            </div>
+                            <div class="formInput">
+                                <label for="surname">Фамилия</label>
+                                <input id="surname" type="text" name="surname" required">
+
+                            </div>
+                            <div class="formInput">
+                                <label for="selectFaculty">Факултет</label>
+                                <select id="selectFaculty" type="text" name="faculty" required>
+                                    <% for(const faculty of faculties){%>
+                                        <option value="<%=faculty.faculty_abbreviation%>">
+                                            <%= faculty.faculty_name%>
+                                        </option>
+                                        <%} %>
+                                </select>
+                            </div>
+                            <div class="formInput">
+                                <label for="selectDepartment">Катедра</label>
+                                <select id="selectDepartment" name="department">
+                                </select>
+                            </div>
+                            <div class="formInput">
+                                <label for="selectSpecialty">Специалност</label>
+                                <select id="selectSpecialty" name="selectSpecialty">
+                                    <option value="none" selected disabled hidden>Изберете специалност</option>
+
+                                </select>
+                            </div>
+                            <div class="formInput">
+                                <label for="courseNum">Курс</label>
+                                <input type="number" min="1" max="5" id="courseNum" name="courseNum" value="1">
+                            </div>
+                            <div class=" formInput">
+                                <label for="group">Група</label>
+                                <select class="group" name="group" id="group">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                </select>
+                            </div>
+                            <div class="formInput">
+                                <span>Половинка</span>
+                                <div class="radioGroup">
+                                    <input type="radio" id="halfA" name="half" value="a" checked>
+                                    <label for="halfA">a</label>
+                                    <input type="radio" id="halfB" name="half" value="b">
+                                    <label for="halfB">b</label>
+                                </div>
+                            </div>
+                            <div class="formInput">
+                                <label for="facultyNum">Факултетен номер</label>
+                                <input type="number" id="facultyNum" name="facultyNum" placeholder="Факултетен номер"
+                                    min="11111111" max="99999999" value="20621619">
+                            </div>
+                            <div class="formInput">
+                                <label for="egn">ЕГН</label>
+                                <input type="text" id="egn" name="egn" placeholder="ЕГН" value="0148181923"
+                                    maxlength="10">
+                            </div>
+                            <br>
+                            <button class="signButton">Регистрация</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script src="\js\addStudentFormSelects.js"></script>
+</body>
+
+</html>

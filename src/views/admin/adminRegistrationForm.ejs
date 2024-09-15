@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <title>Създаване на профил за администратор</title>
+</head>
+
+<body>
+    <%- include('../partials/adminHeader') %>
+        <div class="page-content">
+            <div class="content">
+
+                <h2>Регистрация на администратор</h2>
+
+                <div class="formDiv">
+                    <form class="admin-registration" action="/admin/adminRegister" method="POST">
+
+                        <%- include('../partials/registrationForm') %>
+                            <div class="formInput">
+                                <label for="name">Име</label>
+                                <input id="name" type="text" name="name" required>
+
+                            </div>
+                            <div class="formInput">
+                                <label for="fathersName">Презиме</label>
+                                <input id="fathersName" type="text" name="fathersName" required>
+
+                            </div>
+                            <div class="formInput">
+                                <label for="surname">Фамилия</label>
+                                <input id="surname" type="text" name="surname" required>
+
+                            </div>
+                            <br>
+                            <button class="signButton">Регистрация</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+</body>
+
+</html>

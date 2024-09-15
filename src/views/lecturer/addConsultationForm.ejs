@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <title>Добавяне на консултация</title>
+</head>
+
+<body>
+    <main class="sign">
+        <%- include('../partials/flashMessages') %>
+            <%- include('../partials/lecturerHeader') %>
+            <div class="page-content">
+                <h1>Добавяне на консултация</h1>
+
+                <form action="/lecturer/addConsultation" method="POST">
+                    <div class="formInput">
+                        <label for="consultationStart">Начален час</label>
+                        <input type="time" id="consultationStart" name="consultationStart" required />
+                    </div>
+                    <div class="formInput">
+                        <label for="consultationEnd">Краен час</label>
+                        <input type="time" id="consultationEnd" name="consultationEnd" required />
+                    </div>
+                    <div id="weekdayContainer"></div> <!-- Празен контейнер за падащото меню -->
+                    <div id="roomContainer"></div> <!-- Празен контейнер за падащото меню -->
+                    <div id="subjectsContainer"></div>
+                    <button class="submitAddConsultation submit" type="submit">Добавяне</button>
+                </form>
+            </div>
+    </main>
+
+
+    <script src="\js\addLecturerConsultation.js"></script>
+</body>
+
+</html>

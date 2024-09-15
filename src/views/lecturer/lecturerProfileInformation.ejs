@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/schedule.css" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <title>Профил</title>
+    <style>
+        h1 {
+            text-align: center;
+            color: #444;
+            padding: 20px;
+            background-color: #e2e2e2;
+            margin: 0;
+            width: 100%;
+            box-sizing: border-box;
+            font-weight: bold;
+        }
+
+        .profile-info {
+            max-width: 800px;
+            width: 100%;
+            margin: 10px auto 20px auto;
+            /* Adjust the top margin to clear the navbar */
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-info p {
+            margin: 10px 0;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            font-size: 16px;
+            /* Ensure font size is set */
+            line-height: 1.6;
+            /* Ensure line height is set */
+        }
+
+        .profile-info p:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('../partials/lecturerHeader') %>
+        <div class="profile-info">
+            <h1>Информация за профил</h1>
+            <% console.log(lecturerProfileInfo); %>
+                <p class="title">Титла: <%= lecturerProfileInfo.title_name %>
+                </p>
+                <p class="name">Име: <%= lecturerProfileInfo.name %>
+                </p>
+                <p class="fathersName">Презиме: <%= lecturerProfileInfo.fathers_name %>
+                </p>
+                <p class="surname">Фамилия: <%= lecturerProfileInfo.surname %>
+                </p>
+                <p class="facultyName">Факултет: <%= lecturerProfileInfo.faculty_name %>
+                </p>
+                <p class="departmentName">Катедра: <%= lecturerProfileInfo.department_name %>
+                </p>
+        </div>
+</body>
+
+</html>

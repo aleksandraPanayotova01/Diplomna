@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/css/common-styles.css" />
+    <link rel="stylesheet" type="text/css" href="/css/styles.css" />
+    <title>Начало</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+</head>
+
+<body>
+    <main class="homepage">
+
+
+        <div class="homepage">
+
+            <%- include('../partials/flashMessages') %>
+                <h1>Всичко за университета Ви на едно място!</h1>
+
+                <h3>Присъединете се сега</h3>
+
+                <div class="accordion-container">
+                    <!-- Card student login -->
+                    <div class="card">
+                        <div class="card-header" id="loginStudent">
+                            <h2 class="mb-0">
+                                <button class="btn btn-light accordion-button" type="button" data-toggle="collapse"
+                                    data-target="#collapseStudentLogin" aria-expanded="true"
+                                    aria-controls="collapseStudentLogin">
+                                    Вход за студенти
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseStudentLogin" class="collapse" aria-labelledby="loginStudent">
+                            <%- include('../student/studentLoginForm') %>
+                        </div>
+                    </div>
+                    <!--Card lecturer login-->
+                    <div class="card">
+                        <div class="card-header" id="loginLecturer">
+                            <h2 class="mb-0">
+                                <button class="btn btn-light accordion-button" type="button" data-toggle="collapse"
+                                    data-target="#collapseLoginLecturer" aria-expanded="false"
+                                    aria-controls="collapseLoginLecturer">
+                                    Вход за преподаватели
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseLoginLecturer" class="collapse" aria-labelledby="loginLecturer">
+                            <%- include('../lecturer/lecturerLoginForm') %>
+                        </div>
+                    </div>
+
+                    <!-- Card admin login-->
+                    <div class="card">
+                        <div class="card-header" id="loginAdmin">
+                            <h2 class="mb-0">
+                                <button class="btn btn-light accordion-button" type="button" data-toggle="collapse"
+                                    data-target="#collapseLoginAdmin" aria-expanded="false"
+                                    aria-controls="collapseLoginAdmin">
+                                    Вход за администратори
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseLoginAdmin" class="collapse" aria-labelledby="loginAdmin">
+                            <%- include('../admin/adminLoginForm') %>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="adminRegister">
+                        <div class="card custom-center-card">
+                            <div class="card-header" id="adminRegister">
+                                <h2 class="mb-1">
+                                    <button class="btn btn-light accordion-button" type="button" data-toggle="collapse"
+                                        data-target="#collapseAdminRegister" aria-expanded="true"
+                                        aria-controls="collapseAdminRegister">
+                                        Регистрация за администратор
+                                    </button>
+                                </h2>
+                            </div>
+                            <div id="collapseAdminRegister" class="collapse" aria-labelledby="adminRegister">
+                               
+                            </div>
+                        </div>
+                    </div> -->
+                <!-- <div class="adminRegister d-flex justify-content-center">
+                        <div class="card custom-card-width">
+                            <div class="card-header d-flex justify-content-center" id="adminRegister">
+                                <h2 class="mb-1">
+                                    <button class="btn btn-light accordion-button custom-button" type="button" data-toggle="collapse"
+                                        data-target="#collapseAdminRegister" aria-expanded="true"
+                                        aria-controls="collapseAdminRegister">
+                                        Регистрация за администратор
+                                    </button>
+                                </h2>
+                            </div>
+                            <div id="collapseAdminRegister" class="collapse" aria-labelledby="adminRegister">
+                               
+                            </div>
+                        </div>
+                    </div> -->
+        </div>
+    </main>
+    <script>
+        // JavaScript to close all accordions when clicking outside
+        $(document).on('click', function (e) {
+            var $accordion = $('.accordion-container');
+            if (!$accordion.is(e.target) && $accordion.has(e.target).length === 0) {
+                $('.accordion-collapse').collapse('hide');
+            }
+        });
+    </script>
+</body>
+
+</html>

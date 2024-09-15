@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/schedule.css" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <!-- <link rel="stylesheet" href="/css/consultations.css" /> -->
+    <title>Консултации</title>
+    <style>
+        /* Add your styles here */
+        .container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('../partials/lecturerHeader') %>
+        <div class="container">
+            <h1>Консултации</h1>
+
+            <% if (consultations.length> 0) { %>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ден</th>
+                            <th>Начало</th>
+                            <th>Край</th>
+                            <th>Сграда</th>
+                            <th>Стая</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% consultations.forEach(consultation=> { %>
+                            <tr>
+                                <td>
+                                    <%= consultation.weekday_name %>
+                                </td>
+                                <td>
+                                    <%= consultation.consultation_start %>
+                                </td>
+                                <td>
+                                    <%= consultation.consultation_end %>
+                                </td>
+                                <td>
+                                    <%= consultation.building_name %>
+                                </td>
+                                <td>
+                                    <%= consultation.room_number %>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+                </table>
+                <% } else { %>
+                    <p>Няма добавени консултации.</p>
+                    <% } %>
+        </div>
+</body>
+
+</html>

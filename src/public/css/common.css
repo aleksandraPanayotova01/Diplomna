@@ -1,0 +1,324 @@
+/*NAVBAR*/
+/*NAVBAR*/
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    margin-bottom: 1rem;
+}
+
+.navbar-center {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.navbar-right {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.profileDropdown:hover {
+    cursor: pointer;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: #555;
+}
+
+/* HOME PAGE */
+.accordion-button {
+    border: 1px solid #ddd;
+    border-radius: 0;
+    border-right: none;
+}
+
+.accordion-button:last-child {
+    border-right: 1px solid #ddd;
+    border-radius: 0 0 5px 5px;
+}
+
+.accordion-button.active {
+    background-color: #e9ecef;
+    border-bottom: 1px solid #ddd;
+}
+
+.accordion-collapse {
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+}
+
+.accordion-body {
+    padding: 1rem;
+}
+
+.accordion-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.accordion-container .card {
+    flex: 1;
+    margin-right: -1px;
+}
+
+.accordion-container .card:last-child {
+    margin-right: 0;
+}
+
+/* .custom-center-card {
+    /* margin: 0 auto;
+    width: 100%;
+    max-width: 600px; 
+    display: flex;
+    /* justify-content: center; 
+    width: 100%;
+    align-items: center;
+    Adjust the max-width as needed 
+} */
+.custom-card-width {
+    width: 80%;
+    /* Adjust this value to your preference */
+    max-width: 800px;
+    /* Optional: max-width to prevent it from getting too large */
+}
+
+.custom-card-header {
+    display: flex;
+    justify-content: center;
+}
+
+.custom-button {
+    background-color: #333;
+    /* Change to your desired background color */
+    color: #ffffff;
+    /* Change to your desired text color */
+    border-color: #333;
+    /* Optional: Change the border color */
+}
+
+.custom-button:hover {
+    background-color: #555555ea;
+    /* Change to your desired hover background color */
+    color: #ffffff;
+    /* Optional: Change text color on hover */
+    border-color: #555;
+    /* Optional: Change border color on hover */
+}
+
+/* .custom-button:focus {
+    box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5);
+    /* Optional: Adjust focus shadow 
+}
+
+*/
+/* LOGIN & REGISTRATION FORMS */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+.page-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.content h2 {
+    text-align: center;
+    color: #333;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.formDiv {
+    padding: 20px;
+    min-height: 100%;
+}
+
+.formInput {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.formInput label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.formInput input[type="text"],
+.formInput input[type="time"],
+.formInput input[type="password"],
+.formInput select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.formInput input[type="radio"] {
+    margin-right: 5px;
+}
+
+.formInput span {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.formInput input[type="radio"]+label {
+    margin-right: 15px;
+    font-size: 16px;
+}
+
+.formInput .radioGroup {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.formInput .radioGroup input[type="radio"] {
+    margin-right: 5px;
+}
+
+.formInput .radioGroup label {
+    margin-right: 20px;
+    font-size: 16px;
+}
+
+
+.signButton,
+.submitLoginForm,
+.submit {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease;
+    border: 1px solid black;
+}
+
+.signButton:hover,
+.submitLoginForm :hover,
+.submit:hover {
+    background-color: #0404065e;
+    color: black;
+    border: 1px solid black;
+}
+
+.homepage h1,
+.homepage h3 {
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+}
+
+
+/* .submitLoginForm {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #333;
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.submitLoginForm :hover {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #0404065e;
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease;
+} */
+
+/* FLASH MESSAGES */
+
+.alert {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    border-radius: 5px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.success {
+    color: #0a3622;
+    background-color: #d1e7dd;
+    border: 1px solid #a3cfbb;
+}
+
+.error {
+    color: #58151c;
+    background-color: #f8d7da;
+    border: 1px solid #f1aeb5;
+}
+
+.closeAlertBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+}

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <title>Преглед на предметите на половинка</title>
+    <style>
+        .container {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('../partials/adminHeader') %>
+        <div class="container page-content">
+            <h1>Преглед на предметите на половинка</h1>
+
+            <form method="POST" action="/admin/review/subjectsHalf">
+
+                <div id="groupOptions">
+                    <div class="form-group">
+                        <label for="specialty">Специалност:</label>
+                        <select id="specialty" name="specialty" required>
+                            <option value="">-- Изберете --</option>
+                            <% specialties.forEach(function(specialty) { %>
+                                <option value="<%= specialty.specialty_id %>">
+                                    <%= specialty.specialty_name %> 
+                                    (<%= specialty.specialty_abbreviation %>)
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="courseNumber">Курс:</label>
+                        <select id="courseNumber" name="courseNumber" required>
+                            <option value="">-- Изберете --</option>
+                            <% courses.forEach(function(course) { %>
+                                <option value="<%= course.course_number %>">
+                                    <%= course.course_number %>
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="groupNumber">Номер на група:</label>
+                        <select id="groupNumber" name="groupNumber" required>
+                            <option value="">-- Изберете --</option>
+                            <% groups.forEach(function(group) { %>
+                                <option value="<%= group.group_number %>">
+                                    <%= group.group_number %>
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="groupHalfLetter">Половинка:</label>
+                        <select id="groupHalfLetter" name="groupHalfLetter" required>
+                            <option value="">-- Изберете --</option>
+                            <% groupHalves.forEach(function(half) { %>
+                                <option value="<%= half.group_half_letter %>">
+                                    <%= half.group_half_letter %>
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
+                </div>
+
+
+                <button type="submit" class="submit">Прегледай предметите</button>
+            </form>
+        </div>
+</body>
+
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <title>Subjects for Group Half</title>
+</head>
+<body>
+    <%- include('../partials/adminHeader') %>
+    <div class="page-content">
+        <h1>Предмети за курс <%= courseNumber %>, група <%= groupNumber %><%= groupHalfLetter %></h1>
+
+        <% if (subjects && subjects.length > 0) { %>
+            <h3>Предмети:</h3>
+            <% JSON.parse(subjects).forEach(subject => { %>
+                <p><%= subject.subject_name %></p>
+            <% }) %>
+            
+        <% } else { %>
+            <p>No subjects found for the selected group half.</p>
+        <% } %>
+
+        <div class="button-container">
+            <a class="submit" href="/admin/review/subjectsHalf">Назад</a>
+        </div>
+    </div>
+    <!-- <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const scheduleDataElement = document.getElementById('scheduleData');
+            const subjec = JSON.parse(scheduleDataElement.getAttribute('data-schedule'));
+
+            schedule.forEach(entry => {
+                const dayId = getDayId(entry.weekday_name);
+                const section = document.getElementById(
+                    `classes${dayId.charAt(0).toUpperCase() + dayId.slice(1)}`);
+
+                if (section) {
+                    const classInfo = document.createElement('div');
+                    classInfo.classList.add('period');
+                    classInfo.innerHTML = `
+                        <div class="period">
+                            ${formatTime(entry.period_start_time)} - ${formatTime(entry.period_end_time)}<br>
+                            ${entry.subject_name} (${entry.period_type_name})
+                            ${entry.room_number} ${entry.building_abbreviation}
+                            ${entry.title_name} ${entry.surname}
+                        </div>
+                    `;
+                    section.appendChild(classInfo);
+                }
+            });
+        });
+
+        function formatTime(timeString) {
+            const [hours, minutes] = timeString.split(':');
+            return `${hours}:${minutes}`;
+        }
+
+        function getDayId(weekday_name) {
+            const days = {
+                'Понеделник': 'Monday',
+                'Вторник': 'Tuesday',
+                'Сряда': 'Wednesday',
+                'Четвъртък': 'Thursday',
+                'Петък': 'Friday',
+                'Събота': 'Saturday',
+                'Неделя': 'Sunday'
+            };
+            return days[weekday_name];
+        }
+    </script> -->
+</body>
+</html>
