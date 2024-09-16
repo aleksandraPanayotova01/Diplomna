@@ -55,8 +55,8 @@ module.exports = {
     getLecturerProfileInfo: async (lecturerProfileId) => {
         return await periodRepository.getLecturerProfileInfo(lecturerProfileId);
     },
-    getAdminProfileInfo: async (profileId) => {
-        return await periodRepository.getAdminProfileInfo(profileId);
-    },
+    // getAdminProfileInfo: async (profileId) => {
+    //     return await periodRepository.getAdminProfileInfo(profileId);
+    // },
 
 }

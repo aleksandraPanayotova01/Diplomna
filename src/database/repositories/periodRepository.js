@@ -528,19 +528,19 @@ module.exports = {
             throw err;
         }
     },
-    getAdminProfileInfo: async (profileId) => {
-        try {
+    // getAdminProfileInfo: async (profileId) => {
+    //     try {
 
-            const [result] = await pool.query(`
-                SELECT \`name\`, \`fathers_name\`, \`surname\`
-            FROM \`profile\`
-            WHERE \`profile_id\` = ?
-                `, [profileId]);
-            return result[0];
+    //         const [result] = await pool.query(`
+    //             SELECT \`name\`, \`fathers_name\`, \`surname\`
+    //         FROM \`profile\`
+    //         WHERE \`profile_id\` = ?
+    //             `, [profileId]);
+    //         return result[0];
 
-        } catch (err) {
-            console.error(err);
-            throw err;
-        }
-    }
+    //     } catch (err) {
+    //         console.error(err);
+    //         throw err;
+    //     }
+    // }
 }
