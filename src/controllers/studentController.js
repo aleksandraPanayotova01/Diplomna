@@ -2,6 +2,7 @@
 const periodService = require('../services/periodService');
 const studentService = require('../services/studentService');
 const accountService = require('../services/accountService');
+// const { showConsultations } = require('./lecturerController');
 module.exports = {
     showStudentSchedule: async (req, res) => {
         // const studentProfileId = req.session.stduent_profile_id;
@@ -104,6 +105,28 @@ module.exports = {
         }
     }
     ,
+    showConsultations: async (req, res) => {
+        try {
+            const studentProfileId = req.session.student_profile_id;
+            const studentConsultations =await studentService.
+            getStudentConsultations(studentProfileId);
+            res.render("student/studentConsultations",{studentConsultations});
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Internal Server Error");
+        }
+    }
+    ,
+    searchConsultations: async (req, res) => {
+        try {
+            const body=req.body;
+            const consultations=await studentService.searchConsultations(body.consultationSearch);
+            res.json(consultations);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Internal Server Error");
+        }
+    }
     // getStudentProfileInfo: async (req, res) => {
     //     try {
     //         const studentProfileId = req.session.student_profile_id;

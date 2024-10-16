@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const adminController = require('../controllers/adminController');
+const studentController = require('../controllers/studentController');
 const checkUser = require('../middlewares/requireLogin');
 
 router
@@ -79,11 +80,11 @@ router
     .post(adminController.getSubjectsHalf);
 router
     .route("/get/weekdays")
-    .all(checkUser.checkIfAdminIsLogged)
+    // .all(checkUser.checkIfAdminIsLogged)
     .get(adminController.getWeekdays);
 router
     .route("/get/rooms")
-    .all(checkUser.checkIfAdminIsLogged)
+    // .all(checkUser.checkIfAdminIsLogged)
     .get(adminController.getRooms);
 router
     .route("/get/marks")//all mark values
@@ -121,5 +122,12 @@ router
     .all(checkUser.checkIfAdminIsLogged)
     .get(adminController.showStudentMarksForm1)
     .post(adminController.resultStudentMarks);
+router
+    .route("/review/consultations")
+    .all(checkUser.checkIfAdminIsLogged)
+    .get(adminController.showLecturersConsultations)
+    .post(adminController.searchConsultations);
+
+// .post(adminController.searchConsultations);
 
 module.exports = router;

@@ -528,6 +528,35 @@ module.exports = {
             throw err;
         }
     },
+    getStudentLecturersConsultations:async(studentProfileId)=>{
+        try {
+            const [result] = await pool.query(`
+                SELECT cl.consultation_start,cl.consultation_end,
+                w.weekday_name,r.room_number,b.building_abbreviation,
+                t.title_name,p.surname
+                FROM consultation_lecturer cl
+                INNER JOIN weekday w
+                ON cl.weekday_id_fk=w.weekday_id
+                INNER JOIN room r
+                ON r.room_id=cl.room_id_fk
+                INNER JOIN building b
+                r.building_id_fk=b.building_id
+                INNER JOIN lecturer_profile lp
+                ON lp.lecturer_profile_id=cl.lecturer_profile_id_fk
+                INNER JOIN profile p
+                ON lp.profile_id_fk=p.profile_id
+                INNER JOIN lecturer l
+                ON l.lecturer_id=lp.lecturer_id_fk
+                INNER JOIN title t
+                ON l.title_id_fk=t.title_id
+                WHERE s
+                `,{studentProfileId});
+        return result;
+        }catch (err) {
+            console.error(err);
+            throw err;
+        }
+    }
     // getAdminProfileInfo: async (profileId) => {
     //     try {
 

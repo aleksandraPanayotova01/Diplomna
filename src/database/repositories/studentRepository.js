@@ -116,6 +116,93 @@ module.exports = {
             console.error(err);
             throw (err);
         }
+    },
+    getStudentConsultations: async (studentProfileId) => {
+        try {
+            const [result] = await pool.query(`
+               SELECT DISTINCT 
+                cl.consultation_start,
+                cl.consultation_end,
+                w.weekday_name,
+                r.room_number,
+                b.building_abbreviation,
+                t.title_name,
+                p.\`name\`,
+                p.surname
+                FROM 
+                    consultation_lecturer cl
+                INNER JOIN 
+                    weekday w ON cl.weekday_id_fk = w.weekday_id
+                INNER JOIN 
+                    room r ON cl.room_id_fk = r.room_id
+                INNER JOIN 
+                    building b ON r.building_id_fk = b.building_id
+                INNER JOIN 
+                    lecturer_profile lp ON cl.lecturer_profile_id_fk = lp.lecturer_profile_id
+                INNER JOIN 
+                    \`profile\` p ON lp.profile_id_fk = p.profile_id
+                INNER JOIN 
+                    lecturer l ON lp.lecturer_id_fk = l.lecturer_id  -- Fix: Correct joining condition
+                INNER JOIN 
+                    title t ON l.title_id_fk = t.title_id
+                INNER JOIN 
+                    group_half_subject ghs ON ghs.lecturer_id_fk = l.lecturer_id
+                INNER JOIN 
+                    group_half gh ON ghs.group_half_id_fk = gh.group_half_id
+                INNER JOIN 
+                    student s ON s.group_half_id_fk = gh.group_half_id
+                INNER JOIN 
+                    student_profile sp ON sp.student_fac_num = s.student_fac_num
+                WHERE 
+                    sp.student_profile_id = ?
+                `, [studentProfileId]);
+
+            return result;
+        } catch (err) {
+            console.error(err);
+            throw (err);
+        }
+    },
+    searchConsultations: async (lecturerName) => {
+        try {
+            const lecturerNameWithWildcard = `%${lecturerName}%`; // For partial matching
+            const [result] = await pool.query(`
+                SELECT DISTINCT 
+                cl.consultation_start,
+                cl.consultation_end,
+                w.weekday_name,
+                r.room_number,
+                b.building_abbreviation,
+                t.title_name,
+                p.\`name\`,
+                p.surname
+                FROM 
+                    consultation_lecturer cl
+                INNER JOIN 
+                    weekday w ON cl.weekday_id_fk = w.weekday_id
+                INNER JOIN 
+                    room r ON cl.room_id_fk = r.room_id
+                INNER JOIN 
+                    building b ON r.building_id_fk = b.building_id
+                INNER JOIN 
+                    lecturer_profile lp ON cl.lecturer_profile_id_fk = lp.lecturer_profile_id
+                INNER JOIN 
+                    \`profile\` p ON lp.profile_id_fk = p.profile_id
+                INNER JOIN 
+                    lecturer l ON lp.lecturer_id_fk = l.lecturer_id
+                INNER JOIN 
+                    title t ON l.title_id_fk = t.title_id
+                WHERE p.\`name\` LIKE ?
+                OR p.surname LIKE ?
+                OR t.title_name LIKE ?
+            `, [lecturerNameWithWildcard, lecturerNameWithWildcard, lecturerNameWithWildcard]);
+
+            return result;
+        } catch (err) {
+            console.error('Error fetching consultations:', err);
+            throw err;
+        }
     }
+    ,
 
 }

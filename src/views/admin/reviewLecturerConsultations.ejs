@@ -1,0 +1,111 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/schedule.css" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <title>Консултации на преподаватели</title>
+</head>
+
+<body>
+    <%- include('../partials/studentHeader') %>
+        <h1>Преглед на консултации</h1>
+        <div class="form-consultation">
+            <input type="text" name="consultationSearch" id="consultationSearch" placeholder="Име на преподавател">
+            <button id="consultationSearchButton">Търсене на консултация</button>
+        </div>
+        <div id="consultations-container">
+            <table id="consultations-table">
+                <thead>
+                    <tr>
+                        <th>Ден от седмицата</th>
+                        <th>Начало</th><!--час-->
+                        <th>Край</th><!--час-->
+                        <th>Стая</th><!--номер и абревиетура на сграда-->
+                        <th>Преподавател</th><!--титла и фамилия    -->
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="consultations-tbody">
+                    <% for(const consultation of allConsultations){ %>
+                        <tr>
+                            <td>
+                                <%= consultation.weekday_name%>
+                            </td>
+                            <td>
+                                <%= consultation.consultation_start %>
+                            </td>
+                            <td>
+                                <%= consultation.consultation_end %>
+                            </td>
+                            <td>
+                                <%= consultation.room_number %>
+                                    <%= consultation.building_abbreviation %>
+                            </td>
+                            <td>
+                                <%= consultation.title_name %>
+                                    <%= consultation.name %>
+                                        <%= consultation.surname %>
+                            </td>
+                        </tr>
+                        <%} %>
+
+                </tbody>
+            </table>
+        </div>
+        <script>
+            const consultationSearchButton = document.querySelector('#consultationSearchButton');
+            consultationSearchButton.addEventListener('click', async function () {
+                const consultationSearch = document.querySelector('#consultationSearch').value;
+                const response = await fetch('/admin/review/consultations', {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        consultationSearch
+                    })
+                });
+                const consultations = await response.json();
+                console.log(consultations);
+                const consultationsBody = document.querySelector('#consultations-tbody');
+                consultationsBody.innerHTML = '';
+                if (consultations.length > 0) {
+                    for (const consultation of consultations) {
+                        const tr = document.createElement('tr');
+                        consultationsBody.appendChild(tr);
+                        const weekdayTd = document.createElement('td');
+                        weekdayTd.textContent = consultation.weekday_name;
+                        tr.appendChild(weekdayTd);
+                        const consultationStartTd = document.createElement('td');
+                        consultationStartTd.textContent = consultation.consultation_start;
+                        tr.appendChild(consultationStartTd);
+                        const consultationEndTd = document.createElement('td');
+                        consultationEndTd.textContent = consultation.consultation_end;
+                        tr.appendChild(consultationEndTd);
+                        const consultationRoomTd = document.createElement('td');
+                        consultationRoomTd.textContent = `${consultation.room_number} ${consultation.building_abbreviation}`;;
+                        tr.appendChild(consultationRoomTd);
+                        const consultationLecturerTd = document.createElement('td');
+                        consultationLecturerTd.textContent = `${consultation.title_name} 
+                    ${consultation.name} ${consultation.surname}`;
+                        tr.appendChild(consultationLecturerTd);
+                    }
+                } else {
+                    const consultationsBody = document.querySelector('#consultations-tbody');
+                    consultationsBody.innerHTML = '';
+                    const tr = document.createElement('tr');
+                    consultationsBody.appendChild(tr);
+                    const noConsultations = document.createElement('p');
+                    noConsultations.textContent = 'Няма консултации за избрания преподавател';
+                    tr.appendChild(noConsultations);
+                }
+            });
+
+        </script>
+</body>
+
+</html>

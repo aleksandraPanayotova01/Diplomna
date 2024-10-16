@@ -5,6 +5,7 @@ module.exports = {
         return await periodRepository.getWeekdays();;
     },
     getRooms: async () => {
+        console.log("INSIDE SERVICE FOR ROOMS");
         return await periodRepository.getRooms();
     },
     getLecturers: async () => {
@@ -55,6 +56,9 @@ module.exports = {
     getLecturerProfileInfo: async (lecturerProfileId) => {
         return await periodRepository.getLecturerProfileInfo(lecturerProfileId);
     },
+    // getStudentLecturers:async(studentProfileId)=>{
+    //     return await periodRepository.getStudentLecturers(studentProfileId);
+    // }
     // getAdminProfileInfo: async (profileId) => {
     //     return await periodRepository.getAdminProfileInfo(profileId);
     // },

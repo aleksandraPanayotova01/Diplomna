@@ -31,5 +31,12 @@ module.exports = {
         } else {
             return "Username and password taken";
         }
+    },getLecturersConsultations: async () => {
+        return await adminRepository.getConsultations();
     },
+
+    searchConsultations: async (lecturerName) => {
+        return await adminRepository.searchConsultations(lecturerName);
+    },
+
 }

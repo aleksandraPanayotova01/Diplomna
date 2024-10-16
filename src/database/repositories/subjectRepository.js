@@ -51,11 +51,14 @@ module.exports = {
             const [result] = await pool.query(`
                 INSERT INTO group_half_subject
                 (group_half_id_fk, subject_id_fk,
-                period_type_id_fk, subject_semester_number)
-                VALUES(?,?,?,?)
+                period_type_id_fk,
+                lecturer_id_fk,
+                subject_semester_number)
+                VALUES(?,?,?,?,?)
                 `, [subjectInformation.groupHalfId,
             getSubjectId[0][0]['subject_id'],
             subjectInformation.periodTypeId,
+            subjectInformation.lecturerId,
             subjectInformation.semNumber]);
             return result;
         } catch (err) {

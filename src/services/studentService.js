@@ -22,11 +22,17 @@ module.exports = {
     getFacNums: async (groupHalfId) => {
         return await studentRepository.getFacNums(groupHalfId);
     },
-    getStudentMarks: async (studentProfileId)=>{
+    getStudentMarks: async (studentProfileId) => {
         return await studentRepository.getStudentMarks(studentProfileId);
     },
-    getStudentProfileId:async(facNumber)=>{
-        return await studentRepository.getStudentProfileId(facNumber);;
+    getStudentProfileId: async (facNumber) => {
+        return await studentRepository.getStudentProfileId(facNumber);
+    },
+    getStudentConsultations: async (studentProfileId) => {
+        return await studentRepository.getStudentConsultations(studentProfileId);
+    },
+    searchConsultations: async (lecturerName) => {
+        return await studentRepository.searchConsultations(lecturerName);
     }
-    
+
 }

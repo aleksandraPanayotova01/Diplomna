@@ -1,9 +1,10 @@
 document.addEventListener("DOMContentLoaded", async function () {
     async function createWeekdaySelect(parentDiv) {
+        console.log("INSIDE WEEKDAY SELECT");
         try {
             const response = await fetch(`/admin/get/weekdays`);
             const weekdays = await response.json();
-
+            console.log(weekdays);
             const weekdayDiv = document.createElement("div");
             weekdayDiv.classList.add("formInput");
 

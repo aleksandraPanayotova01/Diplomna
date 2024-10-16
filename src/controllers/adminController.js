@@ -193,6 +193,25 @@ module.exports = {
             res.status(500).send('Server Error');
         }
     },
+    showLecturersConsultations: async (req, res) => {
+        try {
+            const allConsultations= await adminService.getLecturersConsultations();
+            res.render("admin/reviewLecturerConsultations",{allConsultations});
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Internal Server Error");
+        }
+    },
+    searchConsultations: async (req, res) => {
+        try {
+            const body=req.body;
+            const consultations=await adminService.searchConsultations(body.consultationSearch);
+            res.json(consultations);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Internal Server Error");
+        }
+    },
     showStudentMarksForm1: async (req, res) => {//in admin
         try {
 
@@ -336,25 +355,27 @@ module.exports = {
             res.status(500).send("Internal Server Error");
         }
     },
-    getWeekdays: async (req, res) => {
-        try {
-            // await subjectService.addSubject(subjectInformation);
-            const weekdays = await periodService.getWeekdays();
-            res.json(weekdays);
-        } catch (error) {
-            console.error(error);
-            res.status(500).send("Internal Server Error");
-        }
-    },
-    getRooms: async (req, res) => {
-        try {
-            const rooms = await periodService.getRooms();
-            res.json(rooms);
-        } catch (error) {
-            console.error(error);
-            res.status(500).send("Internal Server Error");
-        }
-    },
+        getWeekdays: async (req, res) => {
+            try {
+                // await subjectService.addSubject(subjectInformation);
+                const weekdays = await periodService.getWeekdays();
+                console.log(weekdays);
+                res.json(weekdays);
+            } catch (error) {
+                console.error(error);
+                res.status(500).send("Internal Server Error");
+            }
+        },
+        getRooms: async (req, res) => {
+            try {
+                const rooms = await periodService.getRooms();
+                console.log(rooms);
+                res.json(rooms);
+            } catch (error) {
+                console.error(error);
+                res.status(500).send("Internal Server Error");
+            }
+        },
     getLecturers: async (req, res) => {
         try {
             const lecturers = await periodService.getLecturers();
