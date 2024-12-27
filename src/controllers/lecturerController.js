@@ -1,5 +1,7 @@
 const lecturerService = require('../services/lecturerService');
 const periodService = require('../services/periodService');
+const studentService = require('../services/studentService');
+const accountService = require('../services/accountService');
 module.exports = {
     showAddConsultationForm: (req, res) => {
         res.render("lecturer/addConsultationForm")//view/filename
@@ -20,11 +22,37 @@ module.exports = {
             res.status(500).send('Error fetching consultations');
         }//view/filename
     },
-    showLecturerAddStudentMarksForm: async (req, res) => {
+    showdeleteConsultations: async (req, res) => {
         try {
             const lecturerProfileId = req.session.lecturer_profile_id; // Adjust if needed
-            // const consultations = await lecturerService.getLecturerConsultations(lecturerProfileId);
-            res.render('lecturer/lecturerAddStudentMarksForm');//, { consultations }
+            const consultations = await lecturerService.getLecturerConsultations(lecturerProfileId);
+            res.render('lecturer/deleteConsultationForm', { consultations });
+        } catch (error) {
+            console.error('Error fetching consultations:', error);
+            res.status(500).send('Error fetching consultations');
+        }//view/filename
+    },
+    deleteConsultation: async (req, res) => {
+        try {
+            // const body = req.body;
+            const { consultationId } = req.body;
+            // console.log(body);
+            if (!consultationId) {
+                return res.status(400).json({ message: "Consultation ID is required." });
+            }
+            // console.log("Consultation info:", consultationInformation);
+            await lecturerService.deleteConsultation(consultationId);
+            res.redirect("/lecturer/deleteConsultation");
+        } catch (error) {
+            console.log(error);
+        }
+
+    },
+    showLecturerAddStudentMarksForm: async (req, res) => {
+        try {
+            const faculties = await accountService.getFaculties();
+            console.log(faculties);
+            res.render('lecturer/lecturerAddStudentMarksForm', { faculties });//, { consultations }
         } catch (error) {
             console.error('Error fetching consultations:', error);
             res.status(500).send('Error fetching consultations');
@@ -41,7 +69,27 @@ module.exports = {
             console.error(error);
             res.status(500).send("Internal Server Error");
         }
-    }, getLecturerProfileInfo: async (req, res) => {
+    },
+    showReviewMarks: async (req, res) => {
+        try {
+            const specialties = await accountService.getSpecialties();
+            const courses = await accountService.getCourses();
+            const groups = await accountService.getGroupNumbers();
+            const groupHalves = await accountService.getGroupHalfs();
+            const studentMarksInfo = {
+                specialties,
+                courses,
+                groups,
+                groupHalves
+            }//facNums added dynamicaly after geting groupHalfId
+            console.log(studentMarksInfo);
+            res.render("lecturer/reviewMarksForm", { studentMarksInfo });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Internal Server Error");
+        }
+    },
+    getLecturerProfileInfo: async (req, res) => {
         const lecturerProfileId = req.session.lecturer_profile_id;
         const lecturerProfileInfo = await periodService
             .getLecturerProfileInfo(lecturerProfileId);
@@ -71,13 +119,6 @@ module.exports = {
     },
     getLecturerConsultations: async (req, res) => {
         try {
-            // const body = req.body;
-            // const lecturerProfileId = req.session.lecturer_profile_id;
-            // const consultationsLecturer = await lecturerService
-            //     .getLecturerConsultations(lecturerProfileId);
-            // res.json(consultationsLecturer);
-            // console.log(consultationsLecturer);
-            // console.log(body);
             const lecturerProfileId = req.session.lecturer_profile_id; // Adjust as needed
             const consultations = await lecturerService.getLecturerConsultations(lecturerProfileId);
             res.json(consultations);
@@ -149,15 +190,82 @@ module.exports = {
     addMark: async (req, res) => {
         try {
             // const lecturerId = req.session.lecturer_profile_id;
-            const { subject, group, facultyNumber, grade } = req.body;
-            await lecturerService
-                .addMark(subject, group, facultyNumber, grade);
+            const body = req.body;
+            markInformation = {
+                semester: body.selectCourse,
+                groupNumber: body.selectGroup,
+                groupHalf: body.selectGroupHalf,
+                subject: body.selectSubject,//subject id
+                facNum: body.facultyNumbersSelect,
+                mark: body.selectMarks
+            }
+            console.log(markInformation);
+            await studentService.addMark(markInformation);
             res.redirect("/lecturer/add/marks");
         } catch (error) {
             console.error(error);
             res.status(500).send("Internal Server Error");
         }
+    }, getMarks: async (req, res) => {
+        try {
+            const marks = await studentService.getMarks();
+            res.json(marks);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Internal Server Error");
+        }
     },
+    getSpecialties: async (req, res) => {//controller name
+        try {
+            const specialties = await accountService.getSpecialties();//service name
+            // console.log(specialties);
+            res.json(specialties);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Internal Server Error");
+        }
+    },
+    getDepartments: async (req, res) => {//controller name
+        try {
 
+            const departments = await accountService.getDepartments();//service name
 
+            res.json(departments);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Internal Server Error");
+        }
+    },
+    getGroupHalfs: async (req, res) => {
+        try {
+            const { specialty_id, course } = req.body; // Extract specialty_id and course from request body
+
+            if (!specialty_id || !course) {
+                return res.status(400).json({ error: "Specialty ID and course are required." });
+            }
+
+            console.log(`Specialty ID: ${specialty_id}, Course: ${course}`);
+
+            // Fetch group halves using specialty_id and course
+            const groupHalfs = await periodService.getGroupHalfs(specialty_id, course);
+
+            if (groupHalfs.length === 0) {
+                return res.status(404).json({ message: "No group halves found for this specialty and course." });
+            }
+
+            res.json(groupHalfs);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Internal Server Error");
+        }
+    },
+    getFacultyNumbers: async (req, res) => {
+        try {
+            const fac_nums = await studentService.getFacNums(req.body.groupHalfId);
+            res.json(fac_nums);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Internal Server Error");
+        }
+    },
 }

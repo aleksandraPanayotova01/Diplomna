@@ -7,6 +7,9 @@ module.exports = {
     getFaculties: async () => {
         return await adminRepository.getFaculties();
     },
+    getUserInfo: async (username) => {
+        return await adminRepository.getUserInfo(username);
+    },
     registerStudent: async (userInformation) => {
         const checkIfUserExists = await adminRepository.checkIfUserExists(userInformation.username);
         if (!checkIfUserExists) {
@@ -31,12 +34,21 @@ module.exports = {
         } else {
             return "Username and password taken";
         }
-    },getLecturersConsultations: async () => {
+    }, getLecturersConsultations: async () => {
         return await adminRepository.getConsultations();
     },
 
     searchConsultations: async (lecturerName) => {
         return await adminRepository.searchConsultations(lecturerName);
     },
+    updateStatus: async (profileInformation) => {
+        return await adminRepository.updateStatus(profileInformation);
+    },
+    searchSubjects: async (subjectName) => {
+        return await adminRepository.searchSubjects(subjectName);
+    },
+    searchSubjectsSpecialty: async (subjectSearch) => {
+        return await adminRepository.searchSubjectsSpecialty(subjectSearch);
+    }
 
 }

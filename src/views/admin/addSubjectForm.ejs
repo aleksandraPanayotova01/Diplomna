@@ -8,32 +8,94 @@
     <link rel="stylesheet" href="/css/formsStyles.css" />
     <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
     <title>Форма за добавяне на предмет</title>
+
 </head>
 
 <body>
     <div class="section-addSubject">
         <%- include('../partials/adminHeader') %>
             <%- include('../partials/flashMessages') %>
-            <div class="page-content">
-                <form id="addSubjectForm" action="/admin/add/subject" method="POST">
-                    <h1>Добавяне на предмет</h1>
-                    <div class="formInput">
-                        <label for="subjectName">Име на предмета</label>
-                        <input id="subjectName" name="subjectName" type="text" required>
-                    </div>
-                    <div class="formInput">
-                        <label for="subjectAbbreviation">Съкращение на името на предмета</label>
-                        <input id="subjectAbbreviation" name="subjectAbbreviation" type="text" required>
-                    </div>
-                    <div>
-                        <input class='submit' type="submit" name="submit" value="Добавяне">
-                    </div>
-                </form>
-            </div>
+                <div class="page-content">
+                    <form id="addSubjectForm" action="/admin/add/subject" method="POST">
+                        <h1>Добавяне на предмет</h1>
+                        <div class="formInput">
+                            <label for="subjectName">Име на предмета</label>
+                            <input id="subjectName" name="subjectName" type="text" required>
+                        </div>
+                        <div class="formInput">
+                            <label for="subjectAbbreviation">Съкращение на името на предмета</label>
+                            <input id="subjectAbbreviation" name="subjectAbbreviation" type="text" required>
+                        </div>
+                        <div class="formInput">
+
+                            <label for="selectSpecialty">Специалност</label>
+                            <select id="selectSpecialty" name="selectSpecialty" required>
+                                <option value="none" selected disabled hidden>Изберете специалност</option>
+                            </select>
+                        </div>
+                        <div>
+                            <input class='submit' type="submit" name="submit" value="Добавяне">
+                        </div>
+                    </form>
+                </div>
     </div>
-    <!-- <script src="\js\addStudentFormSelects.js"></script> -->
-    <!-- <script src="\js\addLecturerSelects.js"></script> -->
-    <!-- <script src="\js\addLecturerToSubject.js"></script> -->
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const dropdown = document.getElementById("selectSpecialty");
+            const submitButton = document.querySelector(".submit");
+
+            dropdown.addEventListener("focus", () => {
+                submitButton.style.marginTop = "20px"; // Добавя margin при фокусиране
+            });
+
+            dropdown.addEventListener("blur", () => {
+                submitButton.style.marginTop = "10px"; // Връща оригиналния margin при загуба на фокус
+            });
+        });
+
+        // Функция за извличане на специалности
+        const getSpecialties = async () => {
+            try {
+                const response = await fetch(`/admin/get/specialties`, {
+                    method: "GET",
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (!response.ok) {
+                    console.error("Failed to fetch specialties. Status:", response.status);
+                    return [];
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error('Error fetching specialties:', error);
+                return [];
+            }
+        };
+
+        // Функция за попълване на dropdown менюто
+        const populateSpecialtiesDropdown = async () => {
+            const selectSpecialty = document.getElementById("selectSpecialty");
+            const specialties = await getSpecialties();
+
+            if (specialties.length === 0) {
+                console.warn("No specialties found.");
+                return;
+            }
+
+            specialties.forEach(specialty => {
+                const option = document.createElement("option");
+                option.value = specialty.specialty_id; // Assuming the JSON contains `specialty_id`
+                option.textContent = specialty.specialty_name; // Assuming the JSON contains `specialty_name`
+                selectSpecialty.appendChild(option);
+            });
+        };
+
+        // Populate the dropdown on page load
+        window.addEventListener("DOMContentLoaded", populateSpecialtiesDropdown);
+    </script>
+
 </body>
 
 </html>

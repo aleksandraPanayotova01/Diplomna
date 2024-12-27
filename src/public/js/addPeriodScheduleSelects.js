@@ -1,17 +1,22 @@
 document.addEventListener("DOMContentLoaded", async function () {
-    const getGroupHalfs = async (specialty, course) => {
-        console.log(course)
+    async function getGroupHalfs(specialtyId, courseNumber) {
         try {
-            const response = await fetch(`/admin/get/groupHalfs`, {
-                method: "POST",
-                body: JSON.stringify({ specialty, course }),
-                headers: { 'Content-Type': 'application/json' }
+            const response = await fetch('/admin/get/groupHalfs', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ specialty_id: specialtyId, course: courseNumber })
             });
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch group halves");
+            }
+
             return await response.json();
         } catch (error) {
-            console.error('Error fetching group halves:', error);
+            console.error("Error fetching group halves:", error);
+            return [];
         }
-    };
+    }
 
 
     async function fetchAndCreateSubjectSelect(groupHalfId) {
@@ -54,96 +59,91 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         console.log(groupHalfs);
     });
-
     function createGroupHalfInputs(groupHalfs) {
         const form = document.querySelector("#addPeriodScheduleForm");
+        const existingGroupHalfsDiv = form.querySelector('.formInput.groupHalfs');
+        if (existingGroupHalfsDiv) existingGroupHalfsDiv.remove();
 
-        // Remove existing elements
-        const existingGroupNumberDiv = form.querySelector('.formInput.groupNumber');
-        if (existingGroupNumberDiv) existingGroupNumberDiv.remove();
+        const groupHalfsDiv = document.createElement("div");
+        groupHalfsDiv.classList.add("formInput", "groupHalfs");
 
-        const existingGroupHalfDiv = form.querySelector('.formInput.groupHalf');
-        if (existingGroupHalfDiv) existingGroupHalfDiv.remove();
+        const labelGroupHalfSelect = document.createElement('label');
+        labelGroupHalfSelect.textContent = "За половинки";
+        groupHalfsDiv.appendChild(labelGroupHalfSelect);
 
-        // Create and append the group number select
-        const groupNumberDiv = document.createElement("div");
-        groupNumberDiv.classList.add("formInput", "groupNumber");
-
-        const labelGroupNumberSelect = document.createElement('label');
-        labelGroupNumberSelect.textContent = "Група";
-        groupNumberDiv.appendChild(labelGroupNumberSelect);
-
-        const groupNumberSelect = document.createElement('select');
-        groupNumberSelect.name = "selectGroup";
-        groupNumberSelect.classList.add("selectGroup");
-        groupNumberDiv.appendChild(groupNumberSelect);
+        const groupHalfSelect = document.createElement('select');
+        groupHalfSelect.name = "selectGroupHalf";
+        groupHalfSelect.classList.add("selectGroupHalf");
+        groupHalfsDiv.appendChild(groupHalfSelect);
 
         const defaultOption = document.createElement('option');
-        defaultOption.textContent = "Изберете група";
+        defaultOption.textContent = "Изберете половинка";
         defaultOption.value = "";
         defaultOption.disabled = true;
         defaultOption.selected = true;
-        groupNumberSelect.appendChild(defaultOption);
+        groupHalfSelect.appendChild(defaultOption);
 
-        const uniqueGroupNumbers = [...new Set(groupHalfs.map(gh => gh.group_number))];
-        for (const groupNumber of uniqueGroupNumbers) {
-            const groupNumberOption = document.createElement('option');
-            groupNumberOption.textContent = groupNumber;
-            groupNumberOption.value = groupNumber;
-            groupNumberSelect.appendChild(groupNumberOption);
+        // Populating the group halves options
+        for (const groupHalf of groupHalfs) {
+            const groupHalfOption = document.createElement('option');
+            groupHalfOption.textContent = `${groupHalf.group_number} ${groupHalf.group_half_letter}`;
+            groupHalfOption.value = groupHalf.group_half_id;
+            groupHalfSelect.appendChild(groupHalfOption);
         }
 
-        form.appendChild(groupNumberDiv);
+        form.appendChild(groupHalfsDiv);
 
-        groupNumberSelect.addEventListener("change", function () {
-            const selectedGroupNumber = groupNumberSelect.value;
-            createGroupHalfInput(groupHalfs, selectedGroupNumber);
+        // Adding event listener for group half change
+        groupHalfSelect.addEventListener("change", async function () {
+            const selectedGroupHalfId = groupHalfSelect.value;
+            fetchAndCreateSubjectSelect(selectedGroupHalfId);
         });
     }
 
-    function createGroupHalfInput(groupHalfs, selectedGroupNumber) {
-        const form = document.querySelector("#addPeriodScheduleForm");
 
-        const existingGroupHalfDiv = form.querySelector('.formInput.groupHalf');
-        if (existingGroupHalfDiv) existingGroupHalfDiv.remove();
+    // function createGroupHalfInput(groupHalfs, selectedGroupNumber) {
+    //     const form = document.querySelector("#addPeriodScheduleForm");
 
-        const filteredGroupHalfs = groupHalfs.filter(gh => gh.group_number === Number(selectedGroupNumber));
+    //     const existingGroupHalfDiv = form.querySelector('.formInput.groupHalf');
+    //     if (existingGroupHalfDiv) existingGroupHalfDiv.remove();
 
-        if (filteredGroupHalfs.length > 0) {
-            const groupHalfDiv = document.createElement("div");
-            groupHalfDiv.classList.add("formInput", "groupHalf");
+    //     const filteredGroupHalfs = groupHalfs.filter(gh => gh.group_number === Number(selectedGroupNumber));
 
-            const labelGroupHalfSelect = document.createElement('label');
-            labelGroupHalfSelect.textContent = "Половинка";
-            groupHalfDiv.appendChild(labelGroupHalfSelect);
+    //     if (filteredGroupHalfs.length > 0) {
+    //         const groupHalfDiv = document.createElement("div");
+    //         groupHalfDiv.classList.add("formInput", "groupHalf");
 
-            const groupHalfSelect = document.createElement('select');
-            groupHalfSelect.name = "selectGroupHalf";
-            groupHalfSelect.classList.add("selectGroupHalf");
-            groupHalfDiv.appendChild(groupHalfSelect);
+    //         const labelGroupHalfSelect = document.createElement('label');
+    //         labelGroupHalfSelect.textContent = "Половинка";
+    //         groupHalfDiv.appendChild(labelGroupHalfSelect);
 
-            const defaultOption = document.createElement('option');
-            defaultOption.textContent = "Изберете половинка";
-            defaultOption.value = "";
-            defaultOption.disabled = true;
-            defaultOption.selected = true;
-            groupHalfSelect.appendChild(defaultOption);
+    //         const groupHalfSelect = document.createElement('select');
+    //         groupHalfSelect.name = "selectGroupHalf";
+    //         groupHalfSelect.classList.add("selectGroupHalf");
+    //         groupHalfDiv.appendChild(groupHalfSelect);
 
-            for (const groupHalf of filteredGroupHalfs) {
-                const groupHalfOption = document.createElement('option');
-                groupHalfOption.textContent = groupHalf.group_half_letter;
-                groupHalfOption.value = groupHalf.group_half_id;
-                groupHalfSelect.appendChild(groupHalfOption);
-            }
+    //         const defaultOption = document.createElement('option');
+    //         defaultOption.textContent = "Изберете половинка";
+    //         defaultOption.value = "";
+    //         defaultOption.disabled = true;
+    //         defaultOption.selected = true;
+    //         groupHalfSelect.appendChild(defaultOption);
 
-            form.appendChild(groupHalfDiv);
+    //         for (const groupHalf of filteredGroupHalfs) {
+    //             const groupHalfOption = document.createElement('option');
+    //             groupHalfOption.textContent = groupHalf.group_half_letter;
+    //             groupHalfOption.value = groupHalf.group_half_id;
+    //             groupHalfSelect.appendChild(groupHalfOption);
+    //         }
 
-            groupHalfSelect.addEventListener("change", function () {
-                const selectedGroupHalfId = groupHalfSelect.value;
-                fetchAndCreateSubjectSelect(selectedGroupHalfId);
-            });
-        }
-    }
+    //         form.appendChild(groupHalfDiv);
+
+    //         groupHalfSelect.addEventListener("change", function () {
+    //             const selectedGroupHalfId = groupHalfSelect.value;
+    //             fetchAndCreateSubjectSelect(selectedGroupHalfId);
+    //         });
+    //     }
+    // }
 
     function createSubjectSelect(subjectsHalf) {
         const form = document.querySelector("#addPeriodScheduleForm");

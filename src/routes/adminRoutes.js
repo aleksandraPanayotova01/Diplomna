@@ -40,6 +40,38 @@ router
     .get(adminController.showAddSubjectForm)
     .post(adminController.addSubjectName)
 router
+    .route("/getUserInfo")
+    .all(checkUser.checkIfAdminIsLogged)
+    .post(adminController.getUserInfo)
+router
+    .route("/get/halfSubjects")
+    .all(checkUser.checkIfAdminIsLogged)
+    .post(adminController.getGroupHalfSubjects)
+
+router
+    .route("/update/status")
+    .all(checkUser.checkIfAdminIsLogged)
+    .get(adminController.showUpdateStatusForm)
+    .post(adminController.updateStatus)
+router
+    .route("/update/subject")
+    .all(checkUser.checkIfAdminIsLogged)
+    .get(adminController.updateSubjectForm)
+    .post(adminController.updateSubjectName)
+router
+    .route("/search/subjects")
+    .all(checkUser.checkIfAdminIsLogged)
+    .post(adminController.searchSubject)
+router
+    .route("/search/subjectsSpecialty")
+    .all(checkUser.checkIfAdminIsLogged)
+    .post(adminController.searchSubjectSpecialty)
+router
+    .route("/delete/subject")
+    .all(checkUser.checkIfAdminIsLogged)
+    .get(adminController.deleteSubjectForm)
+    .post(adminController.deleteSubjectName)
+router
     .route("/add/subjectToHalfs")
     .all(checkUser.checkIfAdminIsLogged)
     .get(adminController.showAddSubjectToHalfsForm)
@@ -54,6 +86,11 @@ router
     .all(checkUser.checkIfAdminIsLogged)
     .get(adminController.showAddStudentMarksForm)
     .post(adminController.addMark);
+router
+    .route("/update/marks")
+    .all(checkUser.checkIfAdminIsLogged)
+    .get(adminController.showUpdateMarkForm)
+    .post(adminController.updateMark);
 router
     .route("/get/departments")
     .all(checkUser.checkIfAdminIsLogged)
@@ -127,6 +164,11 @@ router
     .all(checkUser.checkIfAdminIsLogged)
     .get(adminController.showLecturersConsultations)
     .post(adminController.searchConsultations);
+router
+    .route("/review/curriculums")
+    .all(checkUser.checkIfAdminIsLogged)
+    .get(adminController.showCurriculums)
+    .post(adminController.searchCurriculums);
 
 // .post(adminController.searchConsultations);
 

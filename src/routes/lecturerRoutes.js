@@ -13,7 +13,11 @@ router
     .route("/showConsultations")
     .all(checkUser.checkIfLecturerIsLogged)
     .get(lecturerController.showConsultations)
-
+router
+    .route("/deleteConsultation")
+    .all(checkUser.checkIfLecturerIsLogged)
+    .get(lecturerController.showdeleteConsultations)
+    .post(lecturerController.deleteConsultation);
 router
     .route("/get/consultations")
     .all(checkUser.checkIfLecturerIsLogged)
@@ -46,11 +50,24 @@ router
     .all(checkUser.checkIfLecturerIsLogged)
     .get(lecturerController.showLecturerAddStudentMarksForm)
     .post(lecturerController.addMark);
+router
+    .route("/get/marks")
+    .all(checkUser.checkIfLecturerIsLogged)
+    .get(lecturerController.getMarks)
+router
+    .route("/get/specialties")
+    .all(checkUser.checkIfLecturerIsLogged)
+    .get(lecturerController.getSpecialties)
+
 
 router
     .route("/get/subjects")
     .all(checkUser.checkIfLecturerIsLogged)
     .get(lecturerController.getLecturerSubjects);
+router
+    .route("/review/marks")
+    .all(checkUser.checkIfLecturerIsLogged)
+    .get(lecturerController.showReviewMarks);
 router
     .route("/get/groups/:subjectId")
     .all(checkUser.checkIfLecturerIsLogged)
@@ -59,4 +76,20 @@ router
     .route("/get/groupfacNums/:groupHalf")
     .all(checkUser.checkIfLecturerIsLogged)
     .get(lecturerController.getGroupFacNums);
+router
+    .route("/get/departments")
+    .all(checkUser.checkIfLecturerIsLogged)
+    .get(lecturerController.getDepartments);
+router
+    .route("/get/specialties")
+    .all(checkUser.checkIfLecturerIsLogged)
+    .get(lecturerController.getSpecialties);
+router
+    .route("/get/groupHalfs")
+    .all(checkUser.checkIfLecturerIsLogged)
+    .post(lecturerController.getGroupHalfs);
+router
+    .route("/get/facultyNumbers")
+    .all(checkUser.checkIfLecturerIsLogged)
+    .post(lecturerController.getFacultyNumbers)
 module.exports = router;

@@ -7,8 +7,8 @@
     <link rel="stylesheet" href="/css/common.css" />
     <link rel="stylesheet" href="/css/formsStyles.css" />
     <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
-    <title>Преглед на оценки на студенти</title>
-    <script>
+    <title>Преглед на оценки на студенти по половинка</title>
+    <!-- <script>
 
         async function fetchAndCreateFacNums() {
             try {
@@ -86,16 +86,16 @@
             errorDiv.textContent = message;
             form.appendChild(errorDiv);
         }
-    </script>
+    </script> -->
 </head>
 
 <body>
-    <%- include('../partials/adminHeader') %>
+    <%- include('../partials/lecturerHeader') %>
 
         <div class="container page-content">
-            <h1>Преглед на оценки на студенти</h1>
+            <h1>Преглед на оценки на студенти по половинка</h1>
 
-            <form id="addMarkForm" method="POST" action="/admin/review/studentMarks">
+            <form id="addMarkForm" method="POST" action="/lecturer/add/marks">
                 <div class="formInput">
                     <label for="specialtySelect">Специалност</label>
                     <select name="specialty" id="specialtySelect" required>

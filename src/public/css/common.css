@@ -192,6 +192,10 @@ body {
     color: #555;
 }
 
+#statusSection label {
+    color: black;
+}
+
 .formInput input[type="text"],
 .formInput input[type="time"],
 .formInput input[type="password"],
@@ -253,6 +257,30 @@ body {
 .submitLoginForm :hover,
 .submit:hover {
     background-color: #0404065e;
+    color: black;
+    border: 1px solid black;
+}
+
+.signButton:disabled,
+.submitLoginForm:disabled,
+.submit:disabled {
+    background-color: #ccc;
+    /* Light gray background for disabled state */
+    color: black;
+    /* Dark gray text */
+    cursor: not-allowed;
+    /* Changes cursor to indicate it's disabled */
+    border: 1px solid black;
+    /* Subtle border for disabled look */
+    opacity: 0.7;
+    /* Makes the button appear faded */
+}
+
+.signButton:hover:disabled,
+.submitLoginForm:hover:disabled,
+.submit:hover:disabled {
+    background-color: #ccc;
+    /* No hover effect on disabled buttons */
     color: black;
     border: 1px solid black;
 }

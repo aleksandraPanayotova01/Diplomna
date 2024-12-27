@@ -19,8 +19,14 @@ module.exports = {
     addMark: async (markInformation) => {
         return await studentRepository.addMark(markInformation);
     },
+    updateMark: async (markInformation) => {
+        return await studentRepository.updateMark(markInformation);
+    },
     getFacNums: async (groupHalfId) => {
         return await studentRepository.getFacNums(groupHalfId);
+    },
+    getSubjectsHalf: async (groupHalfId) => {
+        return await studentRepository.getSubjectsHalf(groupHalfId);
     },
     getStudentMarks: async (studentProfileId) => {
         return await studentRepository.getStudentMarks(studentProfileId);

@@ -162,13 +162,14 @@ module.exports = {
     getStudentProfile: async (username) => {//when doing a student login
         try {
             const [result] = await pool.query(`
-                SELECT sp.student_profile_id, p.profile_id, p.profile_password,p.profile_status_id_fk
+                SELECT sp.student_profile_id, p.profile_id,
+                 p.profile_password,p.profile_status_id_fk
                 FROM student_profile sp
                 INNER JOIN profile p
                 ON p.profile_id=sp.profile_id_fk
                 WHERE p.profile_username = ?
-                 AND p.profile_status_id_fk=?
-            `, [username, '1']);
+              
+            `, [username]);
 
             return result[0];
         } catch (err) {
@@ -186,8 +187,7 @@ module.exports = {
                 INNER JOIN profile p
                 ON p.profile_id=lp.profile_id_fk
                 WHERE p.profile_username = ?
-                AND p.profile_status_id_fk=?
-            `, [username, '1']);
+            `, [username]);
 
             return result[0];
         } catch (err) {
@@ -203,9 +203,8 @@ module.exports = {
                 FROM admin_profile ap
                 INNER JOIN profile p
                 ON p.profile_id=ap.profile_id_fk
-                WHERE p.profile_username = ?
-                AND p.profile_status_id_fk=?
-            `, [username, '1']);
+                WHERE p.profile_username=?    
+            `, [username]);
             return result[0];
         } catch (err) {
             console.error(err);

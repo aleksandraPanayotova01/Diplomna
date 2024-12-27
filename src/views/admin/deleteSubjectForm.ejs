@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <title>Форма за изтриване на предмет</title>
+</head>
+
+<body>
+    <div class="section-addSubject">
+        <%- include('../partials/adminHeader') %>
+            <%- include('../partials/flashMessages') %>
+                <div class="page-content">
+                    <form id="deleteSubjectForm" action="/admin/delete/subject" method="POST">
+                        <h1>Изтриване на предмет</h1>
+                        <div class="formInput">
+                            <div class="dropdown-container">
+                                <label for="specialtyDropdown">Изберете специалност:</label>
+                                <select id="specialtyDropdown" name="specialtyId" required>
+                                    <option value="">-- Изберете специалност --</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="formInput">
+                            <div class="dropdown-container">
+                                <label for="subjectsDropdown">Изберете предмет:</label>
+                                <select id="subjectsDropdown" name="subjectId" disabled>
+                                    <option value="">-- Няма избрана специалност --</option>
+                                </select>
+                                <!-- Hidden fields to store the subject name and abbreviation -->
+                                <input type="hidden" id="subjectName" name="subjectName">
+                                <input type="hidden" id="subjectAbbreviation" name="subjectAbbreviation">
+                            </div>
+                        </div>
+                        <div>
+                            <input class='submit' type="submit" name="submit" value="Изтриване" disabled>
+                        </div>
+
+                    </form>
+                </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const specialtyDropdown = document.getElementById("specialtyDropdown");
+            const subjectsDropdown = document.getElementById("subjectsDropdown");
+            const submitButton = document.querySelector('.submit');
+            const subjectNameInput = document.getElementById("subjectName");
+            const subjectAbbreviationInput = document.getElementById("subjectAbbreviation");
+            // Fetch specialties from the server
+            const getSpecialties = async () => {
+                try {
+                    const response = await fetch(`/admin/get/specialties`, {
+                        method: "GET",
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+
+                    if (!response.ok) {
+                        console.error("Failed to fetch specialties. Status:", response.status);
+                        alert("Неуспешно зареждане на специалности. Моля, опитайте по-късно.");
+                        return [];
+                    }
+
+                    const specialties = await response.json();
+                    if (!Array.isArray(specialties)) {
+                        console.error("Unexpected response format:", specialties);
+                        alert("Неочакван отговор от сървъра.");
+                        return [];
+                    }
+
+                    return specialties;
+                } catch (error) {
+                    console.error('Error fetching specialties:', error);
+                    alert("Грешка при зареждане на специалности.");
+                    return [];
+                }
+            };
+
+            // Populate specialties dropdown
+            const populateSpecialtiesDropdown = async () => {
+                const specialties = await getSpecialties();
+
+                if (specialties.length === 0) {
+                    console.warn("No specialties found.");
+                    specialtyDropdown.innerHTML = `<option value="">-- Няма налични специалности --</option>`;
+                    return;
+                }
+
+                specialties.forEach(specialty => {
+                    const option = document.createElement("option");
+                    option.value = specialty.specialty_id; // Ensure this matches your backend
+                    option.textContent = specialty.specialty_name; // Ensure this matches your backend
+                    specialtyDropdown.appendChild(option);
+                });
+            };
+
+            // Load subjects based on the selected specialty
+            // Populate subjects dropdown
+            const loadSubjectsBySpecialty = async (specialtyId) => {
+                try {
+                    const response = await fetch(`/admin/search/subjectsSpecialty`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ subjectSearch: specialtyId })
+                    });
+
+                    const data = await response.json();
+                    subjectsDropdown.innerHTML = ""; // Clear old options
+                    const defaultOption = document.createElement("option");
+                    //default option
+                    defaultOption.value = "";
+                    defaultOption.textContent = "-- Изберете предмет --";
+                    subjectsDropdown.appendChild(defaultOption);
+
+                    if (data.subjects && data.subjects.length > 0) {
+                        data.subjects.forEach(subject => {
+                            const option = document.createElement("option");
+                            option.value = subject.subject_id; // Store the subject_id
+                            option.textContent = subject.subject_name; // Display subject name
+                            option.setAttribute('data-abbreviation', subject.subject_abbreviation); // Store abbreviation in data attribute
+                            option.setAttribute('data-name', subject.subject_name); // Store name in data attribute
+                            subjectsDropdown.appendChild(option);
+                        });
+                        subjectsDropdown.disabled = false; // Enable dropdown
+                    } else {
+                        subjectsDropdown.innerHTML = `<option value="">-- Няма налични предмети --</option>`;
+                        subjectsDropdown.disabled = true; // Disable dropdown
+                    }
+                } catch (error) {
+                    console.error("Error fetching subjects:", error);
+                    alert("Грешка при зареждане на предмети.");
+                }
+            };
+
+            // Handle subject selection
+                subjectsDropdown.addEventListener('change', function () {
+                    const selectedOption = subjectsDropdown.options[subjectsDropdown.selectedIndex];
+                    if (selectedOption && selectedOption.value) {
+                        // Set hidden fields for name and abbreviation
+                        subjectNameInput.value = selectedOption.getAttribute('data-name');
+                        subjectAbbreviationInput.value = selectedOption.getAttribute('data-abbreviation');
+                        submitButton.disabled = false; // Enable the submit button
+                    } else {
+                        subjectNameInput.value = "";
+                        subjectAbbreviationInput.value = "";
+                        submitButton.disabled = true; // Disable the submit button if no subject is selected
+                    }
+                });
+
+                // Listen for specialty dropdown changes
+                specialtyDropdown.addEventListener("change", function () {
+                    const selectedSpecialtyId = specialtyDropdown.value;
+                    if (selectedSpecialtyId) {
+                        loadSubjectsBySpecialty(selectedSpecialtyId);
+                    } else {
+                        subjectsDropdown.innerHTML = `<option value="">-- Няма избрана специалност --</option>`;
+                        subjectsDropdown.disabled = true;
+                        submitButton.disabled = true;
+                    }
+                });
+            // Initial load of specialties
+            populateSpecialtiesDropdown();
+        });
+    </script>
+
+</body>
+
+</html>

@@ -135,7 +135,7 @@ module.exports = {
     getLecturers: async () => {
         return await accountRepository.getLecturers();
     },
-    getAdminProfileInfo:async(profileId)=>{
+    getAdminProfileInfo: async (profileId) => {
         return await accountRepository.getAdminProfileInfo(profileId);
     },
     getScheduleByGroup: async (groupHalfId) => {
@@ -143,14 +143,13 @@ module.exports = {
     },
     getScheduleByLecturer: async (lecturer) => {
         return await accountRepository.getScheduleByLecturer(lecturer);
-      
+
     },
-    getGroupHalfId: async (groupHalfInfo)=> 
-        {
-            return await accountRepository.getGroupHalfId(groupHalfInfo); 
-        }, 
-    
-    
+    getGroupHalfId: async (groupHalfInfo) => {
+        return await accountRepository.getGroupHalfId(groupHalfInfo);
+    },
+
+
 
 
 

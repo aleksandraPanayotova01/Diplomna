@@ -83,14 +83,20 @@ document.addEventListener("DOMContentLoaded", async function () {
             if (specialty.department_abbreviation === department) {
                 const specialtyOption = document.createElement('option');
                 specialtyOption.textContent = `${specialty.specialty_name}`;// (${specialty.specialty_abbreviation})
+                specialtyOption.value = specialty.specialty_id;
                 specialtiesInDepartment.appendChild(specialtyOption);
 
             }
         }
     };
 
-    function createCoursesOptions(specialty) {
-        const result = specialties.find(s => s.specialty_name === specialty);
+    function createCoursesOptions(specialtyId) {
+        const result = specialties.find(s => s.specialty_id == specialtyId);
+        if (!result) {
+            console.error('Specialty not found');
+            return;
+        }
+
         const duration = parseInt(result.specialty_semesters, 10);
 
         coursesSelect.innerHTML = '';
@@ -114,6 +120,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             console.error('Invalid duration data');
         }
     }
+
 
 
 

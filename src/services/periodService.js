@@ -20,8 +20,8 @@ module.exports = {
     getStudentGroupAndHalf: async (studentProfileId) => {
         return await periodRepository.getStudentGroupAndHalf(studentProfileId);
     },
-    getGroupHalfs: async (groupSpecialtyName, courseNumber) => {//,
-        return await periodRepository.getGroupHalfs(groupSpecialtyName, courseNumber);//,courseNumber
+    getGroupHalfs: async (specialty_id, course) => {//,
+        return await periodRepository.getGroupHalfs(specialty_id, course);//,courseNumber
     },
     getSubjectsHalf: async (groupHalfId) => {
         return await periodRepository.getSubjectsHalf(groupHalfId);

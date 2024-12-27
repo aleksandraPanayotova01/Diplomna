@@ -11,7 +11,7 @@
     <!-- <link rel="stylesheet" href="/css/consultations.css" /> -->
     <title>Консултации</title>
     <style>
-        /* Add your styles here */
+     
         .container {
             padding: 20px;
             max-width: 1200px;
@@ -53,7 +53,7 @@
                     </thead>
                     <tbody>
                         <% consultations.forEach(consultation=> { %>
-                            <tr>
+                            <tr data-id="<%= consultation.consultation_id %>">
                                 <td>
                                     <%= consultation.weekday_name %>
                                 </td>

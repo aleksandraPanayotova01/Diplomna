@@ -1,37 +1,37 @@
 const { pool } = require("../db-config");
 module.exports = {
-    checkIfSubjectExists: async (subjectName) => {
+    checkIfSubjectExists: async (subjectInformation) => {
         try {
-            const [result] = await pool.query(`
-                SELECT * FROM subject WHERE subject_name=?`, [subjectName]);
-            if (result.length === 0) {
-                return false;
-            }
-            else {
-                return true;
-            }
+            const [rows] = await pool.query(`
+                SELECT * FROM subject 
+                WHERE (subject_name = ? OR subject_abbreviation = ?) 
+                AND specialty_id_fk = ?
+            `, [subjectInformation.subjectName,
+            subjectInformation.subjectAbbreviation,
+            subjectInformation.specialtyId]);
+            return rows.length > 0; // Връща true, ако записът съществува
         } catch (err) {
-            console.error(err);
-            throw (err);
+            console.error('Error checking if subject exists:', err);
+            throw err;
         }
     },
-    createSubject: async (subjectInformation) => {
-        const connection = await pool.getConnection();
-        try {
-            await connection.beginTransaction();
-            await pool.query(`
-                INSERT INTO subject(subject_name,subject_abbreviation)
-                VALUES (?,?)`, [subjectInformation.subjectName, subjectInformation.subjectAbbreviation]);
+    // createSubject: async (subjectInformation) => {
+    //     const connection = await pool.getConnection();
+    //     try {
+    //         await connection.beginTransaction();
+    //         await pool.query(`
+    //             INSERT INTO subject(subject_name,subject_abbreviation)
+    //             VALUES (?,?)`, [subjectInformation.subjectName, subjectInformation.subjectAbbreviation]);
 
-            await connection.commit();
-        } catch (err) {
-            await connection.rollback();//
-            console.error(err);
-            throw (err);//
-        } finally {
-            connection.release();//
-        }
-    },
+    //         await connection.commit();
+    //     } catch (err) {
+    //         await connection.rollback();//
+    //         console.error(err);
+    //         throw (err);//
+    //     } finally {
+    //         connection.release();//
+    //     }
+    // },
     addSubjectToHalf: async (subjectInformation) => {
         try {
             const getSubjectId = await pool.query(`
@@ -67,15 +67,58 @@ module.exports = {
         }
     }, addSubjectName: async (subjectInformation) => {
         try {
+            console.log("Adding: ", subjectInformation.subjectName,
+                subjectInformation.subjectAbbreviation,
+                subjectInformation.specialtyId);
             await pool.query(`
-                INSERT INTO subject(subject_name,subject_abbreviation)
-                VALUES(?,?)
+                INSERT INTO subject(subject_name,subject_abbreviation,is_active,specialty_id_fk)
+                VALUES(?,?,1,?)
                 `, [subjectInformation.subjectName,
-            subjectInformation.subjectAbbreviation])
+            subjectInformation.subjectAbbreviation,
+            subjectInformation.specialtyId])
         }
         catch (err) {
             console.error('Error fetching periods for student:', err);
             throw err;
         };
-    }
+    }, updateSubjectName: async (subjectInformation) => {
+        try {
+            await pool.query(`
+                UPDATE subject
+                SET subject_name = ?, subject_abbreviation = ?
+                WHERE subject_name = ?
+            `, [subjectInformation.newName, subjectInformation.newAbbreviation,
+            subjectInformation.oldName]);
+            // await pool.query(`
+            //     UPDATE subject
+            //     SET subject_name = ?, subject_abbreviation = ?
+            //     WHERE subject_name = ? AND specialty_id_fk=?
+            // `, [subjectInformation.newName, subjectInformation.newAbbreviation,
+            //      subjectInformation.oldName,subjectInformation.specialtyId]);
+
+            console.log(`Subject name updated from ${subjectInformation.oldName} to ${subjectInformation.newName}`);
+        } catch (err) {
+            console.error('Error updating subject name:', err);
+            throw err;  // Re-throw error to be caught in the controller
+        }
+    },
+    deleteSubjectName: async (subjectInformation) => {
+        try {
+            console.log("Deleting: ", subjectInformation.subjectName,
+                subjectInformation.subjectAbbreviation,
+                subjectInformation.specialtyId);
+            await pool.query(`
+                UPDATE subject
+                SET is_active = ?
+                WHERE subject_name=? AND subject_abbreviation=?
+                AND     specialty_id_fk=?
+                `, [0, subjectInformation.subjectName,
+                subjectInformation.subjectAbbreviation,
+                subjectInformation.specialtyId])
+        }
+        catch (err) {
+            console.error('Error fetching periods for student:', err);
+            throw err;
+        };
+    },
 }

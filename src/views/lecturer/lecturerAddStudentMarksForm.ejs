@@ -39,45 +39,86 @@
 
 <body>
     <%- include('../partials/lecturerHeader') %>
-    <div class="form-container">
-        <h2>Добавяне на оценка от преподавател</h2>
-        <form id="gradeForm" action="/lecturer/add/marks" method="POST">
-            
-            <div class="form-group">
-                <label for="selectSubject">Предмет</label>
-                <select id="selectSubject" name="subject">
-                    <option value="">Изберете предмет</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="selectGroup">Група</label>
-                <select id="selectGroup" name="group">
-                    <option value="">Изберете група</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="selectFacultyNumber">Факултетни номера</label>
-                <select id="selectFacultyNumber" name="facultyNumber">
-                    <option value="">Изберете факултетен номер</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="selectGrade">Оценка</label>
-                <select id="selectGrade" name="grade">
-                    <option value="">Изберете оценка</option>
-                    <option value="2">2</option>
+        <%- include('../partials/flashMessages') %>
+
+            <div class="form-container">
+                <h2>Добавяне на оценка от преподавател</h2>
+                <form id="addMarkForm" action="/lecturer/add/marks" method="POST">
+
+                    <div class="formInput">
+                        <label for="selectFaculty">Факултет</label>
+                        <select id="selectFaculty" name="faculty" required>
+                            <% for(const faculty of faculties){ %>
+                                <option value="<%= faculty.faculty_abbreviation %>">
+                                    <%= faculty.faculty_name %>
+                                </option>
+                                <% } %>
+                        </select>
+                    </div>
+
+                    <div class="formInput">
+                        <label for="selectDepartment">Катедра</label>
+                        <select id="selectDepartment" name="department"></select>
+                    </div>
+
+                    <div class="formInput">
+                        <label for="selectSpecialty">Специалност</label>
+                        <select id="selectSpecialty" name="specialty">
+                            <option value="none" selected disabled hidden>Изберете специалност</option>
+                        </select>
+                    </div>
+                    <div class="formInput">
+                        <label for="selectCourse">Семестър</label>
+                        <select name="selectCourse" id="selectCourse">
+                            <option value="none" selected disabled hidden>Изберете курс</option>
+                        </select>
+                    </div>
+
+
+                    <!-- <div class="form-group">
+                    <label for="specialtyDropdown">Специалност</label>
+                    <select id="specialtyDropdown" name="specialtyId">
+                        <option value="none" selected disabled hidden>Изберете специалност</option>
+
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="selectSubject">Предмет</label>
+                    <select id="selectSubject" name="subject">
+                        <option value="">Изберете предмет</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="selectGroup">Група</label>
+                    <select id="selectGroup" name="group">
+                        <option value="">Изберете група</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="selectFacultyNumber">Факултетни номера</label>
+                    <select id="selectFacultyNumber" name="facultyNumber">
+                        <option value="">Изберете факултетен номер</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="selectGrade">Оценка</label>
+                    <select id="selectGrade" name="grade">
+                        <option value="">Изберете оценка</option>
+                        <!-- <option value="2">2</option>
                     <option value="3">3</option>
                     <option value="4">4</option>
                     <option value="5">5</option>
-                    <option value="6">6</option>
-                </select>
+                    <option value="6">6</option> 
+                    </select>
+                </div>
+                <button type="submit" class="submit">Добавяне на оценка</button> -->
+                </form>
             </div>
-            <button type="submit" class="submit">Добавяне на оценка</button>
-        </form>
-    </div>
 
-    <!-- <script src="/js/addStudentFormSelects.js"></script> -->
-    <script src="/js/lecturerAddStudentMarkSelects.js"></script>
+            <!-- <script src="/js/addStudentFormSelects.js"></script> -->
+            <!-- <script src="/js/lecturerAddStudentMarkSelects.js"></script> -->
+            <script src="/js/lecturerAddStudentMarkSelects.js"></script>
+            <!-- <script src="/js/addMarksSelect.js"></script>   -->
 </body>
 
 </html>

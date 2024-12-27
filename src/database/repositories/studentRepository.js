@@ -16,10 +16,29 @@ module.exports = {
     getFacNums: async (groupHalfId) => {
         try {
             const [result] = await pool.query(`
-                SELECT student_fac_num
-                FROM student
-                WHERE group_half_id_fk = ?
+                SELECT s.student_fac_num, p.name
+                FROM student s
+                INNER JOIN student_profile sp
+                ON s.student_fac_num=sp.student_fac_num
+                INNER JOIN profile p
+                ON sp.profile_id_fk=p.profile_id
+                WHERE s.group_half_id_fk = ?
                 `, [groupHalfId]);
+            return result;
+        } catch (err) {
+            console.error('Error fetching periods for student:', err);
+            throw err;
+        }
+    },
+    getSubjectsHalf: async (groupHalfId) => {
+        try {
+            const [result] = await pool.query(`
+                SELECT s.subject_name,ghs.group_half_subject_id
+                FROM \`subject\` s 
+                INNER JOIN group_half_subject ghs
+                ON s.subject_id=ghs.subject_id_fk
+                WHERE ghs.group_half_id_fk = ? AND ghs.period_type_id_fk=?
+                `, [groupHalfId, 1]);
             return result;
         } catch (err) {
             console.error('Error fetching periods for student:', err);
@@ -73,6 +92,55 @@ module.exports = {
                         markInformation.facNum,
                         markInformation.mark,
                         getGhsId[0][0]['group_half_subject_id']
+                    ]);
+                console.log("Mark is added");
+            }
+        } catch (err) {
+            console.error(err);
+            throw (err);
+        }
+    },
+
+    updateMark: async (markInformation) => {
+        try {
+            console.log('Subject ID:', markInformation.subject);
+            console.log('Group Half ID:', markInformation.groupHalf);
+            console.log('Mark:', markInformation.mark);
+            // First, check if the student already has a mark for the subject
+            const [existingMark] = await pool.query//check if mark excists
+                (`
+                SELECT * FROM student_mark
+                WHERE student_faculty_num_fk = ?
+                AND group_half_sbj_id_fk = ?
+            `, [markInformation.facNum,
+                markInformation.subject]
+                );
+            console.log(existingMark);
+            if (existingMark.length > 0) {
+                // If a record exists, we will update it
+                await pool.query(`
+                UPDATE student_mark
+                SET mark_id_fk = ?
+                WHERE student_faculty_num_fk = ?
+                AND group_half_sbj_id_fk = ?`,
+                    [markInformation.mark, markInformation.facNum,
+                    markInformation.subject]
+                );
+                console.log("Mark is added");
+                //throw new Error('Student already has a mark for this subject.');
+            }
+            // If no mark exists, insert the new mark
+            else {
+                await pool.query(`
+                INSERT INTO student_mark
+                (student_faculty_num_fk,
+                mark_id_fk,
+                group_half_sbj_id_fk)
+                VALUES (?,?,?)`,
+                    [
+                        markInformation.facNum,
+                        markInformation.mark,
+                        markInformation.subject
                     ]);
                 console.log("Mark is added");
             }

@@ -15,6 +15,46 @@ module.exports = {
     showAdminHomePage: (req, res) => {
         res.render("admin/adminHomePage")//view/filename
     },
+    getUserInfo: async (req, res) => {
+        const { username } = req.body;//view/filename
+        console.log(username);
+        if (!username) {
+            return res.status(400).json({ error: "Не е предоставено потребителско име." });
+        }
+        try {
+            const userInfo = await adminService
+                .getUserInfo(username);
+            console.log(userInfo);
+            res.json({
+                fullName: `${userInfo[0].name} ${userInfo[0].surname}`,
+                status: userInfo[0].profile_status_name,
+            });
+        } catch (err) {
+            console.error('Грешка на сървъра:', err);
+            res.status(500).json({ error: "Възникна грешка при обработката на заявката." });
+        }
+
+    },
+    getGroupHalfSubjects: async (req, res) => {
+        try {
+            const groupHalfInfo = {
+                specialty: req.body.specialty,
+                courseNumber: req.body.courseNumber,
+                groupNumber: req.body.groupNumber,
+                groupHalfLetter: req.body.groupHalfLetter
+            };
+            const groupHalfId = await accountService.getGroupHalfId(groupHalfInfo);
+            console.log(groupHalfId[0].group_half_id);
+            const subjects = await studentService.getSubjectsHalf(groupHalfId[0].group_half_id);
+            console.log(subjects);
+            res.json(subjects);
+        } catch (err) {
+            console.error('Грешка на сървъра:', err);
+            res.status(500).json({ error: "Възникна грешка при обработката на заявката." });
+        }
+
+    },
+
     showAdminRegister: (req, res) => {
         res.render("admin/adminRegisterForm");
     },
@@ -24,17 +64,28 @@ module.exports = {
     showAddSubjectForm: async (req, res) => {
         res.render("admin/addSubjectForm");
     },
+    updateSubjectForm: async (req, res) => {
+        res.render("admin/updateSubjectForm");
+    },
+    deleteSubjectForm: async (req, res) => {
+        res.render("admin/deleteSubjectForm");
+    },
     showAddGroupsForm: async (req, res) => {
         const faculties = await accountService.getFaculties();
         res.render("admin/addGroupsForm", { faculties });
     },
+    showUpdateStatusForm: async (req, res) => {
+        // const faculties = await adminService.getUserInfo();
+        res.render("admin/updateProfileStatusForm");
+    },
     showAddSubjectToHalfsForm: async (req, res) => {
         const titles = await accountService.getTitles();
-        const faculties = await accountService.getFaculties();
-        const subjects = await accountService.getSubjects();
+        // const faculties = await accountService.getFaculties();
+        // const subjects = await accountService.getSubjects();
         const lecturers = await accountService.getLecturers();
+        // console.log(subjects);
         res.render("admin/addSubjectsToHalfsForm", {
-            titles, faculties, subjects,
+            titles,
             lecturers
         }); //view/filename
     },
@@ -46,6 +97,21 @@ module.exports = {
         const faculties = await accountService.getFaculties();
         console.log(faculties);
         res.render("admin/addStudentMarksForm", { faculties });
+    },
+    showUpdateMarkForm: async (req, res) => {
+
+        const specialties = await accountService.getSpecialties();
+        const courses = await accountService.getCourses();
+        const groups = await accountService.getGroupNumbers();
+        const groupHalves = await accountService.getGroupHalfs();
+        const studentMarksInfo = {
+            specialties,
+            courses,
+            groups,
+            groupHalves
+        }//facNums added dynamicaly after geting groupHalfId
+        console.log(studentMarksInfo);
+        res.render("admin/updateStudentMarkForm.ejs", { studentMarksInfo });
     },
     showAdminProfile: async (req, res) => {
         try {
@@ -111,6 +177,27 @@ module.exports = {
             res.status(500).send('Server Error');
         }
     },
+
+    showCurriculums: async (req, res) => {
+        try {
+            // Fetch data needed for the form
+            const specialties = await accountService.getSpecialties();
+            const courses = await accountService.getCourses();
+            const groups = await accountService.getGroupNumbers();
+            const groupHalves = await accountService.getGroupHalfs();
+            // console.log("specialties", specialties);
+            res.render('admin/reviewSubjectsHalfs', {
+                specialties,
+                courses,
+                groups,
+                groupHalves
+            });
+        } catch (err) {
+            console.error('Error displaying reviewSubjectHalfs form: ', err);
+            res.status(500).send('Server Error');
+        }
+    },
+
     reviewSchedules: async (req, res) => {
         try {
             const { viewBy, specialty, courseNumber, groupNumber,
@@ -195,8 +282,8 @@ module.exports = {
     },
     showLecturersConsultations: async (req, res) => {
         try {
-            const allConsultations= await adminService.getLecturersConsultations();
-            res.render("admin/reviewLecturerConsultations",{allConsultations});
+            const allConsultations = await adminService.getLecturersConsultations();
+            res.render("admin/reviewLecturerConsultations", { allConsultations });
         } catch (error) {
             console.error(error);
             res.status(500).send("Internal Server Error");
@@ -204,9 +291,19 @@ module.exports = {
     },
     searchConsultations: async (req, res) => {
         try {
-            const body=req.body;
-            const consultations=await adminService.searchConsultations(body.consultationSearch);
+            const body = req.body;
+            const consultations = await adminService.searchConsultations(body.consultationSearch);
             res.json(consultations);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Internal Server Error");
+        }
+    },
+    searchCurriculums: async (req, res) => {
+        try {
+            const body = req.body;
+            const curriculums = await adminService.searchCurriculums(body.curriculumsSearch);
+            res.json(curriculums);
         } catch (error) {
             console.error(error);
             res.status(500).send("Internal Server Error");
@@ -300,21 +397,28 @@ module.exports = {
     },
     getGroupHalfs: async (req, res) => {
         try {
-            // const {specialty}=req.params;
-            const groupSpecialtyName = req.body;
-            console.log(groupSpecialtyName);
-            // const courseNumber = req.body;
-            console.log(groupSpecialtyName);
-            const groupHalfs =
-                await periodService.getGroupHalfs(groupSpecialtyName.specialty,
-                    groupSpecialtyName.course
-                );// ,courseNumber.courseNumber
+            const { specialty_id, course } = req.body; // Extract specialty_id and course from request body
+
+            if (!specialty_id || !course) {
+                return res.status(400).json({ error: "Specialty ID and course are required." });
+            }
+
+            console.log(`Specialty ID: ${specialty_id}, Course: ${course}`);
+
+            // Fetch group halves using specialty_id and course
+            const groupHalfs = await periodService.getGroupHalfs(specialty_id, course);
+
+            if (groupHalfs.length === 0) {
+                return res.status(404).json({ message: "No group halves found for this specialty and course." });
+            }
+
             res.json(groupHalfs);
         } catch (error) {
             console.error(error);
             res.status(500).send("Internal Server Error");
         }
-    }, getSubjectsHalf: async (req, res) => {
+    },
+    getSubjectsHalf: async (req, res) => {
         try {
             const { groupHalfId } = req.body;
             console.log(groupHalfId);
@@ -355,27 +459,27 @@ module.exports = {
             res.status(500).send("Internal Server Error");
         }
     },
-        getWeekdays: async (req, res) => {
-            try {
-                // await subjectService.addSubject(subjectInformation);
-                const weekdays = await periodService.getWeekdays();
-                console.log(weekdays);
-                res.json(weekdays);
-            } catch (error) {
-                console.error(error);
-                res.status(500).send("Internal Server Error");
-            }
-        },
-        getRooms: async (req, res) => {
-            try {
-                const rooms = await periodService.getRooms();
-                console.log(rooms);
-                res.json(rooms);
-            } catch (error) {
-                console.error(error);
-                res.status(500).send("Internal Server Error");
-            }
-        },
+    getWeekdays: async (req, res) => {
+        try {
+            // await subjectService.addSubject(subjectInformation);
+            const weekdays = await periodService.getWeekdays();
+            console.log(weekdays);
+            res.json(weekdays);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Internal Server Error");
+        }
+    },
+    getRooms: async (req, res) => {
+        try {
+            const rooms = await periodService.getRooms();
+            console.log(rooms);
+            res.json(rooms);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Internal Server Error");
+        }
+    },
     getLecturers: async (req, res) => {
         try {
             const lecturers = await periodService.getLecturers();
@@ -587,16 +691,162 @@ module.exports = {
         try {
             const subjectInformation = {
                 subjectName: body.subjectName,
-                subjectAbbreviation: body.subjectAbbreviation
+                subjectAbbreviation: body.subjectAbbreviation,
+                specialtyId: body.selectSpecialty
             }
             console.log("Body: ", body);
             console.log("Subject information: ", subjectInformation);
+
+            // Ако предметът съществува, покажете съобщение за грешка
+
+
             await subjectService.addSubjectName(subjectInformation);
             res.redirect("/admin/add/subjectToHalfs");
         } catch (error) {
             console.log(error);
+            req.flash('error', 'Моля въведете уникално име и абревиатура за предмета в дадената специалност.');
+            res.redirect('/admin/add/subject');
+        }
+    }, updateSubjectName: async (req, res) => {
+        const body = req.body;
+        try {
+            // Assuming body contains an array of updated subjects
+            // const updatedSubjects = body.row;
+
+            // Loop through each subject and update them
+            const subjectInformation = {
+                oldName: body.oldName,
+                newName: body.newName,
+                newAbbreviation: body.newAbbreviation
+            };
+            console.log("Subject info: ", subjectInformation);
+
+            // Call the service to update the subject
+            await subjectService.updateSubjectName(subjectInformation);
+
+
+            // After all updates are done, redirect to the subject update page
+            res.redirect("/admin/update/subject");
+        } catch (error) {
+            console.error("Error in updating subject names:", error);
+            res.status(500).send("Error updating subjects");
         }
     },
+    updateStatus: async (req, res) => {
+
+        try {
+            const { username, status } = req.body;
+            const profileId = req.session.profile_id;
+
+            // Define mapping of user types to tables
+
+            // Validate inputs
+            if (!username || !status) {
+                return res.status(400).send("Всички полета са задължителни.");
+            }
+            console.log(username, status);
+            // Check if user type is valid
+
+
+            // For admins, ensure only the main admin can update admin statuses
+            if (profileId !== 13) {
+                return res.status(403).send("Нямате права за промяна на статус на главен администратор.");
+            }
+            const profileInformation = {
+                status,
+                username
+            }
+            const result = await adminService.updateStatus(profileInformation);
+
+            if (result.affectedRows === 0) {
+                return res.status(404).send("Потребителят не е намерен.");
+            }
+
+            // Send success response
+            req.flash("success", "Успешно променен статус");
+            res.redirect("/admin/update/status?success=true");
+
+        } catch (error) {
+            console.error("Error updating user status:", error);
+            req.flash("error", "Неуспешно променен статус");
+            res.status(500).send("Възникна грешка при промяната на статуса.");
+
+        }
+    },
+
+    // Assuming body contains an array of updated subjects
+    // const updatedSubjects = body.row;
+
+    // Loop through each subject and update them
+
+    searchSubject: async (req, res) => {
+        try {
+            const { subjectSearch } = req.body;  // Extract the subject name from the body
+            console.log("Searching for subject:", subjectSearch);
+
+            // Perform the search (this is just an example; adjust to your logic)
+            const subjects = await adminService.searchSubjects(subjectSearch);
+            console.log("Found subjects:", subjects);
+
+            // Return a JSON response
+            res.json({ subjects: subjects });
+        } catch (error) {
+            console.error("Error fetching subjects:", error);
+            res.status(500).send("Internal Server Error");
+        }
+    },
+
+    searchSubjectSpecialty: async (req, res) => {
+        try {
+            const { subjectSearch } = req.body;  // Extract the specialty ID from the request body
+            console.log("Fetching subjects for specialty ID:", subjectSearch);
+
+            // Assuming you have a service function that retrieves subjects by specialty ID
+            const subjects = await adminService.searchSubjectsSpecialty(subjectSearch);
+
+            console.log("Found subjects:", subjects);
+
+            // Return the subjects in JSON format
+            res.json({ subjects });
+        } catch (error) {
+            console.error("Error fetching subjects:", error);
+            res.status(500).send("Internal Server Error");
+        }
+    },
+
+
+
+    deleteSubjectName: async (req, res) => {
+        const body = req.body;
+        console.log("Request Body:", body);  // For debugging
+
+        try {
+            // Make sure that the subject name is sent
+            if (!body.subjectName || !body.subjectAbbreviation || !body.subjectId) {
+                throw new Error("No subject selected.");
+            }
+
+            const subjectInformation = {
+                subjectName: body.subjectName,
+                subjectAbbreviation: body.subjectAbbreviation,
+                specialtyId: body.specialtyId
+            };
+
+            console.log("Subject Information:", subjectInformation);  // For debugging
+
+            // Call the service to delete the subject
+            await subjectService.deleteSubjectName(subjectInformation);
+
+            req.flash('success', 'Предметът е изтрит успешно.');
+            res.redirect("/admin/delete/subject");
+        } catch (error) {
+            console.error("Error deleting subject:", error);
+            req.flash('error', error.message || 'Неуспешно изтриване на предмет.');
+            res.redirect('/admin/delete/subject');
+        }
+    },
+
+
     addSubject: async (req, res) => {
         const body = req.body;
         try {
@@ -714,6 +964,40 @@ module.exports = {
             // Log any errors that occur during the process
 
             console.error(error);
+            res.redirect("/admin/homePage");
+            // Send a 500 status code indicating an internal server error
+            res.status(500).send("Internal Server Error");
+        }
+    }
+    , updateMark: async (req, res) => {
+        try {
+            const body = req.body;
+            markInformation = {
+                semester: body.courseNumber,
+                groupNumber: body.groupNumber,
+                groupHalf: body.groupHalfLetter,
+                subject: body.subjectSelect,//subject id
+                facNum: body.facultyNumbersSelect,
+                mark: body.markSelect
+            }
+            console.log("Mark information: ", markInformation);
+            await studentService.updateMark(markInformation);
+
+            req.flash('success', 'Оценката е променена успешно.');
+            const facNum = body.facultyNumbersSelect;
+            console.log(facNum);
+            const studentProfileId =
+                await studentService.getStudentProfileId(facNum);
+            console.log("studentProfileId", studentProfileId);
+            const marks = await studentService.getStudentMarks(studentProfileId[0].student_profile_id);
+            console.log(marks);
+            res.redirect('/admin/review/studentMarks');
+            // res.redirect("/admin/homePage");
+        } catch (error) {
+            // Log any errors that occur during the process
+
+            console.error(error);
+            req.flash('error', 'Неуспешна промяна на оценка. Опитайте отново.');
             res.redirect("/admin/homePage");
             // Send a 500 status code indicating an internal server error
             res.status(500).send("Internal Server Error");

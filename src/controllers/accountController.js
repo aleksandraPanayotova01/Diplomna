@@ -21,15 +21,18 @@ module.exports = {
 
             if (user) {
 
-                req.session.student_profile_id = user.student_profile_id;
-                req.session.profile_id = user.profile_id;
-                req.session.profile_status_id = user.profile_status_id_fk;
                 // const studentProfileStatusId = req.session.profile_status_id;
-                // if (studentProfileStatusId === '1') {
-                res.redirect('/student/homePage');//vremenno
-                // } else {
-                // req.flash("error", "Профилът не е активен");
-                // }
+                if (user.profile_status_id_fk == 1) {
+                    req.session.student_profile_id = user.student_profile_id;
+                    req.session.profile_id = user.profile_id;
+                    req.session.profile_status_id = user.profile_status_id_fk;
+                    res.redirect('/student/homePage');
+
+                }
+                else {
+                    req.flash("error", "Профилът не е активен");
+                    res.redirect("/");
+                }
             } else {
                 req.flash("error", "Грешно потребителско име или парола");
                 res.redirect("/");
@@ -52,15 +55,17 @@ module.exports = {
         try {
             const lecturer = await accountService.loginLecturer(lecturerCredentials);
             if (lecturer) {
-                req.session.lecturer_profile_id = lecturer.lecturer_profile_id;
-                req.session.profile_id = lecturer.profile_id;
-                req.session.profile_status_id = lecturer.profile_status_id_fk;
-                // const lecturerProfileStatusId = req.session.profile_status_id;
-                // if (lecturerProfileStatusId === '1') {
-                res.redirect('/lecturer/homePage');//vremenno
-                // } else {
-                // req.flash("error", "Профилът не е активен");
-                // }
+                if (lecturer.profile_status_id_fk == 1) {
+                    req.session.lecturer_profile_id = lecturer.lecturer_profile_id;
+                    req.session.profile_id = lecturer.profile_id;
+                    req.session.profile_status_id = lecturer.profile_status_id_fk;
+                    // const lecturerProfileStatusId = req.session.profile_status_id;
+                    // if (lecturerProfileStatusId === '1') {
+                    res.redirect('/lecturer/homePage');//vremenno
+                } else {
+                    req.flash("error", "Профилът не е активен");
+                    res.redirect("/");
+                }
             } else {
                 req.flash("error", "Грешно потребителско име или парола");
                 res.redirect("/");
@@ -82,17 +87,22 @@ module.exports = {
         try {
             const admin = await accountService.loginAdmin(adminCredentials);
             if (admin) {
-                req.session.admin_profile_id = admin.admin_profile_id;
-                req.session.profile_id = admin.profile_id;
-                req.session.profile_status_id = admin.profile_status_id_fk;
-                res.redirect('/admin/homePage');
+                if (admin.profile_status_id_fk == 1) {
+                    req.session.admin_profile_id = admin.admin_profile_id;
+                    req.session.profile_id = admin.profile_id;
+                    req.session.profile_status_id = admin.profile_status_id_fk;
+                    res.redirect('/admin/homePage');
+                } else {
+                    req.flash("error", "Профилът не е активен");
+                    res.redirect("/");
+                }
             } else {
-                req.flash("error", "Грешно потребителско име или парола");
+                req.flash("error", "Грешно потребителско име или парола 1");
                 res.redirect("/");
             }
         } catch (error) {
             console.log(error);
-            req.flash("error", "Грешно потребителско име или парола");
+            req.flash("error", "Грешно потребителско име или парола 2");
             res.redirect("/");
         }
     },

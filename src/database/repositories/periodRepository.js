@@ -139,7 +139,7 @@ module.exports = {
             throw err;
         }
     },
-    getGroupHalfs: async (groupSpecialtyName, courseNumber) => {
+    getGroupHalfs: async (specialty_id, course) => {
         try {
             const [result] = await pool.query(`
                 SELECT g.group_number,gh.group_half_letter,gh.group_half_id
@@ -148,8 +148,8 @@ module.exports = {
                 ON g.group_id=gh.group_id_fk
                 INNER JOIN specialty s
                 ON g.specialty_id_fk=s.specialty_id
-                WHERE s.specialty_name=? AND g.course_number = ?
-                `, [groupSpecialtyName, courseNumber]);
+                WHERE s.specialty_id=? AND g.course_number = ?
+                `, [specialty_id, course]);
             return result;
         } catch (err) {
             console.error(err);
@@ -528,7 +528,7 @@ module.exports = {
             throw err;
         }
     },
-    getStudentLecturersConsultations:async(studentProfileId)=>{
+    getStudentLecturersConsultations: async (studentProfileId) => {
         try {
             const [result] = await pool.query(`
                 SELECT cl.consultation_start,cl.consultation_end,
@@ -550,9 +550,9 @@ module.exports = {
                 INNER JOIN title t
                 ON l.title_id_fk=t.title_id
                 WHERE s
-                `,{studentProfileId});
-        return result;
-        }catch (err) {
+                `, { studentProfileId });
+            return result;
+        } catch (err) {
             console.error(err);
             throw err;
         }

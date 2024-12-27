@@ -52,6 +52,18 @@ module.exports = {
             throw err;
         }
     },
+    deleteConsultation: async (consultationId) => {
+        try {
+            const [result] = await pool.query(`
+                DELETE FROM consultation_lecturer
+                WHERE consultation_id = ?
+            `, [consultationId]);
+            return result;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
     getLecturerLectures: async (lecturerProfileId) => {
         try {
             const [result] = await pool.query(`
@@ -75,11 +87,13 @@ module.exports = {
     getLecturerConsultations: async (lecturerProfileId) => {
         try {
             const [result] = await pool.query(`
-                SELECT cl.consultation_start,
-                       cl.consultation_end,
-                       w.weekday_name,
-                       b.building_name,
-                       r.room_number
+                SELECT 
+                cl.consultation_id,
+                cl.consultation_start,
+                cl.consultation_end,
+                w.weekday_name,
+                b.building_name,
+                r.room_number
                 FROM consultation_lecturer cl
                 INNER JOIN weekday w
                     ON cl.weekday_id_fk = w.weekday_id

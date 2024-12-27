@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/schedule.css" />
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <title>Консултации</title>
+    <style>
+        .container {
+            padding: 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .selected {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <%- include('../partials/lecturerHeader') %>
+        <div class="container">
+            <h1>Консултации</h1>
+
+            <% if (consultations.length> 0) { %>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ден</th>
+                            <th>Начало</th>
+                            <th>Край</th>
+                            <th>Сграда</th>
+                            <th>Стая</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% consultations.forEach(consultation=> { %>
+                            <tr data-id="<%= consultation.consultation_id %>">
+                                <td>
+                                    <%= consultation.weekday_name %>
+                                </td>
+                                <td>
+                                    <%= consultation.consultation_start %>
+                                </td>
+                                <td>
+                                    <%= consultation.consultation_end %>
+                                </td>
+                                <td>
+                                    <%= consultation.building_name %>
+                                </td>
+                                <td>
+                                    <%= consultation.room_number %>
+                                </td>
+                            </tr>
+                            <% }) %>
+                    </tbody>
+                </table>
+                <% } else { %>
+                    <p>Няма добавени консултации.</p>
+                    <% } %>
+        </div>
+
+        <form action="/lecturer/deleteConsultation" method="POST">
+            <input type="hidden" id="selectedConsultationId" name="consultationId" />
+            <button class="submitDelConsultation submit" type="submit" disabled>Изтриване</button>
+        </form>
+
+        <script>
+            //script to handle row selection and populate the hidden field
+            document.addEventListener("DOMContentLoaded", () => {
+                const rows = document.querySelectorAll("tr[data-id]");
+                const form = document.querySelector("form");
+                let selectedRowId = "";
+
+                rows.forEach((row) => {
+                    row.addEventListener("click", () => {
+                        rows.forEach((r) => r.classList.remove("selected")); // Remove previous selection
+                        row.classList.add("selected"); // Highlight selected row
+                        selectedRowId = row.dataset.id; // Get the consultation ID
+                    });
+                });
+
+                form.addEventListener("submit", (e) => {
+                    if (!selectedRowId) {
+                        e.preventDefault();
+                        alert("Please select a consultation to delete.");
+                    }
+                    //  else {
+                    //     const hiddenInput = document.createElement("input");
+                    //     hiddenInput.type = "hidden";
+                    //     hiddenInput.name = "consultationId";
+                    //     hiddenInput.value = selectedRowId;
+                    //     form.appendChild(hiddenInput); // Add the hidden input to the form
+                    // }
+                });
+                const table = document.querySelector("table");
+                let selectedRow = null;
+
+                table.addEventListener("click", (event) => {
+                    const row = event.target.closest("tr[data-id]");
+                    if (!row) return;
+
+                    if (selectedRow) {
+                        selectedRow.classList.remove("selected");
+                    }
+
+                    selectedRow = row;
+                    selectedRow.classList.add("selected");
+
+                    const selectedIdInput = document.getElementById("selectedConsultationId");
+                    selectedIdInput.value = row.dataset.id;
+
+                    const deleteButton = document.querySelector(".submitDelConsultation");
+                    deleteButton.disabled = false;
+                });
+            });
+        </script>
+</body>
+
+</html>
