@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             const response = await fetch('/admin/get/groupHalfs', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ specialty_id: specialtyId, course: courseNumber })
+                body: JSON.stringify({ specialty: specialtyId, course: courseNumber })
             });
 
             if (!response.ok) {

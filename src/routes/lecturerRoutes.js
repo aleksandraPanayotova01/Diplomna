@@ -67,7 +67,17 @@ router
 router
     .route("/review/marks")
     .all(checkUser.checkIfLecturerIsLogged)
-    .get(lecturerController.showReviewMarks);
+    .get(lecturerController.showReviewMarks)
+    .post(lecturerController.reviewMarksResult);
+router
+    .route("/review/groupHalfSubjects")
+    .all(checkUser.checkIfLecturerIsLogged)
+    .get(lecturerController.showGroupHalfSubjectForm)
+    .post(lecturerController.reviewMarksResult);
+// router
+//     .route("/review/reviewMarksResult")
+//     .all(checkUser.checkIfLecturerIsLogged)
+//     .get(lecturerController.showReviewMarksResult)
 router
     .route("/get/groups/:subjectId")
     .all(checkUser.checkIfLecturerIsLogged)
@@ -92,4 +102,8 @@ router
     .route("/get/facultyNumbers")
     .all(checkUser.checkIfLecturerIsLogged)
     .post(lecturerController.getFacultyNumbers)
+router
+    .route("/get/subjectsHalf")
+    .all(checkUser.checkIfLecturerIsLogged)
+    .post(lecturerController.getSubjectsHalf);
 module.exports = router;

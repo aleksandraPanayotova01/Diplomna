@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <title>Форма за промяна на преподавател за предмет на половинка</title>
+</head>
+<!-- <style>
+    #updateSubjectForm {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        /* Space between inputs */
+        position: relative;
+    }
+
+    #updateSubjectForm button.submit {
+        margin-top: auto;
+        /* Push to bottom of the form */
+        align-self: center;
+        /* Center the button */
+    }
+</style> -->
+
+<body>
+    <div class="section-updateSubjectToHalf">
+        <%- include('../partials/adminHeader') %>
+            <%- include('../partials/flashMessages') %>
+                <div class="page-content">
+                    <form id="updateSubjectForm" action="/admin/update/subjectToHalfs" method="POST">
+                        <h1>Промяна на преподавател за предмет на половинка</h1>
+                        <div class="formInput">
+                            <label for="specialtyDropdown">Специалност</label>
+                            <select id="specialtyDropdown" name="specialtyId">
+                                <option value="none" selected disabled hidden>Изберете специалност</option>
+
+                            </select>
+                        </div>
+                        <div class="formInput">
+                            <label for="selectCourse">Семестър</label>
+                            <select name="selectCourse" id="selectCourse" disabled>
+                                <option value="">-- Няма избрана специалност --</option>
+                            </select>
+                        </div>
+                </div>
+
+
+                </form>
+    </div>
+    </div>
+
+    <script src="\js\updateSubjectToHalfs.js"></script>
+
+</body>
+
+</html>

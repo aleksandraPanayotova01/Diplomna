@@ -9,8 +9,37 @@ module.exports = {
     //         return res.redirect('/admin/add/subject');
     //     }
     // },
+    checkIfSubjectIsAddedToLecturer: async (subjectInformation) => {
+        return await subjectRepository.checkIfSubjectIsAddedToLecturer(subjectInformation);
+    },
+    checkIfSubjectIsAddedToGroupHalf: async (subjectInformation) => {
+        return await subjectRepository.checkIfSubjectIsAddedToGroupHalf(subjectInformation);
+    },
     addSubjectToGroup: async (subjectInformation) => {
-        return await subjectRepository.addSubjectToHalf(subjectInformation);
+        try {
+            // const subjectAddedToLecturer = await subjectRepository.checkIfSubjectIsAddedToLecturer(subjectInformation);
+            // const subjectAddedToHalf = await subjectRepository.checkIfSubjectIsAddedToGroupHalf(subjectInformation);
+            // if (!subjectAddedToLecturer) {
+            await subjectRepository.addSubjectToLecturer(subjectInformation);
+            // }
+            // if (!subjectAddedToHalf) {
+            await subjectRepository.addSubjectToHalf(subjectInformation);
+            // }
+
+            // return      await subjectRepository.addSubjectToHalf(subjectInformation);
+        } catch (err) {
+            console.error("Error adding subject:", err);
+            throw err;
+        }
+    },
+    updateSubjectGroup: async (subjectInformation) => {
+        try {
+            await subjectRepository.addSubjectToLecturer(subjectInformation);
+            await subjectRepository.addSubjectToHalf(subjectInformation);
+        } catch (err) {
+            console.error("Error adding subject:", err);
+            throw err;
+        }
     },
     addSubjectName: async (subjectInformation) => {
         try {
@@ -29,6 +58,9 @@ module.exports = {
         }
     }, updateSubjectName: async (subjectInformation) => {
         return await subjectRepository.updateSubjectName(subjectInformation);
+    },
+    updateSubjectHalfLecturer: async (subjectInformation) => {
+        return await subjectRepository.updateGroupHalfLecturer(subjectInformation);
     },
     deleteSubjectName: async (subjectInformation) => {
         try {

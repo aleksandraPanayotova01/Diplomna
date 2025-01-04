@@ -15,6 +15,47 @@ module.exports = {
             throw err;
         }
     },
+    checkIfSubjectIsAddedToLecturer: async (subjectInformation) => {
+        try {
+
+            const [rows] = await pool.query(`
+                SELECT * FROM lecturer_subject 
+                WHERE lecturer_id_fk=?
+                AND subject_id_fk=?
+                AND period_type_id_fk=?
+            `, [subjectInformation.lecturerId,
+            subjectInformation.subjectId,
+            subjectInformation.periodTypeId
+            ]);
+            console.log("checkIfSubjectIsAddedToLecturer", rows.length > 0);
+            return rows.length > 0; // Връща true, ако записът съществува
+        } catch (err) {
+            console.error('Error checking if subject exists:', err);
+            throw err;
+        }
+    },
+    checkIfSubjectIsAddedToGroupHalf: async (subjectInformation) => {
+        try {
+            const [rows] = await pool.query(`
+                SELECT * FROM group_half_subject 
+                WHERE group_half_id_fk =?
+                AND subject_id_fk=?
+                AND period_type_id_fk=?
+                AND lecturer_id_fk=?
+                AND subject_semester_number=?
+            `, [subjectInformation.groupHalfId,
+            subjectInformation.subjectId,
+            subjectInformation.periodTypeId,
+            subjectInformation.lecturerId,
+            subjectInformation.semNumber
+            ]);
+            console.log("checkIfSubjectIsAddedToGroupHalf", rows.length > 0);
+            return rows.length > 0; // Връща true, ако записът съществува
+        } catch (err) {
+            console.error('Error checking if subject exists:', err);
+            throw err;
+        }
+    },
     // createSubject: async (subjectInformation) => {
     //     const connection = await pool.getConnection();
     //     try {
@@ -32,22 +73,10 @@ module.exports = {
     //         connection.release();//
     //     }
     // },
+
     addSubjectToHalf: async (subjectInformation) => {
         try {
-            const getSubjectId = await pool.query(`
-                SELECT subject_id
-                FROM subject
-                WHERE subject_abbreviation=?
-                `, [subjectInformation.subjectAbbreviation]);
-            console.log("Subject id:", getSubjectId[0][0]['subject_id']);
-            const addLecturerSubject = await pool.query(`
-                INSERT INTO lecturer_subject
-                (lecturer_id_fk, subject_id_fk,period_type_id_fk)
-                VALUES(?,?,?)
-                `, [subjectInformation.lecturerId,
-            getSubjectId[0][0]['subject_id'],
-            subjectInformation.periodTypeId
-            ]);
+
             const [result] = await pool.query(`
                 INSERT INTO group_half_subject
                 (group_half_id_fk, subject_id_fk,
@@ -56,7 +85,7 @@ module.exports = {
                 subject_semester_number)
                 VALUES(?,?,?,?,?)
                 `, [subjectInformation.groupHalfId,
-            getSubjectId[0][0]['subject_id'],
+            subjectInformation.subjectId,
             subjectInformation.periodTypeId,
             subjectInformation.lecturerId,
             subjectInformation.semNumber]);
@@ -65,7 +94,25 @@ module.exports = {
             console.error('Error fetching periods for student:', err);
             throw err;
         }
-    }, addSubjectName: async (subjectInformation) => {
+    },
+    addSubjectToLecturer: async (subjectInformation) => {
+        try {
+            const [result] = await pool.query(`
+                INSERT INTO lecturer_subject
+                (lecturer_id_fk, subject_id_fk,period_type_id_fk)
+                VALUES(?,?,?)
+                `, [subjectInformation.lecturerId,
+            subjectInformation.subjectId,
+            subjectInformation.periodTypeId
+            ]);
+            return result;
+        } catch (err) {
+            console.error('Error fetching periods for student:', err);
+            throw err;
+        }
+    },
+
+    addSubjectName: async (subjectInformation) => {
         try {
             console.log("Adding: ", subjectInformation.subjectName,
                 subjectInformation.subjectAbbreviation,
@@ -100,6 +147,32 @@ module.exports = {
         } catch (err) {
             console.error('Error updating subject name:', err);
             throw err;  // Re-throw error to be caught in the controller
+        }
+    },
+    updateGroupHalfLecturer: async (subjectInformation) => {
+        try {
+            const [result] = await pool.query(`
+                UPDATE group_half_subject
+                SET lecturer_id_fk=?
+                WHERE group_half_id_fk=?
+                AND subject_id_fk=?
+                AND period_type_id_fk=? 
+                AND subject_semester_number=?
+                `, [subjectInformation.lecturerId,
+            subjectInformation.groupHalfId,
+            subjectInformation.subjectId,
+            subjectInformation.periodTypeId,
+            subjectInformation.semesterNum
+            ]);
+            console.log(subjectInformation.lecturerId,
+                subjectInformation.groupHalfId,
+                subjectInformation.subjectId,
+                subjectInformation.periodTypeId,
+                subjectInformation.semesterNum);
+            return result;
+        } catch (err) {
+            console.error('Error fetching periods for student:', err);
+            throw err;
         }
     },
     deleteSubjectName: async (subjectInformation) => {

@@ -204,5 +204,76 @@ module.exports = {
             console.error('Error fetching group halves for lecturer: ', err);
             throw err;
         }
+    },
+    getGroupHalfMarks: async (groupHalfId) => {
+        try {
+            const [result] = await pool.query(`
+            SELECT 
+                DISTINCT 
+                sm.student_mark_id,
+                s.subject_name,
+                CONCAT(p.\`name\`, ' ', p.surname) AS student_name,
+                m.mark_value
+            FROM student_mark sm
+            INNER JOIN mark m ON sm.mark_id_fk=m.mark_id
+            INNER JOIN student st ON sm.student_faculty_num_fk=st.student_fac_num
+			INNER JOIN group_half_subject ghs ON sm.group_half_sbj_id_fk=ghs.group_half_subject_id
+            INNER JOIN student_profile sp ON sp.student_fac_num=st.student_fac_num
+            INNER JOIN \`profile\` p ON sp.profile_id_fk=p.profile_id
+            INNER JOIN group_half gh ON st.group_half_id_fk = gh.group_half_id
+         
+            INNER JOIN \`subject\` s ON ghs.subject_id_fk = s.subject_id
+            
+            WHERE gh.group_half_id=?
+            ORDER BY sm.student_mark_id;
+            `, [groupHalfId]);
+            // console.log(result);
+            // const formattedMarks = [];
+            // const subjectMap = {};
+
+            // result.forEach(row => {
+            //     if (!subjectMap[row.subject_name]) {
+            //         subjectMap[row.subject_name] = {
+            //             subject_name: row.subject_name,
+            //             students: []
+            //         };
+            //         formattedMarks.push(subjectMap[row.subject_name]);
+            //     }
+            //     subjectMap[row.subject_name].students.push({
+            //         student_name: row.student_name,
+            //         mark_value: row.mark_value
+            //     });
+            // });
+            // return formattedMarks;
+            const uniqueStudents = Array.from(new Set(result.map(row => row.student_name)))
+                .map(name => ({ student_name: name }));
+
+            // Group by subject and align marks to students
+            const subjects = [];
+            const subjectMap = {};
+
+            result.forEach(row => {
+                if (!subjectMap[row.subject_name]) {
+                    subjectMap[row.subject_name] = {
+                        subject_name: row.subject_name,
+                        students: uniqueStudents.map(student => ({
+                            student_name: student.student_name,
+                            mark_value: null // Default to null for alignment
+                        }))
+                    };
+                    subjects.push(subjectMap[row.subject_name]);
+                }
+                // Match the student and update their mark
+                const student = subjectMap[row.subject_name].students.find(s => s.student_name === row.student_name);
+                if (student) {
+                    student.mark_value = row.mark_value;
+                }
+            });
+
+            return subjects;
+        } catch (err) {
+            console.error(err);
+            throw (err);
+        }
     }
 }

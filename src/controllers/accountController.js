@@ -97,12 +97,12 @@ module.exports = {
                     res.redirect("/");
                 }
             } else {
-                req.flash("error", "Грешно потребителско име или парола 1");
+                req.flash("error", "Грешно потребителско име или парола!");
                 res.redirect("/");
             }
         } catch (error) {
             console.log(error);
-            req.flash("error", "Грешно потребителско име или парола 2");
+            req.flash("error", "Грешно потребителско име или парола!");
             res.redirect("/");
         }
     },

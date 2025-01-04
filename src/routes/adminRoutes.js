@@ -92,6 +92,11 @@ router
     .get(adminController.showUpdateMarkForm)
     .post(adminController.updateMark);
 router
+    .route("/update/subjectToHalfs")
+    .all(checkUser.checkIfAdminIsLogged)
+    .get(adminController.showUpdateSubjectToHalfsForm)
+    .post(adminController.updateSubjectToHalfs);
+router
     .route("/get/departments")
     .all(checkUser.checkIfAdminIsLogged)
     .get(adminController.getDepartments);
@@ -163,6 +168,11 @@ router
     .route("/review/consultations")
     .all(checkUser.checkIfAdminIsLogged)
     .get(adminController.showLecturersConsultations)
+    .post(adminController.searchConsultations);
+router
+    .route("/delete/subjectToHalfs")
+    .all(checkUser.checkIfAdminIsLogged)
+    .get(adminController.showDeleteSubjectToHalfsForm)
     .post(adminController.searchConsultations);
 router
     .route("/review/curriculums")

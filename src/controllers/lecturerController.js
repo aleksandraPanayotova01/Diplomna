@@ -82,8 +82,49 @@ module.exports = {
                 groups,
                 groupHalves
             }//facNums added dynamicaly after geting groupHalfId
-            console.log(studentMarksInfo);
+            console.log("Student marks info:", studentMarksInfo);
+
             res.render("lecturer/reviewMarksForm", { studentMarksInfo });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Internal Server Error");
+        }
+    },
+    showGroupHalfSubjectForm: async (req, res) => {
+        try {
+            const specialties = await accountService.getSpecialties();
+            const courses = await accountService.getCourses();
+            const groups = await accountService.getGroupNumbers();
+            const groupHalves = await accountService.getGroupHalfs();
+            const groupHalfSubjectInfo = {
+                specialties,
+                courses,
+                groups,
+                groupHalves
+            }//facNums added dynamicaly after geting groupHalfId
+            console.log("Student marks info:", groupHalfSubjectInfo);
+
+            res.render("lecturer/reviewGroupHalfSubjects", { groupHalfSubjectInfo });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Internal Server Error");
+        }
+    },
+    reviewMarksResult: async (req, res) => {
+        try {
+
+            const studentMarksInfo = { specialty, courseNumber, groupNumber, groupHalfLetter } = req.body;
+            // console.log(facultyNumbersSelect);
+            // const studentProfileId =
+            //     await studentService.getStudentProfileId(facultyNumbersSelect);
+            // console.log("studentProfileId", studentProfileId);
+            const groupHalfId = await accountService.getGroupHalfId(studentMarksInfo);
+            console.log("groupHalfId", groupHalfId[0].group_half_id);
+            const studentMarks = await lecturerService.getGroupHalfMarks(groupHalfId[0].group_half_id);
+
+            console.log(studentMarks);
+            // res.render('admin/studentMarksResult', { marks, facultyNumbersSelect });
+            res.render("lecturer/reviewMarksResultForm", { studentMarks });
         } catch (error) {
             console.error(error);
             res.status(500).send("Internal Server Error");
@@ -238,16 +279,16 @@ module.exports = {
     },
     getGroupHalfs: async (req, res) => {
         try {
-            const { specialty_id, course } = req.body; // Extract specialty_id and course from request body
+            const { specialty, course } = req.body; // Extract specialty_id and course from request body
 
-            if (!specialty_id || !course) {
+            if (!specialty || !course) {
                 return res.status(400).json({ error: "Specialty ID and course are required." });
             }
 
-            console.log(`Specialty ID: ${specialty_id}, Course: ${course}`);
+            console.log(`Specialty ID: ${specialty}, Course: ${course}`);
 
             // Fetch group halves using specialty_id and course
-            const groupHalfs = await periodService.getGroupHalfs(specialty_id, course);
+            const groupHalfs = await periodService.getGroupHalfs(specialty, course);
 
             if (groupHalfs.length === 0) {
                 return res.status(404).json({ message: "No group halves found for this specialty and course." });
@@ -263,6 +304,18 @@ module.exports = {
         try {
             const fac_nums = await studentService.getFacNums(req.body.groupHalfId);
             res.json(fac_nums);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Internal Server Error");
+        }
+    },
+    getSubjectsHalf: async (req, res) => {
+        try {
+            const { groupHalfId } = req.body;
+            console.log(groupHalfId);
+            const subjectsHalf = await periodService.getSubjectsHalf(groupHalfId);
+            console.log(subjectsHalf);
+            res.json(subjectsHalf);
         } catch (error) {
             console.error(error);
             res.status(500).send("Internal Server Error");

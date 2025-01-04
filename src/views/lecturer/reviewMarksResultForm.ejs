@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/tableStyles.css" />
+    <title>Резултати от оценки</title>
+</head>
+<style>
+    /* Style for the table */
+    h1 {
+        text-align: center;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background-color: #f9f9f9;
+        margin-bottom: 1rem;
+    }
+
+    /* Table headers */
+    table th {
+        background-color: #555;
+        /* Green header */
+        color: white;
+        padding: 10px;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+
+    /* Table cells */
+    table td {
+        padding: 8px;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+
+    /* Alternate row colors */
+    table tbody tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    /* Hover effect for rows */
+    table tbody tr:hover {
+        background-color: #e6f7ff;
+    }
+
+    /* Table container */
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+</style>
+
+<body>
+    <%- include('../partials/lecturerHeader') %>
+
+        <div class="container page-content">
+            <h1>Резултати от оценки</h1>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Предмет</th>
+                        <% if (studentMarks.length> 0) { %>
+                            <% studentMarks[0].students.forEach(function(student) { %>
+                                <th>
+                                    <%= student.student_name %>
+                                </th>
+                                <% }) %>
+                                    <% } else { %>
+                                        <th>Няма студенти</th>
+                                        <% } %>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% studentMarks.forEach(function(subject) { %>
+                        <tr>
+                            <td>
+                                <%= subject.subject_name %>
+                            </td>
+                            <% subject.students.forEach(function(student) { %>
+                                <td>
+                                    <%= student.mark_value || '-' %>
+                                </td>
+                                <% }) %>
+                        </tr>
+                        <% }) %>
+                </tbody>
+            </table>
+
+            <div class="button-container">
+                <a href="/lecturer/review/marks" class="backButton">Назад</a>
+            </div>
+        </div>
+</body>
+
+</html>

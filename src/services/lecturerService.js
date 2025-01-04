@@ -7,7 +7,7 @@ module.exports = {
         const consultation = await lecturerRepository.addConsultation(consultationInformation);
         return consultation;
     },
-    deleteConsultation: async(consultationId) => {
+    deleteConsultation: async (consultationId) => {
         return await lecturerRepository.deleteConsultation(consultationId);
         // return consultation;
     }
@@ -28,5 +28,8 @@ module.exports = {
     addMark: async (subject, group, facultyNumber, grade) => {
         return await lecturerRepository.addMark(subject, group, facultyNumber, grade);
 
-    }
+    },
+    getGroupHalfMarks: async (groupHalfId) => {
+        return await lecturerRepository.getGroupHalfMarks(groupHalfId);
+    },
 }

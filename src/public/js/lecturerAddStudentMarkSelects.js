@@ -1,136 +1,3 @@
-// document.addEventListener('DOMContentLoaded', async () => {
-//     async function fetchSpecialties() {
-//         try {
-//             const response = await fetch(`/lecturer/get/specialties`);
-//             const specialties = await response.json();
-//             populateSpecialtiesSelect('selectSpecialties', specialties);
-//         } catch (error) {
-//             console.error('Error fetching specialties:', error);
-//         }
-//     }
-//     await fetchSpecialties();
-//     async function fetchMarks() {
-//         try {
-//             const response = await fetch(`/lecturer/get/marks`);
-//             const marks = await response.json();
-//             populateMarksSelect('selectMarks', marks);
-//         } catch (error) {
-//             console.error('Error fetching marks:', error);
-//         }
-//     }
-//     async function fetchSubjects() {
-//         try {
-//             const response = await fetch(`/lecturer/get/subjects`);
-//             const subjects = await response.json();
-//             populateSubjectSelect('selectSubject', subjects);
-//         } catch (error) {
-//             console.error('Error fetching subjects:', error);
-//         }
-//     }
-//     // await fetchSubjects()
-
-//     async function fetchGroups(subject_id) {
-//         try {
-//             const response = await fetch(`/lecturer/get/groups/${subject_id}`);
-//             const groups = await response.json();
-//             console.log("Groups:", groups);
-//             populateGroupSelect('selectGroup', groups);
-//         } catch (error) {
-//             console.error('Error fetching groups:', error);
-//         }
-//     }
-
-
-
-//     async function fetchFacultyNumbers(groupHalf) {
-//         // const subjectId = document.getElementById('selectSubject').value;
-//         // if (!subjectId) return;
-
-//         try {
-//             const response = await fetch(`/lecturer/get/groupfacNums/${groupHalf}`);
-//             const facultyNumbers = await response.json();
-//             populateFacultyNumsSelect('selectFacultyNumber', facultyNumbers);
-//         } catch (error) {
-//             console.error('Error fetching faculty numbers:', error);
-//         }
-//     }
-
-//     function populateSpecialtiesSelect(selectId, items) {
-//         const select = document.getElementById(selectId);
-//         console.log(select);
-//         select.innerHTML = '<option value="">Изберете специалност</option>';
-
-//         items.forEach(item => {
-//             const option = document.createElement('option');
-//             option.value = item.specialty_id; // Adjust according to your data structure
-//             option.textContent = item.specialty_name; // Adjust according to your data structure
-//             select.appendChild(option);
-//         });
-
-//     }
-//     function populateMarksSelect(selectId, items) {
-//         const select = document.getElementById(selectId);
-//         console.log(select);
-//         select.innerHTML = '<option value="">Изберете оценка</option>';
-
-//         items.forEach(item => {
-//             const option = document.createElement('option');
-//             option.value = item.specialty_id; // Adjust according to your data structure
-//             option.textContent = item.specialty_name; // Adjust according to your data structure
-//             select.appendChild(option);
-//         });
-
-//     }
-//     function populateFacultyNumsSelect(selectId, items) {
-//         const select = document.getElementById(selectId);
-//         console.log(select);
-//         select.innerHTML = '<option value="">Изберете ФН</option>';
-
-//         items.forEach(item => {
-//             const option = document.createElement('option');
-//             option.value = item.student_fac_num; // Adjust according to your data structure
-//             option.textContent = item.student_fac_num; // Adjust according to your data structure
-//             select.appendChild(option);
-//         });
-
-//     }
-
-//     function populateGroupSelect(selectId, items) {
-//         const select = document.getElementById(selectId);
-//         console.log(select);
-//         select.innerHTML = '<option value="">Изберете група</option>';
-
-//         items.forEach(item => {
-//             const option = document.createElement('option');
-//             option.value = item.group_half_id; // Adjust according to your data structure
-//             option.textContent = item.group_number + item.group_half_letter; // Adjust according to your data structure
-//             select.appendChild(option);
-//         });
-//         select.addEventListener("change", async function () {
-//             // console.log(select.value);
-//             await fetchFacultyNumbers(select.value);
-
-//         })
-//     }
-//     async function populateSubjectSelect(selectId, items) {
-//         const select = document.getElementById(selectId);
-//         console.log(select);
-//         select.innerHTML = '<option value="">Изберете предмет</option>';
-
-//         items.forEach(item => {
-//             const option = document.createElement('option');
-//             option.value = item.subject_id; // Adjust according to your data structure
-//             option.textContent = item.subject_name; // Adjust according to your data structure
-//             select.appendChild(option);
-//         });
-//         select.addEventListener("change", async function () {
-//             // console.log(select.value);
-//             await fetchGroups(select.value);
-
-//         })
-//     }
-
-// })
 document.addEventListener("DOMContentLoaded", async function () {
     const getDepartments = async () => {
         try {
@@ -156,57 +23,11 @@ document.addEventListener("DOMContentLoaded", async function () {
             console.error('Error fetching exercises:', error);
         }
     };
-    const getGroupHalfs = async (specialty, course) => {
-        try {
-            const response = await fetch(`/lecturer/get/groupHalfs`, {
-                method: "POST",
-                body: JSON.stringify({ specialty, course }),
-                headers: { 'Content-Type': 'application/json' }
-            });
-            return await response.json();
-        } catch (error) {
-            console.error('Error fetching group halves:', error);
-        }
-    };
-    async function fetchMarksAndCreateSelect() {
-        try {
-            const response = await fetch(`/lecturer/get/marks`);
-            const marks = await response.json();
-            await createMarksSelect(marks);
-        } catch (error) {
-            console.error('Error fetching marks:', error);
-        }
-    }
 
-    async function fetchAndCreateSubjectSelect(groupHalfId) {
-        try {
-            const response = await fetch(`/lecturer/get/subjectsHalf`, {
-                method: "POST",
-                body: JSON.stringify({ groupHalfId }),
-                headers: { 'Content-Type': 'application/json' }
-            });
+    // await createMarksSelect(marks);
 
-            const subjectsHalf = await response.json();
-            createSubjectSelect(subjectsHalf);
-        } catch (error) {
-            console.error('Error fetching subjects:', error);
-        }
-    }
 
-    async function fetchAndCreateFacNums(groupHalfId) {
-        try {
-            const response = await fetch(`/lecturer/get/facultyNumbers`, {
-                method: "POST",
-                body: JSON.stringify({ groupHalfId }),
-                headers: { 'Content-Type': 'application/json' }
-            });
 
-            const facultyNumbers = await response.json();
-            createFacNumsSelect(facultyNumbers);
-        } catch (error) {
-            console.error('Error fetching subjects:', error);
-        }
-    }
     const facultyChosen = document.querySelector('#selectFaculty');
     const departmentsInFaculty = document.querySelector('#selectDepartment');
     const departments = await getDepartments();
@@ -303,18 +124,60 @@ document.addEventListener("DOMContentLoaded", async function () {
             console.error('Invalid duration data');
         }
     }
+    ///////////// up to here it works
 
+    const getGroupHalfs = async (specialty, course) => {
+        try {
+            const response = await fetch(`/lecturer/get/groupHalfs`, {
+                method: "POST",
+                body: JSON.stringify({ specialty, course }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching group halves:', error);
+        }
+    };
 
-    // async function fetchAndCreateMarksSelect() {
-    //     try {
-    //         const response = await fetch(`/admin/get/marks`);
-    //         const marks = await response.json();
-    //         createMarksSelect(marks);
-    //     } catch (error) {
-    //         console.error('Error fetching marks:', error);
-    //     }
-    // };
+    async function fetchMarksAndCreateSelect() {
+        try {
+            const response = await fetch(`/lecturer/get/marks`);
+            const marks = await response.json();
+            await createMarksSelect(marks);
+        } catch (error) {
+            console.error('Error fetching marks:', error);
+        }
+    }
 
+    async function fetchAndCreateSubjectSelect(groupHalfId) {
+        try {
+            const response = await fetch(`/lecturer/get/subjectsHalf`, {
+                method: "POST",
+                body: JSON.stringify({ groupHalfId }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            const subjectsHalf = await response.json();
+            createSubjectSelect(subjectsHalf);
+        } catch (error) {
+            console.error('Error fetching subjects:', error);
+        }
+    }
+
+    async function fetchAndCreateFacNums(groupHalfId) {
+        try {
+            const response = await fetch(`/lecturer/get/facultyNumbers`, {
+                method: "POST",
+                body: JSON.stringify({ groupHalfId }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            const facultyNumbers = await response.json();
+            createFacNumsSelect(facultyNumbers);
+        } catch (error) {
+            console.error('Error fetching subjects:', error);
+        }
+    }
 
     const specialtySelect = document.querySelector("#selectSpecialty");
     const courseSelect = document.querySelector("#selectCourse");
@@ -371,7 +234,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         defaultOption.disabled = true;
         defaultOption.selected = true;
         groupNumberSelect.appendChild(defaultOption);
-
+        // console.log(groupHalfs);
         const uniqueGroupNumbers = [...new Set(groupHalfs.map(gh => gh.group_number))];
         for (const groupNumber of uniqueGroupNumbers) {
             const groupNumberOption = document.createElement('option');
@@ -571,6 +434,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         return submitButton;
     }
+
 
 
 

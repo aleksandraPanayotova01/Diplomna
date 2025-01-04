@@ -50,6 +50,7 @@ module.exports = {
             return await periodRepository.addPeriod(periodInformation);
         }
     },
+
     getStudentProfileInfo: async (studentProfileId) => {
         return await periodRepository.getStudentProfileInfo(studentProfileId);
     },

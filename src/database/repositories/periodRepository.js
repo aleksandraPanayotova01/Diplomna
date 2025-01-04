@@ -160,7 +160,7 @@ module.exports = {
     getSubjectsHalf: async (groupHalfId) => {
         try {
             const [result] = await pool.query(`
-                SELECT s.subject_id, s.subject_name
+                SELECT s.subject_id, s.subject_name, ghs.lecturer_id_fk,ghs.period_type_id_fk
                 FROM group_half_subject ghs
                 INNER JOIN \`subject\` s 
                 ON ghs.subject_id_fk = s.subject_id

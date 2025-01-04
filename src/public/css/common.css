@@ -238,7 +238,8 @@ body {
 
 .signButton,
 .submitLoginForm,
-.submit {
+.submit,
+.backButton {
     display: block;
     width: 100%;
     padding: 10px;
@@ -255,7 +256,8 @@ body {
 
 .signButton:hover,
 .submitLoginForm :hover,
-.submit:hover {
+.submit:hover,
+.backButton:hover {
     background-color: #0404065e;
     color: black;
     border: 1px solid black;
