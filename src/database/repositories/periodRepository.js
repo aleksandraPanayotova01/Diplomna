@@ -103,6 +103,54 @@ module.exports = {
             throw err;
         }
     },
+    getPeriod: async (periodInformation) => {
+        try {
+            const [result] = await pool.query(`
+                SELECT DISTINCT
+                    p.period_id, 
+                    p.weekday_id_fk, 
+                    p.period_start_time, 
+                    p.period_end_time, 
+                    b.building_abbreviation,
+                    r.room_number, 
+                    pt.period_type_name, 
+                    sj.subject_name, 
+                    g.group_number,
+                    gh.group_half_letter,
+                    g.course_number,
+                    s.specialty_abbreviation
+                FROM period p
+                INNER JOIN weekday w
+                    ON p.weekday_id_fk = w.weekday_id
+                INNER JOIN room r
+                    ON p.room_id_fk = r.room_id
+                INNER JOIN building b
+                    ON b.building_id = r.building_id_fk
+                INNER JOIN group_half_subject ghs
+                    ON p.group_half_subject_id_fk = ghs.group_half_subject_id
+                INNER JOIN \`subject\` sj
+                    ON ghs.subject_id_fk = sj.subject_id
+                INNER JOIN period_type pt
+                    ON p.period_type_id_fk = pt.period_type_id
+                INNER JOIN group_half gh
+                    ON gh.group_half_id = ghs.group_half_id_fk
+                INNER JOIN \`group\` g
+                    ON gh.group_id_fk=g.group_id
+                INNER JOIN specialty s
+                    ON g.specialty_id_fk=s.specialty_id
+                WHERE p.group_half_subject_id_fk= ?
+                AND p.period_type_id_fk=?
+            `, [periodInformation.groupHalfSubjectId,
+            periodInformation.periodType
+            ]);
+            console.log("periodInformation: ", periodInformation.groupHalfSubjectId,
+                periodInformation.periodType);
+            return result;
+        } catch (err) {
+            console.error('Error fetching periods for student:', err);
+            throw err;
+        }
+    },
     getStudentGroupAndHalf: async (studentProfileId) => {
         try {
             const [result] = await pool.query(`
@@ -160,7 +208,9 @@ module.exports = {
     getSubjectsHalf: async (groupHalfId) => {
         try {
             const [result] = await pool.query(`
-                SELECT s.subject_id, s.subject_name, ghs.lecturer_id_fk,ghs.period_type_id_fk
+                SELECT s.subject_id,
+                 s.subject_name, ghs.lecturer_id_fk,ghs.period_type_id_fk,
+                 ghs.group_half_subject_id
                 FROM group_half_subject ghs
                 INNER JOIN \`subject\` s 
                 ON ghs.subject_id_fk = s.subject_id
@@ -250,24 +300,28 @@ module.exports = {
             throw err;
         }
     },
-    getLecturers: async () => {
-        try {
-            const [result] = await pool.query(`
-            SELECT t.title_name, p.name, p.surname,l.lecturer_id
-            FROM lecturer l
-            INNER JOIN title t
-            ON l.title_id_fk=t.title_id
-            INNER JOIN lecturer_profile lp
-            ON lp.lecturer_id_fk=l.lecturer_id
-            INNER JOIN profile p
-            ON lp.profile_id_fk=p.profile_id
-            `);
-            return result;
-        } catch (err) {
-            console.error(err);
-            throw err;
-        }
-    },
+    // getLecturers: async () => {
+    //     try {
+    //         const [result] = await pool.query(`
+    //         SELECT t.title_name, p.name, p.surname,l.lecturer_id,
+    //         ls.period_type_id_fk,
+    //         ls.subject_id_fk
+    //         FROM lecturer l
+    //         INNER JOIN title t
+    //         ON l.title_id_fk=t.title_id
+    //         INNER JOIN lecturer_profile lp
+    //         ON lp.lecturer_id_fk=l.lecturer_id
+    //         INNER JOIN \`profile\` p  
+    //         ON lp.profile_id_fk=p.profile_id
+    //         INNER JOIN lecturer_subject ls
+    //         ON l.lecturer_id=lp.lecturer_id_fk
+    //         `);
+    //         return result;
+    //     } catch (err) {
+    //         console.error(err);
+    //         throw err;
+    //     }
+    // },
     getPeriodTypes: async () => {
         try {
             const [result] = await pool.query(`

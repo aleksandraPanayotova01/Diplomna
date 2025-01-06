@@ -10,7 +10,26 @@
     <title>Преглед на предмети за половинки</title>
 
 </head>
+<style>
+        .container {
+            padding: 20px;
+        }
 
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+    </style>
 <body>
     <%- include('../partials/lecturerHeader') %>
 
@@ -18,56 +37,59 @@
             <h1>Преглед на предмети за половинки</h1>
 
             <form id="addMarkForm" method="POST" action="/lecturer/review/marks">
-                <div class="formInput">
-                    <label for="specialtySelect">Специалност</label>
-                    <select name="specialty" id="specialtySelect" required>
-                        <option value="" disabled selected>Изберете специалност</option>
-                        <% studentMarksInfo.specialties.forEach(function(specialty) { %>
-                            <option value="<%= specialty.specialty_id %>">
-                                <%= specialty.specialty_name %>
-                            </option>
-                            <% }) %>
-                    </select>
+                <div id="groupOptions">
+                    <div class="form-group">
+                        <label for="specialty">Специалност:</label>
+                        <select id="specialty" name="specialty" required>
+                            <option value="">-- Изберете --</option>
+                            <% specialties.forEach(function(specialty) { %>
+                                <option value="<%= specialty.specialty_id %>">
+                                    <%= specialty.specialty_name %>
+                                        (<%= specialty.specialty_abbreviation %>)
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="courseNumber">Курс:</label>
+                        <select id="courseNumber" name="courseNumber" required>
+                            <option value="">-- Изберете --</option>
+                            <% courses.forEach(function(course) { %>
+                                <option value="<%= course.course_number %>">
+                                    <%= course.course_number %>
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="groupNumber">Номер на група:</label>
+                        <select id="groupNumber" name="groupNumber" required>
+                            <option value="">-- Изберете --</option>
+                            <% groups.forEach(function(group) { %>
+                                <option value="<%= group.group_number %>">
+                                    <%= group.group_number %>
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="groupHalfLetter">Половинка:</label>
+                        <select id="groupHalfLetter" name="groupHalfLetter" required>
+                            <option value="">-- Изберете --</option>
+                            <% groupHalves.forEach(function(half) { %>
+                                <option value="<%= half.group_half_letter %>">
+                                    <%= half.group_half_letter %>
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="formInput">
-                    <label for="courseSelect">Курс</label>
-                    <select name="courseNumber" id="courseSelect" required>
-                        <option value="" disabled selected>Изберете курс</option>
-                        <% studentMarksInfo.courses.forEach(function(course) { %>
-                            <option value="<%= course.course_number %>">
-                                <%= course.course_number %>
-                            </option>
-                            <% }) %>
-                    </select>
-                </div>
 
-                <div class="formInput">
-                    <label for="groupSelect">Група</label>
-                    <select name="groupNumber" id="groupSelect" required>
-                        <option value="" disabled selected>Изберете група</option>
-                        <% studentMarksInfo.groups.forEach(function(group) { %>
-                            <option value="<%= group.group_number %>">
-                                <%= group.group_number %>
-                            </option>
-                            <% }) %>
-                    </select>
-                </div>
-
-                <div class="formInput">
-                    <label for="groupHalfSelect">Половинка на група</label>
-                    <select name="groupHalfLetter" id="groupHalfSelect" onchange="fetchAndCreateFacNums()" required>
-                        <option value="" disabled selected>Изберете половинка на група</option>
-                        <% studentMarksInfo.groupHalves.forEach(function(groupHalf) { %>
-                            <option value="<%= groupHalf.group_half_letter %>">
-                                <%= groupHalf.group_half_letter %>
-                            </option>
-                            <% }) %>
-                    </select>
-                </div>
-
-
-                <button type="submit" class="submit">Преглед на оценки</button>
+                <button type="submit" class="submit">Преглед на предмети</button>
             </form>
         </div>
 </body>

@@ -64,6 +64,12 @@ module.exports = {
     showAddSubjectForm: async (req, res) => {
         res.render("admin/addSubjectForm");
     },
+
+    showUpdatePeriodScheduleForm: async (req, res) => {
+        const faculties = await accountService.getFaculties();
+        res.render("admin/updatePeriodScheduleForm", { faculties });
+    },
+
     updateSubjectForm: async (req, res) => {
         res.render("admin/updateSubjectForm");
     },
@@ -108,10 +114,10 @@ module.exports = {
             specialties,
             courses,
             groups,
-            groupHalves
+            groupHalves,
         }//facNums added dynamicaly after geting groupHalfId
         console.log(studentMarksInfo);
-        res.render("admin/updateStudentMarkForm.ejs", { studentMarksInfo });
+        res.render('admin/updateStudentMarkForm', { studentMarksInfo });
     },
     showAdminProfile: async (req, res) => {
         try {
@@ -286,7 +292,7 @@ module.exports = {
             }
             // res.render('admin/scheduleResults', { schedule: JSON.stringify(schedule) });
             else {
-                res.redirect('/reviewSubjectsHalfs');
+                res.redirect('admin/review/subjectsHalf');
             }
         } catch (err) {
             console.error(err);
@@ -307,6 +313,25 @@ module.exports = {
             const titles = await accountService.getTitles();
             const lecturers = await accountService.getLecturers();
             res.render("admin/deleteSubjectToHalfsForm", { titles, lecturers });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Internal Server Error");
+        }
+    },
+    showDeleteMarkForm: async (req, res) => {
+        try {
+            const specialties = await accountService.getSpecialties();
+            const courses = await accountService.getCourses();
+            const groups = await accountService.getGroupNumbers();
+            const groupHalves = await accountService.getGroupHalfs();
+            const studentMarksInfo = {
+                specialties,
+                courses,
+                groups,
+                groupHalves,
+            }
+
+            res.render("admin/deleteMarkForm", { studentMarksInfo });
         } catch (error) {
             console.error(error);
             res.status(500).send("Internal Server Error");
@@ -411,7 +436,7 @@ module.exports = {
     },
     getLecturers: async (req, res) => {
         try {
-            const lecturers = await periodService.getLecturers();
+            const lecturers = await accountService.getLecturers();
             res.json(lecturers);
         } catch (error) {
             console.error(error);
@@ -503,19 +528,33 @@ module.exports = {
             res.status(500).send("Internal Server Error");
         }
     },
-    getLecturers: async (req, res) => {
+    // getLecturers: async (req, res) => {
+    //     try {
+    //         const lecturers = await periodService.getLecturers();
+    //         res.json(lecturers);
+    //     } catch (error) {
+    //         console.error(error);
+    //         res.status(500).send("Internal Server Error");
+    //     }
+    // },
+    getPeriodTypes: async (req, res) => {
         try {
-            const lecturers = await periodService.getLecturers();
-            res.json(lecturers);
+            const periodTypes = await periodService.getPeriodTypes();
+            res.json(periodTypes);
         } catch (error) {
             console.error(error);
             res.status(500).send("Internal Server Error");
         }
     },
-    getPeriodTypes: async (req, res) => {
+    getPeriod: async (req, res) => {
         try {
-            const periodTypes = await periodService.getPeriodTypes();
-            res.json(periodTypes);
+            const body = req.body;
+            const periodInformation = {
+                groupHalfSubjectId: body.groupHalfSubjectId,
+                periodType: body.periodType,
+            }
+            const period = await periodService.getPeriod(periodInformation);
+            res.json(period);
         } catch (error) {
             console.error(error);
             res.status(500).send("Internal Server Error");
@@ -913,15 +952,11 @@ module.exports = {
                 subjectService.checkIfSubjectIsAddedToGroupHalf(subjectInformation),
             ]);
 
-            if (!subjectAddedToHalf && !subjectAddedToLecturer) {
+            if (!subjectAddedToHalf || !subjectAddedToLecturer) {
                 await subjectService.addSubjectToGroup(subjectInformation);
                 req.flash('success', 'Успешно добавен предмет.');
             } else if (subjectAddedToHalf && subjectAddedToLecturer) {
                 req.flash('error', 'Предметът вече е добавен за избраната група и преподавател.');
-            } else if (subjectAddedToHalf) {
-                req.flash('error', 'Предметът вече е добавен за избраната група.');
-            } else if (subjectAddedToLecturer) {
-                req.flash('error', 'Предметът вече е добавен за избрания преподавател.');
             }
 
             res.redirect("/admin/add/subjectToHalfs");
@@ -991,7 +1026,69 @@ module.exports = {
             // Send a 500 status code indicating an internal server error
             res.status(500).send("Internal Server Error");
         }
-    }, addMark: async (req, res) => {
+    },
+
+
+    updatePeriod: async (req, res) => {
+        try {
+            // Destructure the necessary values from the request body
+            const { period_start_time, period_end_time,
+                weekday, room, lecturer, selectSubject,
+                period_type, selectGroupHalf } = req.body;
+
+            // Log the incoming request body (for debugging purposes)
+
+
+            // Prepare the information needed to get the groupHalfSubjectId
+            const groupHalfSubjectInformation = {
+                selectSubject,
+                selectGroupHalf
+            };
+
+            // Call the getGroupHalfSubjectId function to retrieve the groupHalfSubjectId
+            const groupHalfSubjectIdResult = await periodService.getGroupHalfSubjectId(groupHalfSubjectInformation);
+
+            // Extract the groupHalfSubjectId from the result
+            const groupHalfSubjectId = groupHalfSubjectIdResult[0]?.group_half_subject_id; // Adjust based on the structure of your result
+
+            if (!groupHalfSubjectId) {
+                throw new Error("groupHalfSubjectId not found");
+            }
+
+            // Log the groupHalfSubjectId (for debugging purposes)
+            // console.log("Body: ", req.body);
+            // console.log("groupHalfSubjectId: ", groupHalfSubjectId);
+
+            // Prepare the periodInformation object, now including the groupHalfSubjectId
+            const periodInformation = {
+                period_start_time,
+                period_end_time,
+                weekday,
+                room,
+                lecturer,
+                group_half_subject_id_fk: groupHalfSubjectId, // Use the correct field name in your table
+                period_type,
+                groupHalfId: selectGroupHalf
+
+            };
+
+            // Log the final periodInformation object (for debugging purposes)
+            // console.log("Period information: ", periodInformation);
+
+            // Call the service to add the period
+            await periodService.addPeriod(periodInformation);
+
+            // Redirect to the period schedule page after successful addition
+            res.redirect("/admin/add/periodSchedule");
+        } catch (error) {
+            // Log any errors that occur during the process
+            console.error(error);
+
+            // Send a 500 status code indicating an internal server error
+            res.status(500).send("Internal Server Error");
+        }
+    },
+    addMark: async (req, res) => {
         try {
             const body = req.body;
             markInformation = {
@@ -1048,6 +1145,47 @@ module.exports = {
             res.status(500).send("Internal Server Error");
         }
     },
+    deleteMark: async (req, res) => {
+        try {
+            const body = req.body;
+            markInformation = {
+                semester: body.courseNumber,
+                groupNumber: body.groupNumber,
+                groupHalf: body.groupHalfLetter,
+                subject: body.subjectSelect,//subject id
+                facNum: body.facultyNumbersSelect,
+            }
+            console.log("Mark information: ", markInformation);
+
+            const markExists = await studentService.checkIfMarkExists(markInformation);
+            console.log(markExists);
+            if (!markExists) {
+                req.flash('error', 'Mark does not exist.');
+                return res.redirect('/admin/review/studentMarks');
+            }
+            await studentService.deleteMark(markInformation);
+
+            req.flash('success', 'Оценката е изтрита успешно.');
+            const facNum = body.facultyNumbersSelect;
+
+            console.log(facNum);
+            const studentProfileId =
+                await studentService.getStudentProfileId(facNum);
+            console.log("studentProfileId", studentProfileId);
+            const marks = await studentService.getStudentMarks(studentProfileId[0].student_profile_id);
+            console.log(marks);
+            res.redirect('/admin/review/studentMarks');
+
+            // res.redirect("/admin/homePage");
+        } catch (error) {
+            // Log any errors that occur during the process
+
+            console.error(error);
+            req.flash('error', 'Неуспешно изтриване на оценка. Опитайте отново.');
+            // Send a 500 status code indicating an internal server error
+            res.status(500).send("Internal Server Error");
+        }
+    },
     updateSubjectToHalfs: async (req, res) => {
         try {
             const body = req.body;
@@ -1065,12 +1203,30 @@ module.exports = {
             res.redirect("/admin/update/subjectToHalfs");
             // res.redirect("/admin/homePage");
         } catch (error) {
-            // Log any errors that occur during the process
-
             console.error(error);
             req.flash('error', 'Неуспешна промяна на преподавател за половинка. Опитайте отново.');
             res.redirect("/admin/homePage");
-            // Send a 500 status code indicating an internal server error
+        }
+    },
+    deleteSubjectToHalfs: async (req, res) => {
+        try {
+            const body = req.body;
+            subjectInformation = {
+                specialtyId: body.specialtyId,
+                semesterNum: body.selectCourse,
+                groupHalfId: body.selectGroupHalf,
+                subjectId: body.selectSubject,
+                periodTypeId: body.selectPeriodType,
+            }
+            console.log("Subject information: ", subjectInformation);
+            await subjectService.deleteSubjectToHalf(subjectInformation);
+            req.flash('success', 'Успешно изтриване на предмет за половинка.');
+            res.redirect("/admin/delete/subjectToHalfs");
+            // res.redirect("/admin/homePage");
+        } catch (error) {
+            console.error(error);
+            req.flash('error', 'Неуспешно изтриване на предмет за половинка. Опитайте отново.');
+            res.redirect("/admin/homePage");
         }
     },
 

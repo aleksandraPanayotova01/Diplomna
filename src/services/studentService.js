@@ -22,6 +22,13 @@ module.exports = {
     updateMark: async (markInformation) => {
         return await studentRepository.updateMark(markInformation);
     },
+    deleteMark: async (markInformation) => {
+        return await studentRepository.deleteMark(markInformation);
+    },
+    checkIfMarkExists: async (markInformation) => {
+        return await studentRepository.checkIfMarkExists(markInformation);
+    },
+
     getFacNums: async (groupHalfId) => {
         return await studentRepository.getFacNums(groupHalfId);
     },

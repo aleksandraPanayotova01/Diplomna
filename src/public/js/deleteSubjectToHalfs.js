@@ -253,74 +253,74 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
     // Fetching and creating the lecturer select input
-    async function fetchAndCreateLecturerSelect(lecturerId) {
-        const lecturers = await getLecturers();
-        const form = document.querySelector("#deleteSubjectForm");
+    // async function fetchAndCreateLecturerSelect(lecturerId) {
+    //     const lecturers = await getLecturers();
+    //     const form = document.querySelector("#deleteSubjectForm");
 
-        const existingLecturerDiv = form.querySelector('.formInput.lecturers');
-        if (existingLecturerDiv) existingLecturerDiv.remove();
+    //     const existingLecturerDiv = form.querySelector('.formInput.lecturers');
+    //     if (existingLecturerDiv) existingLecturerDiv.remove();
 
-        const lecturersDiv = document.createElement("div");
-        lecturersDiv.classList.add("formInput", "lecturers");
+    //     const lecturersDiv = document.createElement("div");
+    //     lecturersDiv.classList.add("formInput", "lecturers");
 
-        const labelLecturerSelect = document.createElement('label');
-        labelLecturerSelect.textContent = "Преподавател";
-        lecturersDiv.appendChild(labelLecturerSelect);
+    //     const labelLecturerSelect = document.createElement('label');
+    //     labelLecturerSelect.textContent = "Преподавател";
+    //     lecturersDiv.appendChild(labelLecturerSelect);
 
-        const lecturerSelect = document.createElement('select');
-        lecturerSelect.name = "selectLecturer";
-        lecturerSelect.classList.add("selectLecturer");
-        lecturersDiv.appendChild(lecturerSelect);
+    //     const lecturerSelect = document.createElement('select');
+    //     lecturerSelect.name = "selectLecturer";
+    //     lecturerSelect.classList.add("selectLecturer");
+    //     lecturersDiv.appendChild(lecturerSelect);
 
-        const defaultOption = document.createElement('option');
-        defaultOption.textContent = "Изберете преподавател";
-        defaultOption.value = "";
-        defaultOption.disabled = true;
-        defaultOption.selected = true;
-        lecturerSelect.appendChild(defaultOption);
+    //     const defaultOption = document.createElement('option');
+    //     defaultOption.textContent = "Изберете преподавател";
+    //     defaultOption.value = "";
+    //     defaultOption.disabled = true;
+    //     defaultOption.selected = true;
+    //     lecturerSelect.appendChild(defaultOption);
 
-        for (const lecturer of lecturers) {
-            const lecturerOption = document.createElement('option');
-            lecturerOption.textContent = `${lecturer.title_name} ${lecturer.name} ${lecturer.surname}`;
-            lecturerOption.value = lecturer.lecturer_id;
-            if (lecturerId == lecturer.lecturer_id) {
-                lecturerOption.selected = true;
-            }
-            lecturerSelect.appendChild(lecturerOption);
-        }
+    //     for (const lecturer of lecturers) {
+    //         const lecturerOption = document.createElement('option');
+    //         lecturerOption.textContent = `${lecturer.title_name} ${lecturer.name} ${lecturer.surname}`;
+    //         lecturerOption.value = lecturer.lecturer_id;
+    //         if (lecturerId == lecturer.lecturer_id) {
+    //             lecturerOption.selected = true;
+    //         }
+    //         lecturerSelect.appendChild(lecturerOption);
+    //     }
 
-        form.appendChild(lecturersDiv);
+    //     form.appendChild(lecturersDiv);
 
-        const submitDiv = document.createElement("div");
-        submitDiv.classList.add("formInput");
+    //     const submitDiv = document.createElement("div");
+    //     submitDiv.classList.add("formInput");
 
-        let submitButton = form.querySelector('button');
-        if (!submitButton) {
-            submitButton = document.createElement('button');
-            submitButton.classList.add('submit');
-            submitButton.textContent = "Изтриване";
-            // submitButton.disabled = true; // Start with the button disabled
-            submitDiv.appendChild(submitButton);
-            form.appendChild(submitDiv);
-        }
+    //     let submitButton = form.querySelector('button');
+    //     if (!submitButton) {
+    //         submitButton = document.createElement('button');
+    //         submitButton.classList.add('submit');
+    //         submitButton.textContent = "Изтриване";
+    //         // submitButton.disabled = true; // Start with the button disabled
+    //         submitDiv.appendChild(submitButton);
+    //         form.appendChild(submitDiv);
+    //     }
 
-        // const periodTypeSelect = form.querySelector('.selectPeriodType');
+    //     // const periodTypeSelect = form.querySelector('.selectPeriodType');
 
-        // check if the selection changed and enable/disable the submit button
-        // const checkIfSelectionChanged = () => {
-        //     // const selectedPeriodType = periodTypeSelect ? periodTypeSelect.value : null;
-        //     submitButton.disabled = false;
+    //     // check if the selection changed and enable/disable the submit button
+    //     // const checkIfSelectionChanged = () => {
+    //     //     // const selectedPeriodType = periodTypeSelect ? periodTypeSelect.value : null;
+    //     //     submitButton.disabled = false;
 
-        // };
+    //     // };
 
-        // Add event listener for lecturer select
-        // lecturerSelect.addEventListener('change', checkIfSelectionChanged);
+    //     // Add event listener for lecturer select
+    //     // lecturerSelect.addEventListener('change', checkIfSelectionChanged);
 
-        // Add event listener for period type select if it exists
-        // if (periodTypeSelect) {
-        //     periodTypeSelect.addEventListener('change', checkIfSelectionChanged);
-        // }
-    }
+    //     // Add event listener for period type select if it exists
+    //     // if (periodTypeSelect) {
+    //     //     periodTypeSelect.addEventListener('change', checkIfSelectionChanged);
+    //     // }
+    // }
     // function checkIfSelectionChanged(lecturerSelect, submitButton) {
     //     const selectedLecturer = lecturerSelect.value;
     //     // const selectedPeriodType = periodTypeSelect.value;
@@ -332,13 +332,18 @@ document.addEventListener("DOMContentLoaded", async function () {
     //         submitButton.disabled = true;
     //     }
     // }
-    function handlePeriodTypeChange(event, lecturers, lecturerParagraph) {
+    function handlePeriodTypeChange(event, lecturers) {
         const selectedPeriodTypeId = event.target.value;
+        const selectedSubjectId = document.querySelector(".selectSubject").value;
+
+
+        const lecturerParagraph = document.querySelector(".selectLecturer");
 
         if (selectedPeriodTypeId) {
             // Find the lecturer associated with the new period type
             const associatedLecturer = lecturers.find(lecturer =>
-                lecturer.period_type_id === parseInt(selectedPeriodTypeId)
+                lecturer.period_type_id_fk === parseInt(selectedPeriodTypeId) &&
+                lecturer.subject_id_fk === parseInt(selectedSubjectId)
             );
 
             if (associatedLecturer) {
@@ -357,7 +362,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const periodTypes = await getPeriodTypes();
         const form = document.querySelector("#deleteSubjectForm");
         const lecturers = await getLecturers();
-        const lecturerParagraph = await fetchAndCreateLecturerSelect();
+        // const lecturerParagraph = await fetchAndCreateLecturerSelect();
 
         const existingPeriodTypeDiv = form.querySelector('.formInput.periodType');
         if (existingPeriodTypeDiv) existingPeriodTypeDiv.remove();
@@ -392,9 +397,21 @@ document.addEventListener("DOMContentLoaded", async function () {
             periodTypeSelect.appendChild(periodTypeOption);
         }
         periodTypeSelect.addEventListener('change', (event) => {
-            handlePeriodTypeChange(event, lecturers, lecturerParagraph);
+            handlePeriodTypeChange(event, lecturers);
         });
         form.appendChild(periodTypeDiv);
+        const submitDiv = document.createElement("div");
+        submitDiv.classList.add("formInput");
+
+        let submitButton = form.querySelector('button');
+        if (!submitButton) {
+            submitButton = document.createElement('button');
+            submitButton.classList.add('submit');
+            submitButton.textContent = "Изтриване";
+            // submitButton.disabled = true;
+            submitDiv.appendChild(submitButton);
+            form.appendChild(submitDiv);
+        }
     }
     async function handleSubjectChange(event, subjectsHalf) {
         const selectedSubjectId = event.target.value;
@@ -407,18 +424,8 @@ document.addEventListener("DOMContentLoaded", async function () {
                 // Извиквайте fetchAndCreatePeriodTypeSelect за да добавите вид предмет
                 await fetchAndCreatePeriodTypeSelect(subjectHalf.period_type_id_fk);
 
-                // Добавете заглавие "Редактиране"
-                // const form = document.querySelector("#deleteSubjectForm");
-                // let existingEditHeader = form.querySelector('.editHeader');
-                // if (!existingEditHeader) {
-                //     const editHeader = document.createElement('h2');
-                //     editHeader.textContent = "Редактиране";
-                //     editHeader.classList.add("editHeader");
-                //     form.appendChild(editHeader);
-                // }
 
-                // Извикайте fetchAndCreateLecturerSelect с ID на преподавателя
-                await fetchAndCreateLecturerSelect(subjectHalf.lecturer_id_fk);
+                // await fetchAndCreateLecturerSelect(subjectHalf.lecturer_id_fk);
             } else {
                 console.warn("Не е намерен избраният предмет.");
             }
@@ -442,67 +449,67 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
 
-    async function fetchAndCreateLecturerSelect(lecturerId) {
-        const lecturers = await getLecturers();
-        const form = document.querySelector("#deleteSubjectForm");
+    // async function fetchAndCreateLecturerSelect(lecturerId) {
+    //     const lecturers = await getLecturers();
+    //     const form = document.querySelector("#deleteSubjectForm");
 
-        const existingLecturerDiv = form.querySelector('.formInput.lecturers');
-        if (existingLecturerDiv) existingLecturerDiv.remove();
+    //     const existingLecturerDiv = form.querySelector('.formInput.lecturers');
+    //     if (existingLecturerDiv) existingLecturerDiv.remove();
 
-        const lecturersDiv = document.createElement("div");
-        lecturersDiv.classList.add("formInput", "lecturers");
+    //     const lecturersDiv = document.createElement("div");
+    //     lecturersDiv.classList.add("formInput", "lecturers");
 
-        const labelLecturerParagraph = document.createElement('label');
-        labelLecturerParagraph.textContent = "Преподавател";
-        lecturersDiv.appendChild(labelLecturerParagraph);
-        const lecturerParagraph = document.createElement('p');
-        lecturerParagraph.name = "selectLecturer";
-        lecturerParagraph.classList.add("selectLecturer");
-        lecturersDiv.appendChild(lecturerParagraph);
+    //     const labelLecturerParagraph = document.createElement('label');
+    //     labelLecturerParagraph.textContent = "Преподавател";
+    //     lecturersDiv.appendChild(labelLecturerParagraph);
+    //     const lecturerParagraph = document.createElement('p');
+    //     lecturerParagraph.name = "selectLecturer";
+    //     lecturerParagraph.classList.add("selectLecturer");
+    //     lecturersDiv.appendChild(lecturerParagraph);
 
-        // const defaultOption = document.createElement('option');
-        // defaultOption.textContent = "Изберете преподавател";
-        // defaultOption.value = "";
-        // defaultOption.disabled = true;
-        // defaultOption.selected = true;
-        // lecturerSelect.appendChild(defaultOption);
+    //     // const defaultOption = document.createElement('option');
+    //     // defaultOption.textContent = "Изберете преподавател";
+    //     // defaultOption.value = "";
+    //     // defaultOption.disabled = true;
+    //     // defaultOption.selected = true;
+    //     // lecturerSelect.appendChild(defaultOption);
 
-        for (const lecturer of lecturers) {
-            // const lecturerOption = document.createElement('option');
+    //     for (const lecturer of lecturers) {
+    //         // const lecturerOption = document.createElement('option');
 
-            if (lecturerId == lecturer.lecturer_id) {
-                lecturerParagraph.textContent = `${lecturer.title_name} ${lecturer.name} ${lecturer.surname}`;
-                lecturerParagraph.value = lecturer.lecturer_id;
-                break;
-            }
-        }
+    //         if (lecturerId == lecturer.lecturer_id) {
+    //             lecturerParagraph.textContent = `${lecturer.title_name} ${lecturer.name} ${lecturer.surname}`;
+    //             lecturerParagraph.value = lecturer.lecturer_id;
+    //             break;
+    //         }
+    //     }
 
-        form.appendChild(lecturersDiv);
+    //     form.appendChild(lecturersDiv);
 
-        const submitDiv = document.createElement("div");
-        submitDiv.classList.add("formInput");
+    //     const submitDiv = document.createElement("div");
+    //     submitDiv.classList.add("formInput");
 
-        let submitButton = form.querySelector('button');
-        if (!submitButton) {
-            submitButton = document.createElement('button');
-            submitButton.classList.add('submit');
-            submitButton.textContent = "Изтриване";
-            // submitButton.disabled = true;
-            submitDiv.appendChild(submitButton);
-            form.appendChild(submitDiv);
-        }
+    //     let submitButton = form.querySelector('button');
+    //     if (!submitButton) {
+    //         submitButton = document.createElement('button');
+    //         submitButton.classList.add('submit');
+    //         submitButton.textContent = "Изтриване";
+    //         // submitButton.disabled = true;
+    //         submitDiv.appendChild(submitButton);
+    //         form.appendChild(submitDiv);
+    //     }
 
-        const periodTypeSelect = form.querySelector('.selectPeriodType');
-        console.log('PeriodTypeSelect exists:', !!periodTypeSelect);
+    //     const periodTypeSelect = form.querySelector('.selectPeriodType');
+    //     console.log('PeriodTypeSelect exists:', !!periodTypeSelect);
 
-        // lecturerSelect.addEventListener('change', () => {
-        //     if (periodTypeSelect) {
-        //         submitButton.disabled = !lecturerParagraph.value;
-        //     }
-        // });
+    //     // lecturerSelect.addEventListener('change', () => {
+    //     //     if (periodTypeSelect) {
+    //     //         submitButton.disabled = !lecturerParagraph.value;
+    //     //     }
+    //     // });
 
 
-    }
+    // }
 
     // Populate specialties on page load
     await populateSpecialtiesDropdown();

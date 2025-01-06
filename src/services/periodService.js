@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const periodRepository = require('../database/repositories/periodRepository');
+const { getPeriod } = require('../controllers/adminController');
 module.exports = {
     getWeekdays: async () => {
         return await periodRepository.getWeekdays();;
@@ -8,9 +9,12 @@ module.exports = {
         console.log("INSIDE SERVICE FOR ROOMS");
         return await periodRepository.getRooms();
     },
-    getLecturers: async () => {
-        return await periodRepository.getLecturers();
+    getPeriod: async (periodInformation) => {
+        return await periodRepository.getPeriod(    );
     },
+    //    getLecturers: async () => {
+    //         return await periodRepository.getLecturers();
+    //     }, 
     getPeriodsForStudent: async (studentProfileId) => {
         return await periodRepository.getPeriodsForStudent(studentProfileId);
     },

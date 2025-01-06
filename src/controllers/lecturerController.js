@@ -104,7 +104,12 @@ module.exports = {
             }//facNums added dynamicaly after geting groupHalfId
             console.log("Student marks info:", groupHalfSubjectInfo);
 
-            res.render("lecturer/reviewGroupHalfSubjects", { groupHalfSubjectInfo });
+            res.render("lecturer/reviewGroupHalfSubjects", {
+                specialties,
+                courses,
+                groups,
+                groupHalves
+            });
         } catch (error) {
             console.error(error);
             res.status(500).send("Internal Server Error");
@@ -113,18 +118,36 @@ module.exports = {
     reviewMarksResult: async (req, res) => {
         try {
 
-            const studentMarksInfo = { specialty, courseNumber, groupNumber, groupHalfLetter } = req.body;
-            // console.log(facultyNumbersSelect);
-            // const studentProfileId =
-            //     await studentService.getStudentProfileId(facultyNumbersSelect);
-            // console.log("studentProfileId", studentProfileId);
-            const groupHalfId = await accountService.getGroupHalfId(studentMarksInfo);
-            console.log("groupHalfId", groupHalfId[0].group_half_id);
-            const studentMarks = await lecturerService.getGroupHalfMarks(groupHalfId[0].group_half_id);
-
-            console.log(studentMarks);
+             const { specialty, courseNumber, groupNumber, groupHalfLetter } =
+                         req.body;
+                     console.log(specialty, courseNumber, groupNumber, groupHalfLetter);
+         
+         
+                     // Get the group half ID
+                     const groupHalfId = await accountService.getGroupHalfId({
+                         specialty,
+                         courseNumber,
+                         groupNumber,
+                         groupHalfLetter
+                     });
+                     console.log("GroupHalfId:", groupHalfId);
+         
+                     // Assuming groupHalfIds is an array, you might need to handle multiple IDs
+                     if (groupHalfId.length > 0) {
+                         // const groupHalfId = await accountService.getGroupHalfId(groupHalfInfo);
+                         const subjects = await periodService.getSubjectsHalf(groupHalfId[0].group_half_id); // Adjust if necessary
+                         console.log("Group Schedule:", subjects.length);
+         
+                         // Pass periods data to the EJS template
+                         res.render('lecturer/reviewSubjectsResult',
+                             { subjects: JSON.stringify(subjects), specialty, courseNumber, groupNumber, groupHalfLetter });
+                     }
+                     // res.render('admin/scheduleResults', { schedule: JSON.stringify(schedule) });
+                     else {
+                         res.redirect('lecturer/review/groupHalfSubjects');
+                     }
             // res.render('admin/studentMarksResult', { marks, facultyNumbersSelect });
-            res.render("lecturer/reviewMarksResultForm", { studentMarks });
+            // res.render("lecturer/reviewMarksResultForm", { studentMarks });
         } catch (error) {
             console.error(error);
             res.status(500).send("Internal Server Error");

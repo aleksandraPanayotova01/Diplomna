@@ -76,7 +76,7 @@ module.exports = {
 
     addSubjectToHalf: async (subjectInformation) => {
         try {
-
+            console.log("Added to half");
             const [result] = await pool.query(`
                 INSERT INTO group_half_subject
                 (group_half_id_fk, subject_id_fk,
@@ -97,6 +97,7 @@ module.exports = {
     },
     addSubjectToLecturer: async (subjectInformation) => {
         try {
+            console.log("Added to lecturer");
             const [result] = await pool.query(`
                 INSERT INTO lecturer_subject
                 (lecturer_id_fk, subject_id_fk,period_type_id_fk)
@@ -151,6 +152,29 @@ module.exports = {
     },
     updateGroupHalfLecturer: async (subjectInformation) => {
         try {
+            const getGroupHalfSubject = await pool.query(`
+                SELECT group_half_subject_id
+                WHERE group_half_id_fk=?
+                AND subject_id_fk=?
+                AND period_type_id_fk=?
+                AND lecturer_id_fk=?
+                AND subject_semester_number=?
+                `, [
+                subjectInformation.groupHalfId,
+                subjectInformation.subjectId,
+                subjectInformation.periodTypeId,
+                subjectInformation.lecturerId,
+                subjectInformation.semesterNum
+            ]);
+            const updatePeriod = await pool.query(`
+                UPDATE period
+                SET lecturer_id_fk=?
+                WHERE group_half_subject_id_fk=?
+                AND period_type_id_fk=?
+                `, [subjectInformation.lecturerId,
+            getTitleId[0][0]['group_half_subject_id'],
+            subjectInformation.periodTypeId
+            ]);
             const [result] = await pool.query(`
                 UPDATE group_half_subject
                 SET lecturer_id_fk=?
@@ -188,6 +212,47 @@ module.exports = {
                 `, [0, subjectInformation.subjectName,
                 subjectInformation.subjectAbbreviation,
                 subjectInformation.specialtyId])
+        }
+        catch (err) {
+            console.error('Error fetching periods for student:', err);
+            throw err;
+        };
+    },
+    deleteSubjectToHalf: async (subjectInformation) => {
+        try {
+            console.log("Deleting: ", subjectInformation.groupHalfId,
+                subjectInformation.subjectId,
+                subjectInformation.periodTypeId,
+                subjectInformation.semesterNum);
+            const getGroup_half_subject_id = await pool.query(`
+                        SELECT group_half_subject_id 
+                        FROM  group_half_subject
+                            WHERE group_half_id_fk=?
+                            AND subject_id_fk=?
+                            AND period_type_id_fk=?
+                            AND subject_semester_number=?
+                     `, [subjectInformation.groupHalfId,
+            subjectInformation.subjectId,
+            subjectInformation.periodTypeId,
+            subjectInformation.semesterNum]);
+            console.log("Group_half_subject_id: ",
+                getGroup_half_subject_id[0][0]['group_half_subject_id']);
+            const deletePeriodSubject = await pool.query(`
+                    DELETE FROM period
+                    WHERE group_half_subject_id_fk=?
+                     `, [getGroup_half_subject_id[0][0]['group_half_subject_id']]);
+            await pool.query(`
+               DELETE FROM group_half_subject
+               WHERE group_half_id_fk=?
+               AND subject_id_fk=?
+               AND period_type_id_fk=?
+               AND subject_semester_number=?
+                `, [subjectInformation.groupHalfId,
+            subjectInformation.subjectId,
+            subjectInformation.periodTypeId,
+            subjectInformation.semesterNum]);
+
+
         }
         catch (err) {
             console.error('Error fetching periods for student:', err);

@@ -82,6 +82,16 @@ router
     .get(adminController.showAddPeriodScheduleForm)
     .post(adminController.addPeriod);
 router
+    .route("/update/periodSchedule")
+    .all(checkUser.checkIfAdminIsLogged)
+    .get(adminController.showUpdatePeriodScheduleForm)
+    .post(adminController.updatePeriod);
+// router
+//     .route("/delete/periodSchedule")
+//     .all(checkUser.checkIfAdminIsLogged)
+//     .get(adminController.showAddPeriodScheduleForm)
+//     .post(adminController.deletePeriod);
+router
     .route("/add/marks")
     .all(checkUser.checkIfAdminIsLogged)
     .get(adminController.showAddStudentMarksForm)
@@ -91,6 +101,11 @@ router
     .all(checkUser.checkIfAdminIsLogged)
     .get(adminController.showUpdateMarkForm)
     .post(adminController.updateMark);
+router
+    .route("/delete/marks")
+    .all(checkUser.checkIfAdminIsLogged)
+    .get(adminController.showDeleteMarkForm)
+    .post(adminController.deleteMark);
 router
     .route("/update/subjectToHalfs")
     .all(checkUser.checkIfAdminIsLogged)
@@ -137,6 +152,11 @@ router
     .all(checkUser.checkIfAdminIsLogged)
     .get(adminController.getPeriodTypes);
 router
+    .route("/get/period")
+    .all(checkUser.checkIfAdminIsLogged)
+    .post(adminController.getPeriod);
+
+router
     .route("/get/courseNumbers")
     .all(checkUser.checkIfAdminIsLogged)
     .get(adminController.getCourseNumber);
@@ -173,7 +193,7 @@ router
     .route("/delete/subjectToHalfs")
     .all(checkUser.checkIfAdminIsLogged)
     .get(adminController.showDeleteSubjectToHalfsForm)
-    .post(adminController.searchConsultations);
+    .post(adminController.deleteSubjectToHalfs);
 router
     .route("/review/curriculums")
     .all(checkUser.checkIfAdminIsLogged)

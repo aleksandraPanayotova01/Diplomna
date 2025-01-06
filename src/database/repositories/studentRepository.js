@@ -142,8 +142,70 @@ module.exports = {
                         markInformation.mark,
                         markInformation.subject
                     ]);
-                console.log("Mark is added");
+                console.log("Updated mark");
             }
+        } catch (err) {
+            console.error(err);
+            throw (err);
+        }
+    },
+    checkIfMarkExists: async (markInformation) => {
+        try {
+
+            const [rows] = await pool.query(`
+              SELECT * FROM student_mark
+                WHERE student_faculty_num_fk = ?
+                AND group_half_sbj_id_fk = ?
+            `, [markInformation.facNum,
+            markInformation.subject
+            ]);
+            console.log(" checkIfMarkExists", rows.length > 0);
+            return rows.length > 0; // Връща true, ако записът съществува
+        } catch (err) {
+            console.error('Error checking if the mark exists:', err);
+            throw err;
+        }
+    },
+    deleteMark: async (markInformation) => {
+        try {
+            console.log('Subject ID:', markInformation.subject);
+            console.log('Group Half ID:', markInformation.groupHalf);
+            // const [existingMark] = await pool.query//check if mark excists
+            //     (`
+            //     SELECT * FROM student_mark
+            //     WHERE student_faculty_num_fk = ?
+            //     AND group_half_sbj_id_fk = ?
+            // `, [markInformation.facNum,
+            //     markInformation.subject]
+            //     );
+            // console.log("Оценката: ", existingMark, " ще бъде изтрита!");
+            // if (existingMark.length > 0) {
+            // If a record exists, we will update it
+            const markValue = await pool.query(`
+                    SELECT m.mark_value
+                    FROM mark m
+                    INNER JOIN student_mark sm
+                    ON m.mark_id=sm.mark_id_fk
+                    WHERE student_faculty_num_fk = ?
+                    AND group_half_sbj_id_fk = ?`,
+                [markInformation.facNum,
+                markInformation.subject]
+            );
+            console.log("markValue:", markValue[0][0]['mark_value']);
+            await pool.query(`
+                DELETE FROM student_mark
+                WHERE student_faculty_num_fk = ?
+                AND group_half_sbj_id_fk = ?`,
+                [markInformation.facNum,
+                markInformation.subject]
+            );
+            console.log("The mark is deleted");
+            //throw new Error('Student already has a mark for this subject.');
+            // }
+            // // If no mark exists, insert the new mark
+            // else {
+
+            // }
         } catch (err) {
             console.error(err);
             throw (err);

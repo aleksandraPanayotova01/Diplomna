@@ -13,7 +13,7 @@
             margin-left: 20px;
         }
     </style> -->
-    <title>Форма за изтриване на предмети за половинка и преподавател</title>
+    <title>Форма за изтриване на предмети от половинка</title>
 </head>
 
 <body>
@@ -22,20 +22,20 @@
             <%- include('../partials/flashMessages') %>
                 <div class="page-content">
                     <form id="deleteSubjectForm" action="/admin/delete/subjectToHalfs" method="POST">
-                        <h1>Форма за изтриване на предмети за половинка и преподавател</h1>
-                    <div class="formInput">
-                        <label for="specialtyDropdown">Специалност</label>
-                        <select id="specialtyDropdown" name="specialtyId">
-                            <option value="none" selected disabled hidden>Изберете специалност</option>
+                        <h1>Форма за изтриване на предмети от половинка</h1>
+                        <div class="formInput">
+                            <label for="specialtyDropdown">Специалност</label>
+                            <select id="specialtyDropdown" name="specialtyId">
+                                <option value="none" selected disabled hidden>Изберете специалност</option>
 
-                        </select>
-                    </div>
-                    <div class="formInput">
-                        <label for="selectCourse">Семестър</label>
-                        <select name="selectCourse" id="selectCourse" disabled>
-                            <option value="">-- Няма избрана специалност --</option>
-                        </select>
-                    </div>
+                            </select>
+                        </div>
+                        <div class="formInput">
+                            <label for="selectCourse">Семестър</label>
+                            <select name="selectCourse" id="selectCourse" disabled>
+                                <option value="">-- Няма избрана специалност --</option>
+                            </select>
+                        </div>
                 </div>
 
 

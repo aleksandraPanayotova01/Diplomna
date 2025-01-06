@@ -17,14 +17,14 @@ module.exports = {
     },
     addSubjectToGroup: async (subjectInformation) => {
         try {
-            // const subjectAddedToLecturer = await subjectRepository.checkIfSubjectIsAddedToLecturer(subjectInformation);
-            // const subjectAddedToHalf = await subjectRepository.checkIfSubjectIsAddedToGroupHalf(subjectInformation);
-            // if (!subjectAddedToLecturer) {
-            await subjectRepository.addSubjectToLecturer(subjectInformation);
-            // }
-            // if (!subjectAddedToHalf) {
-            await subjectRepository.addSubjectToHalf(subjectInformation);
-            // }
+            const subjectAddedToLecturer = await subjectRepository.checkIfSubjectIsAddedToLecturer(subjectInformation);
+            const subjectAddedToHalf = await subjectRepository.checkIfSubjectIsAddedToGroupHalf(subjectInformation);
+            if (!subjectAddedToLecturer) {
+                await subjectRepository.addSubjectToLecturer(subjectInformation);
+            }
+            if (!subjectAddedToHalf) {
+                await subjectRepository.addSubjectToHalf(subjectInformation);
+            }
 
             // return      await subjectRepository.addSubjectToHalf(subjectInformation);
         } catch (err) {
@@ -61,6 +61,9 @@ module.exports = {
     },
     updateSubjectHalfLecturer: async (subjectInformation) => {
         return await subjectRepository.updateGroupHalfLecturer(subjectInformation);
+    },
+    deleteSubjectToHalf: async (subjectInformation) => {
+        return await subjectRepository.deleteSubjectToHalf(subjectInformation);
     },
     deleteSubjectName: async (subjectInformation) => {
         try {

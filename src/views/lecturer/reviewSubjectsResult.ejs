@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/common.css" />
+    <link rel="stylesheet" href="/css/formsStyles.css" />
+    <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
+    <title>Предмети за половинка</title>
+</head>
+
+<body>
+    <%- include('../partials/lecturerHeader') %>
+        <div class="page-content">
+            <h1>Предмети за курс <%= courseNumber %>, група <%= groupNumber %>
+                        <%= groupHalfLetter %>
+            </h1>
+
+            <% if (subjects && subjects.length> 0) { %>
+                <h3>Предмети:</h3>
+                <% JSON.parse(subjects).forEach(subject=> { %>
+                    <p>
+                        <%= subject.subject_name %>
+                    </p>
+                    <% }) %>
+
+                        <% } else { %>
+                            <p>No subjects found for the selected group half.</p>
+                            <% } %>
+
+                                <div class="button-container">
+                                    <a class="submit" href="/lecturer//review/groupHalfSubjects">Назад</a>
+                                </div>
+        </div>
+
+</body>
+
+</html>

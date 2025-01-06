@@ -271,17 +271,17 @@ document.addEventListener("DOMContentLoaded", async function () {
             // await fetchAndCreateLecturerSelect(selectedGroupHalfId);
         });
     }
-    function checkIfSelectionChanged(lecturerSelect, submitButton) {
-        const selectedLecturer = lecturerSelect.value;
-        // const selectedPeriodType = periodTypeSelect.value;
+    // function checkIfSelectionChanged(lecturerSelect, submitButton) {
+    //     const selectedLecturer = lecturerSelect.value;
+    //     // const selectedPeriodType = periodTypeSelect.value;
 
-        // Активирай бутона, ако някой от изборите е променен
-        if (selectedLecturer) {
-            submitButton.disabled = false;
-        } else {
-            submitButton.disabled = true;
-        }
-    }
+    //     // Активирай бутона, ако някой от изборите е променен
+    //     if (selectedLecturer) {
+    //         submitButton.disabled = false;
+    //     } else {
+    //         submitButton.disabled = true;
+    //     }
+    // }
 
 
     // Fetching and creating the lecturer select input
@@ -466,7 +466,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         defaultOption.disabled = true;
         defaultOption.selected = true;
         lecturerSelect.appendChild(defaultOption);
-
+        // lecturerSelect.innerHTML = "";
         for (const lecturer of lecturers) {
             const lecturerOption = document.createElement('option');
             lecturerOption.textContent = `${lecturer.title_name} ${lecturer.name} ${lecturer.surname}`;
@@ -496,11 +496,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.log('PeriodTypeSelect exists:', !!periodTypeSelect);
 
         lecturerSelect.addEventListener('change', () => {
+
             if (periodTypeSelect) {
                 submitButton.disabled = !lecturerSelect.value;
             }
         });
-
 
     }
 
