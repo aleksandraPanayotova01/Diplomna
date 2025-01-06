@@ -1,6 +1,5 @@
 const bcrypt = require('bcrypt');
 const periodRepository = require('../database/repositories/periodRepository');
-const { getPeriod } = require('../controllers/adminController');
 module.exports = {
     getWeekdays: async () => {
         return await periodRepository.getWeekdays();;
@@ -10,7 +9,10 @@ module.exports = {
         return await periodRepository.getRooms();
     },
     getPeriod: async (periodInformation) => {
-        return await periodRepository.getPeriod(    );
+        return await periodRepository.getPeriod(periodInformation);
+    },
+    checkIfPeriodExists: async (periodInformation) => {
+        return await periodRepository.checkIfPeriodExists(periodInformation);
     },
     //    getLecturers: async () => {
     //         return await periodRepository.getLecturers();
@@ -53,6 +55,21 @@ module.exports = {
         } if (isAvailabile) {
             return await periodRepository.addPeriod(periodInformation);
         }
+    },
+    updatePeriod: async (periodInformation) => {
+        let isAvailabile;
+        if (periodInformation.periodType === '1') {//in a lecture more than 1 group share lecturer and room
+            isAvailabile = await periodRepository.checkAvailabilityLecture(periodInformation);
+            console.log("Лекцията е свободна!", isAvailabile);
+        } else {
+            isAvailabile = await periodRepository.checkAvailabilityExcercise(periodInformation);
+            console.log("Упражнението е свободно!", isAvailabile);
+        } if (isAvailabile) {
+            return await periodRepository.updatePeriod(periodInformation);
+        }
+    },
+    deletePeriod: async (periodInformation) => {
+            return await periodRepository.deletePeriod(periodInformation);
     },
 
     getStudentProfileInfo: async (studentProfileId) => {

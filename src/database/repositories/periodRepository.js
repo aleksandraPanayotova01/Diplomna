@@ -50,6 +50,82 @@ module.exports = {
             console.error('Error fetching periods for student:', err);
             throw err;
         }
+    }, checkIfPeriodExists: async (periodInformation) => {
+        try {
+            //get subject id
+            const subjectId = await pool.query(`
+                SELECT ghs.subject_id_fk
+                FROM group_half_subject ghs
+                WHERE ghs.group_half_subject_id=?`,
+                [periodInformation.selectSubject]
+            );
+            console.log("Subject id:", subjectId[0][0]['subject_id_fk']);
+
+            //get groupHalfSubjectId
+            const getGroupHalfSubjectId = await pool.query(`
+                SELECT ghs.group_half_subject_id
+                FROM group_half_subject ghs
+                INNER JOIN subject s
+                ON ghs.subject_id_fk=s.subject_id
+                WHERE ghs.period_type_id_fk=?
+                AND ghs.subject_id_fk=?
+                AND ghs.group_half_id_fk=?`,
+                [periodInformation.period_type,
+                subjectId[0][0]['subject_id_fk'],
+                periodInformation.selectGroupHalf
+                ]
+            );
+            const [result] = await pool.query(`
+                SELECT DISTINCT
+                    p.period_id, 
+                    p.weekday_id_fk, 
+                    p.period_start_time, 
+                    p.period_end_time, 
+                    b.building_abbreviation,
+                    p.room_id_fk,
+                    p.lecturer_id_fk, 
+                    pt.period_type_name, 
+                    sj.subject_name, 
+                    g.group_number,
+                    gh.group_half_letter,
+                    g.course_number,
+                    s.specialty_abbreviation
+                FROM period p
+                INNER JOIN weekday w
+                    ON p.weekday_id_fk = w.weekday_id
+                INNER JOIN room r
+                    ON p.room_id_fk = r.room_id
+                INNER JOIN building b
+                    ON b.building_id = r.building_id_fk
+                INNER JOIN group_half_subject ghs
+                    ON p.group_half_subject_id_fk = ghs.group_half_subject_id
+                INNER JOIN \`subject\` sj
+                    ON ghs.subject_id_fk = sj.subject_id
+                INNER JOIN period_type pt
+                    ON p.period_type_id_fk = pt.period_type_id
+                INNER JOIN group_half gh
+                    ON gh.group_half_id = ghs.group_half_id_fk
+                INNER JOIN \`group\` g
+                    ON gh.group_id_fk=g.group_id
+                INNER JOIN specialty s
+                    ON g.specialty_id_fk=s.specialty_id
+                WHERE p.group_half_subject_id_fk= ?
+                AND p.period_type_id_fk=?
+            `, [getGroupHalfSubjectId[0][0]['group_half_subject_id'],
+            periodInformation.period_type
+            ]);
+
+            console.log("periodInformation: ", periodInformation.selectSubject,
+                periodInformation.period_type);
+            if (result.length === 0) {
+                return false;
+            }
+
+            return true;
+        } catch (err) {
+            console.error('Error fetching periods for student:', err);
+            throw err;
+        }
     },
     getPeriodsForLecturer: async (profileId) => {
         try {
@@ -112,7 +188,8 @@ module.exports = {
                     p.period_start_time, 
                     p.period_end_time, 
                     b.building_abbreviation,
-                    r.room_number, 
+                    p.room_id_fk,
+                    p.lecturer_id_fk, 
                     pt.period_type_name, 
                     sj.subject_name, 
                     g.group_number,
@@ -349,6 +426,38 @@ module.exports = {
     },
     addPeriod: async (periodInformation) => {
         try {
+            //get subject id
+            const subjectId = await pool.query(`
+                SELECT ghs.subject_id_fk
+                FROM group_half_subject ghs
+                WHERE ghs.group_half_subject_id=?`,
+                [periodInformation.selectSubject]
+            );
+            console.log("Subject id:", subjectId[0][0]['subject_id_fk']);
+
+            //get groupHalfSubjectId
+            const getGroupHalfSubjectId = await pool.query(`
+                SELECT ghs.group_half_subject_id
+                FROM group_half_subject ghs
+                INNER JOIN subject s
+                ON ghs.subject_id_fk=s.subject_id
+                WHERE ghs.period_type_id_fk=?
+                AND ghs.subject_id_fk=?
+                AND ghs.group_half_id_fk=?`,
+                [periodInformation.period_type,
+                subjectId[0][0]['subject_id_fk'],
+                periodInformation.selectGroupHalf
+                ]
+            );
+            console.log("Group half subject id:", getGroupHalfSubjectId[0][0]['group_half_subject_id']);
+            console.log("Period info:", [periodInformation.period_start_time,
+            periodInformation.period_end_time,
+            periodInformation.weekday,
+            periodInformation.room,
+            periodInformation.lecturer,
+            getGroupHalfSubjectId[0][0]['group_half_subject_id'],
+            periodInformation.period_type]);
+
             const [result] = await pool.query(`
                 INSERT INTO period(
                 period_start_time, period_end_time, weekday_id_fk,
@@ -359,39 +468,19 @@ module.exports = {
                 periodInformation.weekday,
                 periodInformation.room,
                 periodInformation.lecturer,
-                periodInformation.group_half_subject_id_fk,
+                getGroupHalfSubjectId[0][0]['group_half_subject_id'],
                 periodInformation.period_type]
             );
             console.log("Period added!");
             const lastInsertedPeriodId = result.insertId;
             console.log('LastInsertedPeriodId:', lastInsertedPeriodId);
 
-            const [getGroupHalfId] = await pool.query(`
-                SELECT gh.group_half_id
-                FROM group_half_subject ghs
-                INNER JOIN group_half gh
-                ON gh.group_half_id=ghs.group_half_id_fk
-                WHERE ghs.group_half_subject_id=?`,
-                [periodInformation.group_half_subject_id_fk]
-            );
-            console.log("Group half id:", getGroupHalfId[0]['group_half_id']);
-
             const createPeriodSchedule = await pool.query(`
                 INSERT INTO period_schedule(group_half_id_fk, period_id_fk)
                 VALUES (?, ?)`,
-                [getGroupHalfId[0]['group_half_id'], lastInsertedPeriodId]
+                [selectGroupHalf, lastInsertedPeriodId]
             );
             console.log("Period schedule created!");
-
-            const [getSubjectId] = await pool.query(`
-                SELECT s.subject_id
-                FROM group_half_subject ghs
-                INNER JOIN subject s
-                ON ghs.subject_id_fk=s.subject_id
-                WHERE ghs.group_half_subject_id=?`,
-                [periodInformation.group_half_subject_id_fk]
-            );
-            console.log("Subject Id:", getSubjectId[0]['subject_id']);
 
             return result;
         } catch (err) {
@@ -399,7 +488,161 @@ module.exports = {
             throw err;
         }
     },
+    updatePeriod: async (periodInformation) => {
+        try {
+            console.log("periodInformation: ", periodInformation);
+            const subjectId = await pool.query(`
+                SELECT ghs.subject_id_fk
+                FROM group_half_subject ghs
+                WHERE ghs.group_half_subject_id=?`,
+                [periodInformation.selectSubject]
+            );
+            console.log("Subject id:", subjectId[0][0]['subject_id_fk']);
 
+            //get groupHalfSubjectId
+            const getGroupHalfSubjectId = await pool.query(`
+                SELECT ghs.group_half_subject_id
+                FROM group_half_subject ghs
+                INNER JOIN subject s
+                ON ghs.subject_id_fk=s.subject_id
+                WHERE ghs.period_type_id_fk=?
+                AND ghs.subject_id_fk=?
+                AND ghs.group_half_id_fk=?`,
+                [periodInformation.period_type,
+                subjectId[0][0]['subject_id_fk'],
+                periodInformation.selectGroupHalf
+                ]
+            );
+            console.log("Group half subject id:", getGroupHalfSubjectId[0][0]['group_half_subject_id']);
+            const getPeriod = await pool.query(`
+                  SELECT DISTINCT
+                    period_id
+                    FROM period
+                WHERE group_half_subject_id_fk= ?
+                AND period_type_id_fk=?
+                `, [getGroupHalfSubjectId[0][0]['group_half_subject_id'],
+            periodInformation.period_type]);
+            console.log("Period id: ", getPeriod[0][0]['period_id']);
+            await pool.query(`
+                UPDATE period
+                   SET 
+                period_start_time = ?,
+                period_end_time = ?,
+                weekday_id_fk = ?,
+                room_id_fk = ?,
+                lecturer_id_fk = ?,
+                group_half_subject_id_fk = ?,
+                period_type_id_fk = ?
+                WHERE period_id = ?`,
+                [periodInformation.period_start_time,
+                periodInformation.period_end_time,
+                periodInformation.weekday,
+                periodInformation.room,
+                periodInformation.lecturer,
+                getGroupHalfSubjectId[0][0]['group_half_subject_id'],
+                periodInformation.period_type,
+                getPeriod[0][0]['period_id']
+                ]
+            );
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
+    deletePeriod: async (periodInformation) => {
+        try {
+            console.log(periodInformation);
+            console.log("periodInformation: ", periodInformation);
+            const subjectId = await pool.query(`
+                SELECT ghs.subject_id_fk
+                FROM group_half_subject ghs
+                WHERE ghs.group_half_subject_id=?`,
+                [periodInformation.selectSubject]
+            );
+            console.log("Subject id:", subjectId[0][0]['subject_id_fk']);
+
+            //get groupHalfSubjectId
+            const getGroupHalfSubjectId = await pool.query(`
+                SELECT ghs.group_half_subject_id
+                FROM group_half_subject ghs
+                INNER JOIN subject s
+                ON ghs.subject_id_fk=s.subject_id
+                WHERE ghs.period_type_id_fk=?
+                AND ghs.subject_id_fk=?
+                AND ghs.group_half_id_fk=?`,
+                [periodInformation.period_type,
+                subjectId[0][0]['subject_id_fk'],
+                periodInformation.selectGroupHalf
+                ]
+            );
+            console.log("Group half subject id:", getGroupHalfSubjectId[0][0]['group_half_subject_id']);
+            const getPeriod = await pool.query(`
+                  SELECT DISTINCT
+                    period_id
+                    FROM period
+                WHERE group_half_subject_id_fk= ?
+                AND period_type_id_fk=?
+                `, [getGroupHalfSubjectId[0][0]['group_half_subject_id'],
+            periodInformation.period_type]);
+            console.log("Period id: ", getPeriod[0][0]['period_id']);
+            await pool.query(`
+                DELETE FROM period_schedule
+                WHERE period_id_fk = ?`,
+                [
+                    getPeriod[0][0]['period_id']
+                ]
+            );
+            await pool.query(`
+                DELETE FROM period
+                WHERE period_id = ?`,
+                [
+                    getPeriod[0][0]['period_id']
+                ]
+            );
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
+    updatePeriod: async (periodInformation) => {
+        try {
+            console.log(periodInformation);
+            const getPeriod = await pool.query(`
+                  SELECT DISTINCT
+                    period_id
+                    FROM period
+                WHERE group_half_subject_id_fk= ?
+                AND period_type_id_fk=?
+                `, [periodInformation.selectSubject,
+            periodInformation.period_type]);
+            console.log("Period id: ", getPeriod[0][0]['period_id']);
+            const [result] = await pool.query(`
+                UPDATE period
+                   SET 
+                period_start_time = ?,
+                period_end_time = ?,
+                weekday_id_fk = ?,
+                room_id_fk = ?,
+                lecturer_id_fk = ?,
+                group_half_subject_id_fk = ?,
+                period_type_id_fk = ?
+                WHERE period_id = ?`,
+                [periodInformation.period_start_time,
+                periodInformation.period_end_time,
+                periodInformation.weekday,
+                periodInformation.room,
+                periodInformation.lecturer,
+                periodInformation.selectSubject,
+                periodInformation.period_type,
+                getPeriod[0][0]['period_id']
+                ]
+            );
+            return result;
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    },
     // checkAvailabilityLecture: async (periodInformation) => {
     //     try {
     //         const [result] = await pool.query(`
@@ -452,7 +695,7 @@ module.exports = {
                 periodInformation.period_start_time,
                 periodInformation.period_end_time,
                 periodInformation.weekday,
-                periodInformation.groupHalfId
+                periodInformation.selectGroupHalf
             ]);
 
             console.log("Query Result:", result);  // Debug log
@@ -491,7 +734,7 @@ module.exports = {
                 periodInformation.weekday,
                 periodInformation.room,
                 periodInformation.lecturer,
-                periodInformation.groupHalfId
+                periodInformation.selectGroupHalf
             ]);
 
             console.log("Query Result:", result);  // Log the result for debugging

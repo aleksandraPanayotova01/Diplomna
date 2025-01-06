@@ -208,8 +208,8 @@ document.addEventListener("DOMContentLoaded", async function () {
             });
 
             const period = await response.json();
-            fetchAndCreateSubjectSelect(subjectsHalf);
-            console.log(period);
+            // fetchAndCreateSubjectSelect(subjectsHalf);
+            console.log("period", period);
             const periodDiv = document.createElement("div");
             periodDiv.classList.add("formInput", "period");
 
@@ -255,7 +255,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 option.textContent = weekday.weekday_name;
                 option.value = weekday.weekday_id;
                 console.log("period.weekday_id_fk:", period.weekday_id_fk);
-                if (period.weekday_id_fk == weekday.weekday_id) {
+                if (period[0].weekday_id_fk == weekday.weekday_id) {
                     option.selected = true;
                 }
                 weekdaySelect.appendChild(option);
@@ -267,7 +267,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
-    async function createRoomSelect(parentDiv) {
+    async function createRoomSelect(parentDiv, period) {
         try {
             const response = await fetch(`/admin/get/rooms`);
             const rooms = await response.json();
@@ -295,6 +295,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                 const option = document.createElement('option');
                 option.textContent = `${room.room_number} ${room.building_abbreviation}`;
                 option.value = room.room_id;
+                if (period[0].room_id_fk == room.room_id) {
+                    option.selected = true;
+                }
                 roomSelect.appendChild(option);
             });
 
@@ -304,7 +307,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
-    async function createLecturerSelect(parentDiv) {
+    async function createLecturerSelect(parentDiv, period) {
         try {
             const response = await fetch(`/admin/get/lecturers`);
             const lecturers = await response.json();
@@ -332,6 +335,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                 const option = document.createElement('option');
                 option.textContent = `${lecturer.title_name} ${lecturer.name} ${lecturer.surname}`;
                 option.value = lecturer.lecturer_id;
+                if (period[0].lecturer_id_fk == lecturer.lecturer_id) {
+                    option.selected = true;
+                }
                 lecturerSelect.appendChild(option);
             });
 
@@ -341,7 +347,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
     // async function createRoomSelect(parentDiv) { /* Implementation here */ }
-    const createTimeInputs = (parentDiv) => {
+    const createTimeInputs = (parentDiv, period) => {
         // Create period start time input
         const startTimeDiv = document.createElement('div');
         startTimeDiv.classList.add('timeInput');
@@ -350,6 +356,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const inputStartTime = document.createElement('input');
         inputStartTime.type = 'time';
         inputStartTime.name = 'period_start_time';
+        inputStartTime.value = period[0].period_start_time;
         inputStartTime.required = true;
         startTimeDiv.appendChild(labelStartTime);
         startTimeDiv.appendChild(inputStartTime);
@@ -363,6 +370,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const inputEndTime = document.createElement('input');
         inputEndTime.type = 'time';
         inputEndTime.name = 'period_end_time';
+        inputEndTime.value = period[0].period_end_time;
         endTimeDiv.appendChild(labelEndTime);
         endTimeDiv.appendChild(inputEndTime);
         parentDiv.appendChild(endTimeDiv);

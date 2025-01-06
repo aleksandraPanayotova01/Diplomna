@@ -19,22 +19,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
 
-    async function fetchAndCreateSubjectSelect(groupHalfId) {
-        try {
-            const response = await fetch(`/admin/get/subjectsHalf`, {
-                method: "POST",
-                body: JSON.stringify({ groupHalfId }),
-                headers: { 'Content-Type': 'application/json' }
-            });
-
-            const subjectsHalf = await response.json();
-            createSubjectSelect(subjectsHalf);
-        } catch (error) {
-            console.error('Error fetching subjects:', error);
-        }
-    }
-
-
     const specialtySelect = document.querySelector("#selectSpecialty");
     const courseSelect = document.querySelector("#selectCourse");
     let specialty;
@@ -46,6 +30,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     courseSelect.addEventListener("change", async function () {
         const groupHalfs = await getGroupHalfs(specialty, courseSelect.value);
         createGroupHalfInputs(groupHalfs);
+
         const subjectSelect = document.querySelector(".subject");
         const periodDiv = document.querySelector(".period");
 
@@ -56,9 +41,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (periodDiv != null) {
             periodDiv.remove();
         }
-
-        console.log(groupHalfs);
     });
+
     function createGroupHalfInputs(groupHalfs) {
         const form = document.querySelector("#addPeriodScheduleForm");
         const existingGroupHalfsDiv = form.querySelector('.formInput.groupHalfs');
@@ -83,7 +67,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         defaultOption.selected = true;
         groupHalfSelect.appendChild(defaultOption);
 
-        // Populating the group halves options
         for (const groupHalf of groupHalfs) {
             const groupHalfOption = document.createElement('option');
             groupHalfOption.textContent = `${groupHalf.group_number} ${groupHalf.group_half_letter}`;
@@ -93,129 +76,156 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         form.appendChild(groupHalfsDiv);
 
-        // Adding event listener for group half change
         groupHalfSelect.addEventListener("change", async function () {
             const selectedGroupHalfId = groupHalfSelect.value;
+            console.log("selectedGroupHalfId", selectedGroupHalfId);
             fetchAndCreateSubjectSelect(selectedGroupHalfId);
         });
     }
 
+    async function fetchAndCreateSubjectSelect(selectedGroupHalfId) {
+        try {
+            const response = await fetch(`/admin/get/subjectsHalf`, {
+                method: "POST",
+                body: JSON.stringify({ groupHalfId: selectedGroupHalfId }),
+                headers: { 'Content-Type': 'application/json' }
+            });
 
-    // function createGroupHalfInput(groupHalfs, selectedGroupNumber) {
-    //     const form = document.querySelector("#addPeriodScheduleForm");
+            const subjectsHalf = await response.json();
+            console.log(subjectsHalf);
 
-    //     const existingGroupHalfDiv = form.querySelector('.formInput.groupHalf');
-    //     if (existingGroupHalfDiv) existingGroupHalfDiv.remove();
+            const form = document.querySelector("#addPeriodScheduleForm");
 
-    //     const filteredGroupHalfs = groupHalfs.filter(gh => gh.group_number === Number(selectedGroupNumber));
+            const existingSubjectDiv = form.querySelector('.formInput.subject');
+            if (existingSubjectDiv) existingSubjectDiv.remove();
 
-    //     if (filteredGroupHalfs.length > 0) {
-    //         const groupHalfDiv = document.createElement("div");
-    //         groupHalfDiv.classList.add("formInput", "groupHalf");
+            const subjectDiv = document.createElement("div");
+            subjectDiv.classList.add("formInput", "subject");
 
-    //         const labelGroupHalfSelect = document.createElement('label');
-    //         labelGroupHalfSelect.textContent = "Половинка";
-    //         groupHalfDiv.appendChild(labelGroupHalfSelect);
+            const labelSubjectSelect = document.createElement('label');
+            labelSubjectSelect.textContent = "Предмет";
+            subjectDiv.appendChild(labelSubjectSelect);
 
-    //         const groupHalfSelect = document.createElement('select');
-    //         groupHalfSelect.name = "selectGroupHalf";
-    //         groupHalfSelect.classList.add("selectGroupHalf");
-    //         groupHalfDiv.appendChild(groupHalfSelect);
-
-    //         const defaultOption = document.createElement('option');
-    //         defaultOption.textContent = "Изберете половинка";
-    //         defaultOption.value = "";
-    //         defaultOption.disabled = true;
-    //         defaultOption.selected = true;
-    //         groupHalfSelect.appendChild(defaultOption);
-
-    //         for (const groupHalf of filteredGroupHalfs) {
-    //             const groupHalfOption = document.createElement('option');
-    //             groupHalfOption.textContent = groupHalf.group_half_letter;
-    //             groupHalfOption.value = groupHalf.group_half_id;
-    //             groupHalfSelect.appendChild(groupHalfOption);
-    //         }
-
-    //         form.appendChild(groupHalfDiv);
-
-    //         groupHalfSelect.addEventListener("change", function () {
-    //             const selectedGroupHalfId = groupHalfSelect.value;
-    //             fetchAndCreateSubjectSelect(selectedGroupHalfId);
-    //         });
-    //     }
-    // }
-
-    function createSubjectSelect(subjectsHalf) {
-        const form = document.querySelector("#addPeriodScheduleForm");
-
-        const existingSubjectDiv = form.querySelector('.formInput.subject');
-        if (existingSubjectDiv) existingSubjectDiv.remove();
-
-        const subjectDiv = document.createElement("div");
-        subjectDiv.classList.add("formInput", "subject");
-
-        const labelSubjectSelect = document.createElement('label');
-        labelSubjectSelect.textContent = "Предмет";
-        subjectDiv.appendChild(labelSubjectSelect);
-
-        const subjectSelect = document.createElement('select');
-        subjectSelect.name = "selectSubject";
-        subjectSelect.id = "selectSubject";
-        subjectSelect.classList.add("selectSubject");
-        subjectDiv.appendChild(subjectSelect);
-
-        const defaultSubjectOption = document.createElement('option');
-        defaultSubjectOption.textContent = "Изберете предмет";
-        defaultSubjectOption.value = "";
-        defaultSubjectOption.disabled = true;
-        defaultSubjectOption.selected = true;
-        subjectSelect.appendChild(defaultSubjectOption);
-
-        for (const subjectHalf of subjectsHalf) {
-            const subjectOption = document.createElement('option');
-            subjectOption.textContent = subjectHalf.subject_name;
+            const subjectSelect = document.createElement('select');
+            subjectSelect.name = "selectSubject";
             subjectSelect.id = "selectSubject";
-            subjectOption.value = subjectHalf.subject_id;
-            subjectSelect.appendChild(subjectOption);
+            subjectSelect.classList.add("selectSubject");
+            subjectDiv.appendChild(subjectSelect);
+
+            const defaultSubjectOption = document.createElement('option');
+            defaultSubjectOption.textContent = "Изберете предмет";
+            defaultSubjectOption.value = "";
+            defaultSubjectOption.disabled = true;
+            defaultSubjectOption.selected = true;
+            subjectSelect.appendChild(defaultSubjectOption);
+
+            for (const subjectHalf of subjectsHalf) {
+                const subjectOption = document.createElement('option');
+                subjectOption.textContent = subjectHalf.subject_name;
+                subjectOption.value = subjectHalf.group_half_subject_id;
+                subjectSelect.appendChild(subjectOption);
+            }
+
+            form.appendChild(subjectDiv);
+
+
+            subjectSelect.addEventListener('change', createPeriodTypeSelect(subjectDiv));
+
+        } catch (error) {
+            console.error('Error fetching subjects:', error);
         }
-
-        form.appendChild(subjectDiv);
-        subjectSelect.addEventListener('change', handleSubjectChange);
-
+        // Add period type select after subject select
     }
 
-    async function createPeriodInput(subjectId) {
-        const form = document.querySelector("#addPeriodScheduleForm");
+    async function createPeriodTypeSelect(subjectDiv) {
+        try {
+            const response = await fetch(`/admin/get/periodTypes`);
+            if (!response.ok) {
+                throw new Error("Failed to fetch period types");
+            }
 
-        // Remove existing period input if it exists
+            const periodTypes = await response.json();
+            console.log("Fetched period types:", periodTypes); // Debugging log
+
+            if (!Array.isArray(periodTypes) || periodTypes.length === 0) {
+                console.warn("No period types available.");
+                return;
+            }
+
+            const periodTypeDiv = document.createElement("div");
+            periodTypeDiv.classList.add("formInput", "periodType");
+
+            const labelPeriodTypeSelect = document.createElement('label');
+            labelPeriodTypeSelect.textContent = "Вид занятие";
+            periodTypeDiv.appendChild(labelPeriodTypeSelect);
+
+            const periodTypeSelect = document.createElement('select');
+            periodTypeSelect.name = "period_type";
+            periodTypeSelect.classList.add("selectPeriodType");
+            periodTypeDiv.appendChild(periodTypeSelect);
+
+            const defaultOption = document.createElement('option');
+            defaultOption.textContent = "Изберете вид занятие";
+            defaultOption.value = "";
+            defaultOption.disabled = true;
+            defaultOption.selected = true;
+            periodTypeSelect.appendChild(defaultOption);
+
+            periodTypes.forEach(periodType => {
+                const option = document.createElement('option');
+                option.textContent = periodType.period_type_name;
+                option.value = periodType.period_type_id;
+                periodTypeSelect.appendChild(option);
+            });
+
+            // Insert the period type select right after the subject div
+            subjectDiv.insertAdjacentElement('afterend', periodTypeDiv);
+            periodTypeSelect.addEventListener("change", handlePeriodTypeChange);
+        } catch (error) {
+            console.error("Error fetching or creating period types:", error);
+        }
+    }
+
+
+
+
+    async function createPeriodInput() {
+        const form = document.querySelector("#addPeriodScheduleForm");
         const existingPeriodDiv = form.querySelector('.formInput.period');
+
         if (existingPeriodDiv) existingPeriodDiv.remove();
 
-        // Create and append the period input fields
-        const periodDiv = document.createElement("div");
-        periodDiv.classList.add("formInput", "period");
-        //Create start period and end period inputs
-        createTimeInputs(periodDiv);
-        // Create weekday select
-        await createWeekdaySelect(periodDiv);
+        const selectPeriodType = document.querySelector(".selectPeriodType").value;
+        console.log("Period type: ", selectPeriodType);
+        const selectSubject = document.querySelector("#selectSubject").value;
+        console.log("Group half subject id: ", selectSubject);
 
-        // Create room select
-        await createRoomSelect(periodDiv);
+        try {
+            const response = await fetch(`/admin/get/period`, {
+                method: "POST",
+                body: JSON.stringify({ groupHalfSubjectId: selectSubject, periodType: selectPeriodType }),
+                headers: { 'Content-Type': 'application/json' }
+            });
 
-        // Create lecturer select
-        await createLecturerSelect(periodDiv);
+            const period = await response.json();
+            // fetchAndCreateSubjectSelect(subjectsHalf);
+            console.log("period", period);
+            const periodDiv = document.createElement("div");
+            periodDiv.classList.add("formInput", "period");
 
-        // Create period type select
-        await createPeriodTypeSelect(periodDiv);
+            createTimeInputs(periodDiv, period);
+            await createWeekdaySelect(periodDiv, period);
+            await createRoomSelect(periodDiv, period);
+            await createLecturerSelect(periodDiv, period);
+            createSubmitButton(periodDiv);
 
-        createSubmitButton(periodDiv);
-
-
-        form.appendChild(periodDiv);
-
+            form.appendChild(periodDiv);
+        } catch (error) {
+            console.error('Error fetching period:', error);
+        }
     }
 
-    async function createWeekdaySelect(parentDiv) {
+    async function createWeekdaySelect(parentDiv, period) {
         try {
             const response = await fetch(`/admin/get/weekdays`);
             const weekdays = await response.json();
@@ -240,9 +250,14 @@ document.addEventListener("DOMContentLoaded", async function () {
             weekdaySelect.appendChild(defaultOption);
 
             weekdays.forEach(weekday => {
+
                 const option = document.createElement('option');
                 option.textContent = weekday.weekday_name;
                 option.value = weekday.weekday_id;
+                console.log("period.weekday_id_fk:", period.weekday_id_fk);
+                // if (period[0].weekday_id_fk == weekday.weekday_id) {
+                //     option.selected = true;
+                // }
                 weekdaySelect.appendChild(option);
             });
 
@@ -252,7 +267,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
-    async function createRoomSelect(parentDiv) {
+    async function createRoomSelect(parentDiv, period) {
         try {
             const response = await fetch(`/admin/get/rooms`);
             const rooms = await response.json();
@@ -280,6 +295,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                 const option = document.createElement('option');
                 option.textContent = `${room.room_number} ${room.building_abbreviation}`;
                 option.value = room.room_id;
+                // if (period[0].room_id_fk == room.room_id) {
+                //     option.selected = true;
+                // }
                 roomSelect.appendChild(option);
             });
 
@@ -289,7 +307,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
-    async function createLecturerSelect(parentDiv) {
+    async function createLecturerSelect(parentDiv, period) {
         try {
             const response = await fetch(`/admin/get/lecturers`);
             const lecturers = await response.json();
@@ -317,6 +335,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                 const option = document.createElement('option');
                 option.textContent = `${lecturer.title_name} ${lecturer.name} ${lecturer.surname}`;
                 option.value = lecturer.lecturer_id;
+                // if (period[0].lecturer_id_fk == lecturer.lecturer_id) {
+                //     option.selected = true;
+                // }
                 lecturerSelect.appendChild(option);
             });
 
@@ -325,44 +346,8 @@ document.addEventListener("DOMContentLoaded", async function () {
             console.error('Error fetching lecturers:', error);
         }
     }
-
-    async function createPeriodTypeSelect(parentDiv) {
-        try {
-            const response = await fetch(`/admin/get/periodTypes`);
-            const periodTypes = await response.json();
-
-            const periodTypeDiv = document.createElement("div");
-            periodTypeDiv.classList.add("formField");
-
-            const labelPeriodTypeSelect = document.createElement('label');
-            labelPeriodTypeSelect.textContent = "Вид занятие";
-            periodTypeDiv.appendChild(labelPeriodTypeSelect);
-
-            const periodTypeSelect = document.createElement('select');
-            periodTypeSelect.name = "period_type";
-            periodTypeSelect.classList.add("selectPeriodType");
-            periodTypeDiv.appendChild(periodTypeSelect);
-
-            const defaultOption = document.createElement('option');
-            defaultOption.textContent = "Изберете вид занятие";
-            defaultOption.value = "";
-            defaultOption.disabled = true;
-            defaultOption.selected = true;
-            periodTypeSelect.appendChild(defaultOption);
-
-            periodTypes.forEach(periodType => {
-                const option = document.createElement('option');
-                option.textContent = periodType.period_type_name;
-                option.value = periodType.period_type_id;
-                periodTypeSelect.appendChild(option);
-            });
-
-            parentDiv.appendChild(periodTypeDiv);
-        } catch (error) {
-            console.error('Error fetching period types:', error);
-        }
-    }
-    const createTimeInputs = (parentDiv) => {
+    // async function createRoomSelect(parentDiv) { /* Implementation here */ }
+    const createTimeInputs = (parentDiv, period) => {
         // Create period start time input
         const startTimeDiv = document.createElement('div');
         startTimeDiv.classList.add('timeInput');
@@ -371,6 +356,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const inputStartTime = document.createElement('input');
         inputStartTime.type = 'time';
         inputStartTime.name = 'period_start_time';
+        // inputStartTime.value = period[0].period_start_time;
         inputStartTime.required = true;
         startTimeDiv.appendChild(labelStartTime);
         startTimeDiv.appendChild(inputStartTime);
@@ -384,6 +370,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         const inputEndTime = document.createElement('input');
         inputEndTime.type = 'time';
         inputEndTime.name = 'period_end_time';
+        // inputEndTime.value = period[0].period_end_time;
         endTimeDiv.appendChild(labelEndTime);
         endTimeDiv.appendChild(inputEndTime);
         parentDiv.appendChild(endTimeDiv);
@@ -391,7 +378,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     function createSubmitButton(parentDiv) {
         const submitButton = document.createElement('button');
         console.log('Creating submit button:', submitButton);
-        submitButton.textContent = 'Добавяне на часа';
+        submitButton.textContent = 'Добавяне';
         submitButton.classList.add('submit');
         // submitButton.style.display = 'none'; // Initially hidden
         // submitButton.addEventListener('click', handleSubmit);
@@ -401,17 +388,13 @@ document.addEventListener("DOMContentLoaded", async function () {
         return submitButton;
     }
 
-    function handleSubjectChange(event) {
+    function handlePeriodTypeChange(event) {
         const selectedSubjectId = event.target.value;
         if (selectedSubjectId) {
             createPeriodInput(selectedSubjectId);
         } else {
-            // Remove existing period inputs if subject is deselected
             const existingPeriodDiv = document.querySelector('.formInput.period');
             if (existingPeriodDiv) existingPeriodDiv.remove();
         }
     }
-
-
-
 });

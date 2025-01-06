@@ -70,6 +70,11 @@ module.exports = {
         res.render("admin/updatePeriodScheduleForm", { faculties });
     },
 
+    showDeletePeriodScheduleForm: async (req, res) => {
+        const faculties = await accountService.getFaculties();
+        res.render("admin/deletePeriodScheduleForm", { faculties });
+    },
+
     updateSubjectForm: async (req, res) => {
         res.render("admin/updateSubjectForm");
     },
@@ -554,6 +559,11 @@ module.exports = {
                 periodType: body.periodType,
             }
             const period = await periodService.getPeriod(periodInformation);
+            if (!period) {
+
+                res.redirect("/admin/update/periodSchedule");
+                req.flash("error", "Не съществува такъв час");
+            }
             res.json(period);
         } catch (error) {
             console.error(error);
@@ -970,53 +980,25 @@ module.exports = {
 
     addPeriod: async (req, res) => {
         try {
-            // Destructure the necessary values from the request body
-            const { period_start_time, period_end_time,
-                weekday, room, lecturer, selectSubject,
-                period_type, selectGroupHalf } = req.body;
-
-            // Log the incoming request body (for debugging purposes)
-
-
-            // Prepare the information needed to get the groupHalfSubjectId
-            const groupHalfSubjectInformation = {
-                selectSubject,
-                selectGroupHalf
-            };
-
-            // Call the getGroupHalfSubjectId function to retrieve the groupHalfSubjectId
-            const groupHalfSubjectIdResult = await periodService.getGroupHalfSubjectId(groupHalfSubjectInformation);
-
-            // Extract the groupHalfSubjectId from the result
-            const groupHalfSubjectId = groupHalfSubjectIdResult[0]?.group_half_subject_id; // Adjust based on the structure of your result
-
-            if (!groupHalfSubjectId) {
-                throw new Error("groupHalfSubjectId not found");
-            }
-
-            // Log the groupHalfSubjectId (for debugging purposes)
-            // console.log("Body: ", req.body);
-            // console.log("groupHalfSubjectId: ", groupHalfSubjectId);
-
             // Prepare the periodInformation object, now including the groupHalfSubjectId
             const periodInformation = {
-                period_start_time,
-                period_end_time,
-                weekday,
-                room,
-                lecturer,
-                group_half_subject_id_fk: groupHalfSubjectId, // Use the correct field name in your table
-                period_type,
-                groupHalfId: selectGroupHalf
+                period_start_time, period_end_time,
+                weekday, room, lecturer, selectSubject,
+                period_type, selectGroupHalf
 
-            };
-
+            } = req.body;
+            console.log("controller periodInformation: ", periodInformation)
+            const periodExists = await periodService.checkIfPeriodExists(periodInformation);
+            if (periodExists) {
+                req.flash('error', '"Часът вече съществува.');
+                return res.redirect("/admin/add/periodSchedule");
+            }
             // Log the final periodInformation object (for debugging purposes)
             // console.log("Period information: ", periodInformation);
 
             // Call the service to add the period
             await periodService.addPeriod(periodInformation);
-
+            req.flash('success', 'Часът е добавен успешно.');
             // Redirect to the period schedule page after successful addition
             res.redirect("/admin/add/periodSchedule");
         } catch (error) {
@@ -1031,63 +1013,54 @@ module.exports = {
 
     updatePeriod: async (req, res) => {
         try {
-            // Destructure the necessary values from the request body
-            const { period_start_time, period_end_time,
-                weekday, room, lecturer, selectSubject,
-                period_type, selectGroupHalf } = req.body;
 
-            // Log the incoming request body (for debugging purposes)
-
-
-            // Prepare the information needed to get the groupHalfSubjectId
-            const groupHalfSubjectInformation = {
-                selectSubject,
-                selectGroupHalf
-            };
-
-            // Call the getGroupHalfSubjectId function to retrieve the groupHalfSubjectId
-            const groupHalfSubjectIdResult = await periodService.getGroupHalfSubjectId(groupHalfSubjectInformation);
-
-            // Extract the groupHalfSubjectId from the result
-            const groupHalfSubjectId = groupHalfSubjectIdResult[0]?.group_half_subject_id; // Adjust based on the structure of your result
-
-            if (!groupHalfSubjectId) {
-                throw new Error("groupHalfSubjectId not found");
-            }
-
-            // Log the groupHalfSubjectId (for debugging purposes)
-            // console.log("Body: ", req.body);
-            // console.log("groupHalfSubjectId: ", groupHalfSubjectId);
-
-            // Prepare the periodInformation object, now including the groupHalfSubjectId
             const periodInformation = {
-                period_start_time,
-                period_end_time,
-                weekday,
-                room,
-                lecturer,
-                group_half_subject_id_fk: groupHalfSubjectId, // Use the correct field name in your table
-                period_type,
-                groupHalfId: selectGroupHalf
-
-            };
-
-            // Log the final periodInformation object (for debugging purposes)
-            // console.log("Period information: ", periodInformation);
-
-            // Call the service to add the period
-            await periodService.addPeriod(periodInformation);
-
+                period_start_time, period_end_time,
+                weekday, room, lecturer, selectSubject,
+                period_type, selectGroupHalf
+            } = req.body;
+            await periodService.deletePeriod(periodInformation);
+            req.flash('success', 'Часът е изтрит успешно.');
             // Redirect to the period schedule page after successful addition
-            res.redirect("/admin/add/periodSchedule");
+            res.redirect("/admin/delete/periodSchedule");
         } catch (error) {
-            // Log any errors that occur during the process
+            req.flash('error', 'Възникна грешка. Моля опитайте отново');
             console.error(error);
-
-            // Send a 500 status code indicating an internal server error
             res.status(500).send("Internal Server Error");
         }
     },
+    deletePeriod: async (req, res) => {
+        try {
+            // Extract and validate input from request body
+            const { selectSubject, period_type, selectGroupHalf } = req.body;
+
+            const periodInformation = {
+                selectSubject,
+                period_type,
+                selectGroupHalf
+            };
+
+            // Check if the period exists
+            const periodExists = await periodService.checkIfPeriodExists(periodInformation);
+            if (!periodExists) {
+                req.flash('error', 'Не съществува такъв час.');
+                return res.redirect("/admin/add/periodSchedule");
+            }
+
+            // Delete the period
+            await periodService.deletePeriod(periodInformation);
+
+            // Success feedback and redirection
+            req.flash('success', 'Часът е изтрит успешно.');
+            res.redirect("/admin/add/periodSchedule");
+        } catch (error) {
+            // Log and handle errors
+            console.error("Error in deletePeriod:", error);
+            req.flash('error', 'Възникна грешка. Моля опитайте отново.');
+            res.status(500).send("Internal Server Error");
+        }
+    },
+
     addMark: async (req, res) => {
         try {
             const body = req.body;
@@ -1142,7 +1115,7 @@ module.exports = {
             req.flash('error', 'Неуспешна промяна на оценка. Опитайте отново.');
             res.redirect("/admin/homePage");
             // Send a 500 status code indicating an internal server error
-            res.status(500).send("Internal Server Error");
+            // res.status(500).send("Internal Server Error");
         }
     },
     deleteMark: async (req, res) => {

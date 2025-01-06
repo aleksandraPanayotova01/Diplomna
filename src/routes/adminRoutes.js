@@ -86,11 +86,11 @@ router
     .all(checkUser.checkIfAdminIsLogged)
     .get(adminController.showUpdatePeriodScheduleForm)
     .post(adminController.updatePeriod);
-// router
-//     .route("/delete/periodSchedule")
-//     .all(checkUser.checkIfAdminIsLogged)
-//     .get(adminController.showAddPeriodScheduleForm)
-//     .post(adminController.deletePeriod);
+router
+    .route("/delete/periodSchedule")
+    .all(checkUser.checkIfAdminIsLogged)
+    .get(adminController.showDeletePeriodScheduleForm)
+.post(adminController.deletePeriod);
 router
     .route("/add/marks")
     .all(checkUser.checkIfAdminIsLogged)
