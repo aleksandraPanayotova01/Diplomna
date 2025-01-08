@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => fillLecturerSchedule(data))
         .catch(error => console.error('Error fetching lecturer schedule:', error));
 
-    // Fetch lecturer info
     fetch('/lecturer/get/lecturerInfo')
         .then(response => response.json())
         .then(data => {
@@ -33,7 +32,6 @@ function fillLecturerSchedule(periods) {
             specialty_abbreviation, group_number, group_half_letter
         } = period;
 
-        // Get the corresponding HTML element ID for the day
         const dayElement = document.querySelector(`#${getDayId(weekday_name)} #classes${getDayInitial(weekday_name)}`);
 
         if (dayElement) {
@@ -54,7 +52,6 @@ function fillLecturerSchedule(periods) {
     });
 }
 
-// Map weekday names to corresponding HTML element IDs
 function getDayId(weekday_name) {
     const days = {
         'Понеделник': 'monday',

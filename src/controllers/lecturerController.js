@@ -4,13 +4,13 @@ const studentService = require('../services/studentService');
 const accountService = require('../services/accountService');
 module.exports = {
     showAddConsultationForm: (req, res) => {
-        res.render("lecturer/addConsultationForm")//view/filename
+        res.render("lecturer/addConsultationForm")
     },
     showLecturerSchedule: (req, res) => {
-        res.render("lecturer/lecturerSchedule")//view/filename
+        res.render("lecturer/lecturerSchedule")
     },
     showLecturerHomePage: (req, res) => {
-        res.render("lecturer/lecturerHomePage")//view/filename
+        res.render("lecturer/lecturerHomePage")
     },
     showConsultations: async (req, res) => {
         try {
@@ -20,7 +20,7 @@ module.exports = {
         } catch (error) {
             console.error('Error fetching consultations:', error);
             res.status(500).send('Error fetching consultations');
-        }//view/filename
+        }
     },
     showdeleteConsultations: async (req, res) => {
         try {
@@ -34,13 +34,10 @@ module.exports = {
     },
     deleteConsultation: async (req, res) => {
         try {
-            // const body = req.body;
             const { consultationId } = req.body;
-            // console.log(body);
             if (!consultationId) {
                 return res.status(400).json({ message: "Consultation ID is required." });
             }
-            // console.log("Consultation info:", consultationInformation);
             await lecturerService.deleteConsultation(consultationId);
             res.redirect("/lecturer/deleteConsultation");
         } catch (error) {
@@ -56,7 +53,7 @@ module.exports = {
         } catch (error) {
             console.error('Error fetching consultations:', error);
             res.status(500).send('Error fetching consultations');
-        }//view/filename
+        }
     },
     showLecturerProfile: async (req, res) => {
         try {
@@ -115,39 +112,47 @@ module.exports = {
             res.status(500).send("Internal Server Error");
         }
     },
+    reviewSubjectsResult: async (req, res) => {
+        try {
+
+            const { specialty, courseNumber, groupNumber, groupHalfLetter } =
+                req.body;
+            console.log(specialty, courseNumber, groupNumber, groupHalfLetter);
+
+
+            const groupHalfId = await accountService.getGroupHalfId({
+                specialty,
+                courseNumber,
+                groupNumber,
+                groupHalfLetter
+            });
+            console.log("GroupHalfId:", groupHalfId);
+
+            if (groupHalfId.length > 0) {
+                const subjects = await periodService.getSubjectsHalf(groupHalfId[0].group_half_id); // Adjust if necessary
+                console.log("Group Schedule:", subjects.length);
+
+                res.render('lecturer/reviewSubjectsResult',
+                    { subjects: JSON.stringify(subjects), specialty, courseNumber, groupNumber, groupHalfLetter });
+            }
+            else {
+                res.redirect('lecturer/review/groupHalfSubjects');
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Internal Server Error");
+        }
+    },
     reviewMarksResult: async (req, res) => {
         try {
 
-             const { specialty, courseNumber, groupNumber, groupHalfLetter } =
-                         req.body;
-                     console.log(specialty, courseNumber, groupNumber, groupHalfLetter);
-         
-         
-                     // Get the group half ID
-                     const groupHalfId = await accountService.getGroupHalfId({
-                         specialty,
-                         courseNumber,
-                         groupNumber,
-                         groupHalfLetter
-                     });
-                     console.log("GroupHalfId:", groupHalfId);
-         
-                     // Assuming groupHalfIds is an array, you might need to handle multiple IDs
-                     if (groupHalfId.length > 0) {
-                         // const groupHalfId = await accountService.getGroupHalfId(groupHalfInfo);
-                         const subjects = await periodService.getSubjectsHalf(groupHalfId[0].group_half_id); // Adjust if necessary
-                         console.log("Group Schedule:", subjects.length);
-         
-                         // Pass periods data to the EJS template
-                         res.render('lecturer/reviewSubjectsResult',
-                             { subjects: JSON.stringify(subjects), specialty, courseNumber, groupNumber, groupHalfLetter });
-                     }
-                     // res.render('admin/scheduleResults', { schedule: JSON.stringify(schedule) });
-                     else {
-                         res.redirect('lecturer/review/groupHalfSubjects');
-                     }
-            // res.render('admin/studentMarksResult', { marks, facultyNumbersSelect });
-            // res.render("lecturer/reviewMarksResultForm", { studentMarks });
+            const studentMarksInfo = { specialty, courseNumber, groupNumber, groupHalfLetter } = req.body;
+            const groupHalfId = await accountService.getGroupHalfId(studentMarksInfo);
+            console.log("groupHalfId", groupHalfId[0].group_half_id);
+            const studentMarks = await lecturerService.getGroupHalfMarks(groupHalfId[0].group_half_id);
+
+            console.log(studentMarks);
+            res.render("lecturer/reviewMarksResultForm", { studentMarks });
         } catch (error) {
             console.error(error);
             res.status(500).send("Internal Server Error");
@@ -170,7 +175,6 @@ module.exports = {
                 weekday: body.weekday,
                 room: body.room,
                 lecturerProfileId
-                // subject: body.subject
             };
             console.log(body);
             console.log("Consultation info:", consultationInformation);
@@ -241,7 +245,6 @@ module.exports = {
     },
     getGroupFacNums: async (req, res) => {
         try {
-            // const lecturerId = req.session.lecturer_profile_id;
             const { groupHalf } = req.params;
             const fac_nums =
                 await lecturerService.getGroupFacNums(groupHalf);
@@ -253,7 +256,6 @@ module.exports = {
     },
     addMark: async (req, res) => {
         try {
-            // const lecturerId = req.session.lecturer_profile_id;
             const body = req.body;
             markInformation = {
                 semester: body.selectCourse,
@@ -279,20 +281,19 @@ module.exports = {
             res.status(500).send("Internal Server Error");
         }
     },
-    getSpecialties: async (req, res) => {//controller name
+    getSpecialties: async (req, res) => {
         try {
             const specialties = await accountService.getSpecialties();//service name
-            // console.log(specialties);
             res.json(specialties);
         } catch (error) {
             console.error(error);
             res.status(500).send("Internal Server Error");
         }
     },
-    getDepartments: async (req, res) => {//controller name
+    getDepartments: async (req, res) => {
         try {
 
-            const departments = await accountService.getDepartments();//service name
+            const departments = await accountService.getDepartments();
 
             res.json(departments);
         } catch (error) {
@@ -302,7 +303,7 @@ module.exports = {
     },
     getGroupHalfs: async (req, res) => {
         try {
-            const { specialty, course } = req.body; // Extract specialty_id and course from request body
+            const { specialty, course } = req.body;
 
             if (!specialty || !course) {
                 return res.status(400).json({ error: "Specialty ID and course are required." });
@@ -310,7 +311,6 @@ module.exports = {
 
             console.log(`Specialty ID: ${specialty}, Course: ${course}`);
 
-            // Fetch group halves using specialty_id and course
             const groupHalfs = await periodService.getGroupHalfs(specialty, course);
 
             if (groupHalfs.length === 0) {

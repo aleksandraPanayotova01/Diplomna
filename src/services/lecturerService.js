@@ -9,7 +9,6 @@ module.exports = {
     },
     deleteConsultation: async (consultationId) => {
         return await lecturerRepository.deleteConsultation(consultationId);
-        // return consultation;
     }
     , getLecturerSubjects: async (lecturerProfileId) => {
         return await lecturerRepository.getLecturerSubjects(lecturerProfileId);

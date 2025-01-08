@@ -123,12 +123,10 @@
                     </tbody>
                 </table>
 
-                <!-- Изчисляване на средния успех -->
                 <% var totalMarks=0; marks.forEach(function(mark) { totalMarks +=mark.mark_value; }); var
                     averageMark=(marks.length> 0) ? (totalMarks / marks.length).toFixed(2) : "Няма оценки";
                     %>
 
-                    <!-- Показване на средния успех -->
                     <div class="average-mark">
                         Среден успех: <%= averageMark %>
                     </div>

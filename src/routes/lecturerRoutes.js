@@ -73,11 +73,7 @@ router
     .route("/review/groupHalfSubjects")
     .all(checkUser.checkIfLecturerIsLogged)
     .get(lecturerController.showGroupHalfSubjectForm)
-    .post(lecturerController.reviewMarksResult);
-// router
-//     .route("/review/reviewMarksResult")
-//     .all(checkUser.checkIfLecturerIsLogged)
-//     .get(lecturerController.showReviewMarksResult)
+    .post(lecturerController.reviewSubjectsResult);
 router
     .route("/get/groups/:subjectId")
     .all(checkUser.checkIfLecturerIsLogged)

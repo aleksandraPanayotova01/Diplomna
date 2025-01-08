@@ -65,7 +65,6 @@ module.exports = {
                 AND pt.period_type_id=?
 
                 `, [markInformation.subject, markInformation.groupHalf, '1']);
-            // First, check if the student already has a mark for the subject
             const [existingMark] = await pool.query//check if mark excists
                 (`
                 SELECT * FROM student_mark
@@ -76,11 +75,8 @@ module.exports = {
                 ]);
 
             if (existingMark.length > 0) {
-                // If a record exists, we won't add a new one
                 console.log("Student already has a mark for this subject.");
-                //throw new Error('Student already has a mark for this subject.');
             }
-            // If no mark exists, insert the new mark
             else {
                 await pool.query(`
                 INSERT INTO student_mark
@@ -106,7 +102,6 @@ module.exports = {
             console.log('Subject ID:', markInformation.subject);
             console.log('Group Half ID:', markInformation.groupHalf);
             console.log('Mark:', markInformation.mark);
-            // First, check if the student already has a mark for the subject
             const [existingMark] = await pool.query//check if mark excists
                 (`
                 SELECT * FROM student_mark
@@ -117,7 +112,6 @@ module.exports = {
                 );
             console.log(existingMark);
             if (existingMark.length > 0) {
-                // If a record exists, we will update it
                 await pool.query(`
                 UPDATE student_mark
                 SET mark_id_fk = ?
@@ -127,9 +121,7 @@ module.exports = {
                     markInformation.subject]
                 );
                 console.log("Mark is added");
-                //throw new Error('Student already has a mark for this subject.');
             }
-            // If no mark exists, insert the new mark
             else {
                 await pool.query(`
                 INSERT INTO student_mark

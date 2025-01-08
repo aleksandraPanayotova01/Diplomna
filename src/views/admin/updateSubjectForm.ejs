@@ -9,13 +9,11 @@
     <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
     <title>Форма за обновяване на предмет</title>
     <style>
-        /* Add styles for hovering over a row */
         #subjects-table tbody tr:hover {
             font-weight: bold;
             cursor: pointer;
         }
 
-        /* Add space between the new inputs */
         .input-container {
             margin-top: 10px;
         }
@@ -31,7 +29,6 @@
             margin-bottom: 10px;
         }
 
-        /* Style the save button */
         .save-button-container {
             margin-top: 20px;
             text-align: center;
@@ -58,7 +55,6 @@
         <%- include('../partials/adminHeader') %>
             <%- include('../partials/flashMessages') %>
                 <div class="page-content">
-                    <!-- <form id="updateSubjectForm" action="/admin/update/subject" method="POST"> -->
                     <h1>Обновяване на предмет</h1>
                     <div class="search-subject">
                         <input type="text" name="subjectSearch" id="subjectSearch" placeholder="Име на предмета">
@@ -70,11 +66,9 @@
                         <p id="no-results-message" style="display: none;">Няма намерени предмети</p>
                     </div>
 
-                    <!-- Save changes button will appear here -->
                     <div class="save-button-container" id="saveButtonContainer" style="display: none;">
                         <button id="saveChangesButton">Запази промените</button>
                     </div>
-                    <!-- </form> -->
                 </div>
     </div>
 
@@ -86,10 +80,9 @@
             const noResultsMessage = document.getElementById("no-results-message");
             const saveButtonContainer = document.getElementById("saveButtonContainer");
 
-            // Clear previous results
             tableContainer.innerHTML = "";
             noResultsMessage.style.display = "none";
-            saveButtonContainer.style.display = "none"; // Hide save button by default
+            saveButtonContainer.style.display = "none";
 
             if (searchValue) {
                 try {
@@ -140,11 +133,9 @@
                             row.appendChild(subjectAbbreviationCell);
                             row.appendChild(subjectSpecialtyCell);
 
-                            // Add event listener for row click
                             row.addEventListener("click", function () {
                                 const cells = row.querySelectorAll('td');
                                 selectedSubject = cells[0].textContent;
-                                // Remove any existing input-container
                                 const existingInputContainer = document.querySelector(".input-container");
                                 if (existingInputContainer) {
                                     existingInputContainer.remove(); // Remove the previously opened input fields
@@ -152,11 +143,9 @@
 
                                 const inputContainer = row.nextElementSibling;
 
-                                // If input container exists, remove it
                                 if (inputContainer && inputContainer.classList.contains("input-container")) {
                                     inputContainer.remove(); // Remove the input fields
                                 } else {
-                                    // Create new input fields if they don't exist
                                     const newInputContainer = document.createElement("div");
                                     newInputContainer.classList.add("input-container");
 
@@ -182,7 +171,6 @@
                                     row.parentNode.insertBefore(newInputContainer, row.nextSibling);
                                 }
 
-                                // Show the Save Changes button once input fields are displayed
                                 saveButtonContainer.style.display = "block";
                             });
 
@@ -207,11 +195,8 @@
         });
 
         document.getElementById("saveChangesButton").addEventListener("click", async function () {
-            // console.log(selectedSubject);
             const newNameValue = document.querySelector('input[name="newName"]').value;
-            // console.log(newNameValue);
             const newAbbrValue = document.querySelector('input[name="newAbbr"]').value;
-            // console.log(newAbbrValue);   
 
 
             const response = await fetch(`/admin/update/subject`, {
@@ -221,7 +206,6 @@
                 },
                 body: JSON.stringify({ oldName: selectedSubject, newName: newNameValue, newAbbreviation: newAbbrValue })
             });
-            // Placeholder for saving the changes
             alert("Промените са запазени успешно!");
         });
     </script>

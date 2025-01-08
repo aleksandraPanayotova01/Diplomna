@@ -1,19 +1,11 @@
-// const { render } = require('ejs');
 const periodService = require('../services/periodService');
 const studentService = require('../services/studentService');
 const accountService = require('../services/accountService');
-// const { showConsultations } = require('./lecturerController');
 module.exports = {
     showStudentSchedule: async (req, res) => {
-        // const studentProfileId = req.session.stduent_profile_id;
-        // console.log(studentProfileId);
-        // const periodsForStudent = await periodService.getPeriodsForStudent();
         res.render("student/schedule")//view/filename
     },
     showStudentHomePage: async (req, res) => {
-        // const studentProfileId = req.session.stduent_profile_id;
-        // console.log(studentProfileId);
-        // const periodsForStudent = await periodService.getPeriodsForStudent();
         res.render("student/studentHomePage");//view/filename
     },
 
@@ -66,7 +58,7 @@ module.exports = {
                 courses,
                 groups,
                 groupHalves
-            }//facNums added dynamicaly after geting groupHalfId
+            }
             console.log(studentMarksInfo);
             res.render('admin/reviewStudentMarks', { studentMarksInfo });
 
@@ -77,8 +69,7 @@ module.exports = {
     },
     resultStudentMarks: async (req, res) => {
         try {
-            const { specialty, courseNumber, groupNumber, groupHalfLetter,
-                facultyNumbersSelect } = req.body;
+            const facultyNumbersSelect = req.body;
             console.log(facultyNumbersSelect);
             const studentProfileId =
                 await studentService.getStudentProfileId(facultyNumbersSelect);
@@ -108,9 +99,9 @@ module.exports = {
     showConsultations: async (req, res) => {
         try {
             const studentProfileId = req.session.student_profile_id;
-            const studentConsultations =await studentService.
-            getStudentConsultations(studentProfileId);
-            res.render("student/studentConsultations",{studentConsultations});
+            const studentConsultations = await studentService.
+                getStudentConsultations(studentProfileId);
+            res.render("student/studentConsultations", { studentConsultations });
         } catch (error) {
             console.error(error);
             res.status(500).send("Internal Server Error");
@@ -119,8 +110,8 @@ module.exports = {
     ,
     searchConsultations: async (req, res) => {
         try {
-            const body=req.body;
-            const consultations=await studentService.searchConsultations(body.consultationSearch);
+            const body = req.body;
+            const consultations = await studentService.searchConsultations(body.consultationSearch);
             res.json(consultations);
         } catch (error) {
             console.error(error);

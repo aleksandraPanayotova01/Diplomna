@@ -31,7 +31,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     const lecturers = await getLecturers();
 
-    // Function to set up event listeners for title selects
     function setupTitleSelects() {
         titleChosenSelects = document.querySelectorAll('.selectTitle');
 
@@ -43,7 +42,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                 createLecturerOptions(titleChosen.value, lecturersWithTitle);
             });
 
-            // Initialize lecturer options based on the first title option
             const titleFirstOption = titleChosen.options[0];
             const parentDiv = titleChosen.closest('div');
             const lecturersWithTitle = parentDiv.querySelector('.selectLecturer');
@@ -51,7 +49,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
-    // Initial setup of event listeners
     setupTitleSelects();
 
     addLecturerButton.addEventListener("click", async function () {
@@ -108,11 +105,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         lecturersDiv.insertBefore(lecturerDiv, addLecturerDiv);
 
         removeLecturer.addEventListener("click", function () {
-            lecturerDiv.remove();////////////////////////////
-            setupTitleSelects(); // Re-setup event listeners after removal
+            lecturerDiv.remove();
+            setupTitleSelects();
         });
 
-        setupTitleSelects(); // Re-setup event listeners for the newly added select
+        setupTitleSelects();
     });
 
     function createLecturerOptions(title, lecturersWithTitle) {

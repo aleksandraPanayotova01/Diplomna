@@ -32,13 +32,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     const departmentChosen = document.querySelector('#selectDepartment');
     const specialtiesInDepartment = document.querySelector('#selectSpecialty');
     const coursesSelect = document.querySelector("#selectCourse");
-    // const titleChosen = document.querySelector('#selectTitle');//for lecturer
-    // const titles = await getLecturerTitles();//for lecturer
-    // console.log(departments);//shows all departments in the db in the console
     const facultyFirstOption = facultyChosen.options[0];
-    // console.log(firstOption.value);// to get abbreviation of fita- the first option of the faculty select
     createDepartmentOptions(facultyFirstOption.value);
-    // console.log(specialties);
     facultyChosen.addEventListener("change", async function () {
         departmentsInFaculty.innerHTML = '';
         createDepartmentOptions(facultyChosen.value);
@@ -124,33 +119,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
 
-    // const getLecturerTitles = async () => {//for lecturer
-    //     try {
-    //         const response = await fetch(`/admin/get/titles`, {
-    //             method: "GET",
-    //             headers: { 'Content-Type': 'application/json' }
-    //         });
-
-    //         return await response.json();
-    //     } catch (error) {
-    //         console.error('Error fetching exercises:', error);
-    //     }
-    // };
-
-    // titleChosen.addEventListener("change", async function () {//for lecturer
-    //     const defaultOption = document.createElement('option');
-    //     defaultOption.value = 'none';
-    //     defaultOption.selected = true;
-    //     defaultOption.hidden = true;
-    //     defaultOption.disabled = true;
-    //     defaultOption.textContent = 'Изберете титла';
-    //     titleChosen.appendChild(defaultOption);
-    //     for (const title of titles) {
-    //         const titleOption = document.createElement('option');// add options to the select
-    //         titleOption.textContent = `${title.title_name}`;//(${department.department_abbreviation})
-    //         titleOption.value = title.title_name;
-    //         titles.appendChild(titleOption);
-    //     }
-    // });
+   
 
 });

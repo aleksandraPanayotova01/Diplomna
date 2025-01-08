@@ -64,7 +64,6 @@
             defaultFacultyNumbersOption.selected = true;
             facultyNumbersSelect.appendChild(defaultFacultyNumbersOption);
 
-            // Populate options
             facultyNumbers.forEach(facultyNumber => {
                 const facultyNumberOption = document.createElement('option');
                 facultyNumberOption.textContent = `${facultyNumber.student_fac_num} - ${facultyNumber.name}`;

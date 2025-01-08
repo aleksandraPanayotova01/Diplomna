@@ -4,7 +4,7 @@
 
         closeAlertBtns.forEach(btn => {
             btn.addEventListener("click", function () {
-                const alertBox = this.parentElement; // Closest .alert element
+                const alertBox = this.parentElement;
                 alertBox.style.display = "none";
             });
         });

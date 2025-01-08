@@ -36,13 +36,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     const departmentChosen = document.querySelector('#selectDepartment');
     const specialtiesInDepartment = document.querySelector('#selectSpecialty');
     const coursesSelect = document.querySelector("#selectCourse");
-    // const titleChosen = document.querySelector('#selectTitle');//for lecturer
-    // const titles = await getLecturerTitles();//for lecturer
-    // console.log(departments);//shows all departments in the db in the console
     const facultyFirstOption = facultyChosen.options[0];
-    // console.log(firstOption.value);// to get abbreviation of fita- the first option of the faculty select
     createDepartmentOptions(facultyFirstOption.value);
-    // console.log(specialties);
     facultyChosen.addEventListener("change", async function () {
         departmentsInFaculty.innerHTML = '';
         createDepartmentOptions(facultyChosen.value);
@@ -124,7 +119,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             console.error('Invalid duration data');
         }
     }
-    ///////////// up to here it works
+
 
     const getGroupHalfs = async (specialty, course) => {
         try {
@@ -208,14 +203,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     async function createGroupHalfInputs(groupHalfs) {
         const form = document.querySelector("#addMarkForm");
 
-        // Remove existing elements
         const existingGroupNumberDiv = form.querySelector('.formInput.groupNumber');
         if (existingGroupNumberDiv) existingGroupNumberDiv.remove();
 
         const existingGroupHalfDiv = form.querySelector('.formInput.groupHalf');
         if (existingGroupHalfDiv) existingGroupHalfDiv.remove();
 
-        // Create and append the group number select
         const groupNumberDiv = document.createElement("div");
         groupNumberDiv.classList.add("formInput", "groupNumber");
 
@@ -311,7 +304,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         const subjectSelect = document.createElement('select');
         subjectSelect.name = "selectSubject";
-        subjectSelect.id = "selectSubject"; // Ensure unique IDs
+        subjectSelect.id = "selectSubject";
         subjectSelect.classList.add("selectSubject");
         subjectDiv.appendChild(subjectSelect);
 
@@ -336,9 +329,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     async function handleSubjectChange(event) {
         const selectedSubjectId = event.target.value;
         if (selectedSubjectId) {
-            // await createPeriodTypeSelect();
         } else {
-            // Remove existing period inputs if subject is deselected
             const existingPeriodDiv = document.querySelector('.formInput.period');
             if (existingPeriodDiv) existingPeriodDiv.remove();
         }
@@ -384,11 +375,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         try {
             const form = document.querySelector("#addMarkForm");
 
-            // Create the marks select div
             const marksDiv = document.createElement("div");
             marksDiv.classList.add("formInput", "marks");
-            // const facultyNumbersDiv = document.createElement("div");
-            // facultyNumbersDiv.classList.add("formInput", "faculty_numbers");
 
             const labelMarksSelect = document.createElement('label');
             labelMarksSelect.textContent = "Оценка";
@@ -406,7 +394,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             defaultOption.selected = true;
             marksSelect.appendChild(defaultOption);
 
-            // Append each mark to the select element
             marks.forEach(mark => {
                 const option = document.createElement('option');
                 option.textContent = mark.mark_value;
@@ -414,11 +401,9 @@ document.addEventListener("DOMContentLoaded", async function () {
                 marksSelect.appendChild(option);
             });
 
-            // Append the marksDiv to the form
             form.appendChild(marksDiv);
             marksDiv.appendChild(document.createElement("br"));
 
-            // Create and append the submit button to the marksDiv
             createSubmitButton(marksDiv);
 
         } catch (error) {

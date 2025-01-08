@@ -32,133 +32,130 @@
 
 <body>
     <%- include('../partials/adminHeader') %>
-    <div class="container page-content">
-        <h1>Преглед на графиците</h1>
+        <div class="container page-content">
+            <h1>Преглед на графиците</h1>
 
-        <form method="POST" action="/admin/reviewSchedules">
-            <div class="form-group">
-                <label for="viewBy">Изберете как да прегледате графика:</label>
-                <select id="viewBy" name="viewBy" onchange="toggleForm(this.value)" required>
-                    <option value="">-- Изберете --</option>
-                    <option value="group">По група</option>
-                    <option value="lecturer">По преподавател</option>
-                </select>
-            </div>
-
-            <div id="groupOptions" style="display: none;">
+            <form method="POST" action="/admin/reviewSchedules">
                 <div class="form-group">
-                    <label for="specialty">Специалност:</label>
-                    <select id="specialty" name="specialty" required>
+                    <label for="viewBy">Изберете как да прегледате графика:</label>
+                    <select id="viewBy" name="viewBy" onchange="toggleForm(this.value)" required>
                         <option value="">-- Изберете --</option>
-                        <% specialties.forEach(function(specialty) { %>
-                            <option value="<%= specialty.specialty_id %>">
-                                <%= specialty.specialty_name %> (<%= specialty.specialty_abbreviation %>)
-                            </option>
-                        <% }); %>
+                        <option value="group">По група</option>
+                        <option value="lecturer">По преподавател</option>
                     </select>
                 </div>
 
-                <div class="form-group">
-                    <label for="courseNumber">Курс:</label>
-                    <select id="courseNumber" name="courseNumber" required>
-                        <option value="">-- Изберете --</option>
-                        <% courses.forEach(function(course) { %>
-                            <option value="<%= course.course_number %>">
-                                <%= course.course_number %>
-                            </option>
-                        <% }); %>
-                    </select>
+                <div id="groupOptions" style="display: none;">
+                    <div class="form-group">
+                        <label for="specialty">Специалност:</label>
+                        <select id="specialty" name="specialty" required>
+                            <option value="">-- Изберете --</option>
+                            <% specialties.forEach(function(specialty) { %>
+                                <option value="<%= specialty.specialty_id %>">
+                                    <%= specialty.specialty_name %> (<%= specialty.specialty_abbreviation %>)
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="courseNumber">Курс:</label>
+                        <select id="courseNumber" name="courseNumber" required>
+                            <option value="">-- Изберете --</option>
+                            <% courses.forEach(function(course) { %>
+                                <option value="<%= course.course_number %>">
+                                    <%= course.course_number %>
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="groupNumber">Номер на група:</label>
+                        <select id="groupNumber" name="groupNumber" required>
+                            <option value="">-- Изберете --</option>
+                            <% groups.forEach(function(group) { %>
+                                <option value="<%= group.group_number %>">
+                                    <%= group.group_number %>
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="groupHalfLetter">Половинка:</label>
+                        <select id="groupHalfLetter" name="groupHalfLetter" required>
+                            <option value="">-- Изберете --</option>
+                            <% groupHalves.forEach(function(half) { %>
+                                <option value="<%= half.group_half_letter %>">
+                                    <%= half.group_half_letter %>
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="groupNumber">Номер на група:</label>
-                    <select id="groupNumber" name="groupNumber" required>
-                        <option value="">-- Изберете --</option>
-                        <% groups.forEach(function(group) { %>
-                            <option value="<%= group.group_number %>">
-                                <%= group.group_number %>
-                            </option>
-                        <% }); %>
-                    </select>
+                <div id="lecturerOptions" style="display: none;">
+                    <div class="form-group">
+                        <label for="lecturer">Преподавател:</label>
+                        <select id="lecturer" name="lecturer" required>
+                            <option value="">-- Изберете --</option>
+                            <% lecturers.forEach(function(lecturer) { %>
+                                <option value="<%= lecturer.lecturer_id %>">
+                                    <%= lecturer.title_name %>
+                                        <%= lecturer.name %>
+                                            <%= lecturer.surname %>
+                                </option>
+                                <% }); %>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="groupHalfLetter">Половинка:</label>
-                    <select id="groupHalfLetter" name="groupHalfLetter" required>
-                        <option value="">-- Изберете --</option>
-                        <% groupHalves.forEach(function(half) { %>
-                            <option value="<%= half.group_half_letter %>">
-                                <%= half.group_half_letter %>
-                            </option>
-                        <% }); %>
-                    </select>
-                </div>
-            </div>
+                <button class="submit" type="submit">Прегледай графиците</button>
+            </form>
+        </div>
 
-            <div id="lecturerOptions" style="display: none;">
-                <div class="form-group">
-                    <label for="lecturer">Преподавател:</label>
-                    <select id="lecturer" name="lecturer" required>
-                        <option value="">-- Изберете --</option>
-                        <% lecturers.forEach(function(lecturer) { %>
-                            <option value="<%= lecturer.lecturer_id %>">
-                                <%= lecturer.title_name %> <%= lecturer.name %> <%= lecturer.surname %>
-                            </option>
-                        <% }); %>
-                    </select>
-                </div>
-            </div>
+        <script>
+            function toggleForm(value) {
+                var groupOptions = document.getElementById('groupOptions');
+                var lecturerOptions = document.getElementById('lecturerOptions');
 
-            <button class="submit" type="submit">Прегледай графиците</button>
-        </form>
-    </div>
+                if (value === 'group') {
+                    groupOptions.style.display = 'block';
+                    lecturerOptions.style.display = 'none';
 
-    <script>
-        function toggleForm(value) {
-            var groupOptions = document.getElementById('groupOptions');
-            var lecturerOptions = document.getElementById('lecturerOptions');
+                    setRequiredAttributes(true);
 
-            if (value === 'group') {
-                groupOptions.style.display = 'block';
-                lecturerOptions.style.display = 'none';
-                
-                // Set required on group fields
-                setRequiredAttributes(true);
-                
-                // Remove required from lecturer fields
-                setRequiredAttributes(false, true);
-            } else if (value === 'lecturer') {
-                groupOptions.style.display = 'none';
-                lecturerOptions.style.display = 'block';
+                    setRequiredAttributes(false, true);
+                } else if (value === 'lecturer') {
+                    groupOptions.style.display = 'none';
+                    lecturerOptions.style.display = 'block';
 
-                // Remove required from group fields
-                setRequiredAttributes(false);
+                    setRequiredAttributes(false);
 
-                // Set required on lecturer fields
-                setRequiredAttributes(true, true);
-            } else {
-                groupOptions.style.display = 'none';
-                lecturerOptions.style.display = 'none';
-
-                // Remove required from all fields
-                setRequiredAttributes(false);
-            }
-        }
-
-        function setRequiredAttributes(required, isLecturer = false) {
-            var fields = isLecturer 
-                ? document.querySelectorAll('#lecturerOptions select')
-                : document.querySelectorAll('#groupOptions select');
-            
-            fields.forEach(function(field) {
-                if (required) {
-                    field.setAttribute('required', 'required');
+                    setRequiredAttributes(true, true);
                 } else {
-                    field.removeAttribute('required');
+                    groupOptions.style.display = 'none';
+                    lecturerOptions.style.display = 'none';
+
+                    setRequiredAttributes(false);
                 }
-            });
-        }
-    </script>
+            }
+
+            function setRequiredAttributes(required, isLecturer = false) {
+                var fields = isLecturer
+                    ? document.querySelectorAll('#lecturerOptions select')
+                    : document.querySelectorAll('#groupOptions select');
+
+                fields.forEach(function (field) {
+                    if (required) {
+                        field.setAttribute('required', 'required');
+                    } else {
+                        field.removeAttribute('required');
+                    }
+                });
+            }
+        </script>
 </body>
 
 </html>

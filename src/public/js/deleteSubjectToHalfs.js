@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     const specialtyDropdown = document.getElementById("specialtyDropdown");
     const courseSelect = document.querySelector("#selectCourse");
 
-    // Fetch specialties from the server
     const getSpecialties = async () => {
         try {
             const response = await fetch(`/admin/get/specialties`, {
@@ -30,7 +29,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             return [];
         }
     };
-    // Fetch function to get group halfs
     async function getGroupHalfs(specialtyId, courseNumber) {
         try {
             const response = await fetch('/admin/get/groupHalfs', {
@@ -50,7 +48,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
-    //Fetch group halfs based on the chosen specialty and semester
 
     async function fetchAndCreateSubjectSelect(groupHalfId) {
         try {
@@ -68,7 +65,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             console.error('Error fetching subjects:', error);
         }
     }
-    // Fetch function to get lecturers
     const getLecturers = async () => {
         try {
             const response = await fetch(`/admin/get/lecturers`);
@@ -78,7 +74,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     };
 
-    // Fetch function to get period types
     const getPeriodTypes = async () => {
         try {
             const response = await fetch(`/admin/get/periodTypes`);
@@ -88,7 +83,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     };
 
-    // Populate specialties dropdown
     const populateSpecialtiesDropdown = async () => {
         const specialties = await getSpecialties();
 
@@ -145,12 +139,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         subjectSelect.addEventListener('change', (event) => {
             handleSubjectChange(event, subjectsHalf);
         });
-        // subjectSelect.addEventListener('change', (event) => handleSubjectChange(event, subjectsHalf));
 
     }
 
 
-    // Listen for specialty dropdown changes
     specialtyDropdown.addEventListener("change", function () {
         const selectedSpecialtyId = specialtyDropdown.value;
         const selectedSpecialtyOption = specialtyDropdown.options[specialtyDropdown.selectedIndex];
@@ -159,10 +151,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             const specialtySemesters = selectedSpecialtyOption.getAttribute('data-semesters');
 
-            // Clear and populate the courses dropdown based on the specialty
             courseSelect.innerHTML = '';
             const defaultOption = document.createElement("option");
-            //default option
             defaultOption.value = "";
             defaultOption.textContent = "-- Изберете семестър --";
             courseSelect.appendChild(defaultOption);
@@ -173,39 +163,32 @@ document.addEventListener("DOMContentLoaded", async function () {
                 courseSelect.appendChild(option);
             }
 
-            courseSelect.disabled = false;  // Enable the course select dropdown
+            courseSelect.disabled = false;
         } else {
             courseSelect.innerHTML = '<option value="">-- Изберете семестър --</option>';
-            courseSelect.disabled = true;  // Disable the course select dropdown if no specialty is selected
+            courseSelect.disabled = true;
         }
 
         courseSelect.addEventListener("change", async function () {
-            const selectedSpecialtyId = specialtyDropdown.value; // Вземете избраната специалност
-            const selectedCourse = courseSelect.value; // Вземете избрания курс/семестър
+            const selectedSpecialtyId = specialtyDropdown.value;
+            const selectedCourse = courseSelect.value;
             const groupHalfs = await getGroupHalfs(specialtyDropdown.value, courseSelect.value);
 
             createGroupHalfInputs(groupHalfs);
             if (selectedSpecialtyId && selectedCourse) {
-                // Извличане на половинките на групи за избраната специалност и курс
                 const groupHalfs = await getGroupHalfs(selectedSpecialtyId, selectedCourse);
 
                 if (groupHalfs && groupHalfs.length > 0) {
-                    // Създаване на полета за половинки
                     createGroupHalfInputs(groupHalfs);
                 } else {
                     console.warn("Няма намерени половинки за тази специалност и курс.");
                     alert("Няма налични половинки за тази специалност и курс.");
                 }
             }
-            // const groupHalfs = await getGroupHalfs(specialtySelect.value, courseSelect.value);
-            // createGroupHalfInputs(groupHalfs);
         });
 
     });
 
-    // Handling the course selection
-
-    // Creating group half input fields
     function createGroupHalfInputs(groupHalfs) {
         const form = document.querySelector("#deleteSubjectForm");
 
@@ -231,7 +214,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         defaultOption.selected = true;
         groupHalfSelect.appendChild(defaultOption);
 
-        // Populating the group halves options
         for (const groupHalf of groupHalfs) {
             const groupHalfOption = document.createElement('option');
             groupHalfOption.textContent = `${groupHalf.group_number} ${groupHalf.group_half_letter}`;
@@ -241,97 +223,15 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         form.appendChild(groupHalfsDiv);
 
-        // Adding event listener for group half change
         groupHalfSelect.addEventListener("change", async function () {
             const selectedGroupHalfId = groupHalfSelect.value;
 
             await fetchAndCreateSubjectSelect(selectedGroupHalfId);
-            // await fetchAndCreateLecturerSelect(selectedGroupHalfId);
         });
     }
 
 
 
-    // Fetching and creating the lecturer select input
-    // async function fetchAndCreateLecturerSelect(lecturerId) {
-    //     const lecturers = await getLecturers();
-    //     const form = document.querySelector("#deleteSubjectForm");
-
-    //     const existingLecturerDiv = form.querySelector('.formInput.lecturers');
-    //     if (existingLecturerDiv) existingLecturerDiv.remove();
-
-    //     const lecturersDiv = document.createElement("div");
-    //     lecturersDiv.classList.add("formInput", "lecturers");
-
-    //     const labelLecturerSelect = document.createElement('label');
-    //     labelLecturerSelect.textContent = "Преподавател";
-    //     lecturersDiv.appendChild(labelLecturerSelect);
-
-    //     const lecturerSelect = document.createElement('select');
-    //     lecturerSelect.name = "selectLecturer";
-    //     lecturerSelect.classList.add("selectLecturer");
-    //     lecturersDiv.appendChild(lecturerSelect);
-
-    //     const defaultOption = document.createElement('option');
-    //     defaultOption.textContent = "Изберете преподавател";
-    //     defaultOption.value = "";
-    //     defaultOption.disabled = true;
-    //     defaultOption.selected = true;
-    //     lecturerSelect.appendChild(defaultOption);
-
-    //     for (const lecturer of lecturers) {
-    //         const lecturerOption = document.createElement('option');
-    //         lecturerOption.textContent = `${lecturer.title_name} ${lecturer.name} ${lecturer.surname}`;
-    //         lecturerOption.value = lecturer.lecturer_id;
-    //         if (lecturerId == lecturer.lecturer_id) {
-    //             lecturerOption.selected = true;
-    //         }
-    //         lecturerSelect.appendChild(lecturerOption);
-    //     }
-
-    //     form.appendChild(lecturersDiv);
-
-    //     const submitDiv = document.createElement("div");
-    //     submitDiv.classList.add("formInput");
-
-    //     let submitButton = form.querySelector('button');
-    //     if (!submitButton) {
-    //         submitButton = document.createElement('button');
-    //         submitButton.classList.add('submit');
-    //         submitButton.textContent = "Изтриване";
-    //         // submitButton.disabled = true; // Start with the button disabled
-    //         submitDiv.appendChild(submitButton);
-    //         form.appendChild(submitDiv);
-    //     }
-
-    //     // const periodTypeSelect = form.querySelector('.selectPeriodType');
-
-    //     // check if the selection changed and enable/disable the submit button
-    //     // const checkIfSelectionChanged = () => {
-    //     //     // const selectedPeriodType = periodTypeSelect ? periodTypeSelect.value : null;
-    //     //     submitButton.disabled = false;
-
-    //     // };
-
-    //     // Add event listener for lecturer select
-    //     // lecturerSelect.addEventListener('change', checkIfSelectionChanged);
-
-    //     // Add event listener for period type select if it exists
-    //     // if (periodTypeSelect) {
-    //     //     periodTypeSelect.addEventListener('change', checkIfSelectionChanged);
-    //     // }
-    // }
-    // function checkIfSelectionChanged(lecturerSelect, submitButton) {
-    //     const selectedLecturer = lecturerSelect.value;
-    //     // const selectedPeriodType = periodTypeSelect.value;
-
-    //     // Активирай бутона, ако някой от изборите е променен
-    //     if (selectedLecturer) {
-    //         submitButton.disabled = false;
-    //     } else {
-    //         submitButton.disabled = true;
-    //     }
-    // }
     function handlePeriodTypeChange(event, lecturers) {
         const selectedPeriodTypeId = event.target.value;
         const selectedSubjectId = document.querySelector(".selectSubject").value;
@@ -340,7 +240,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         const lecturerParagraph = document.querySelector(".selectLecturer");
 
         if (selectedPeriodTypeId) {
-            // Find the lecturer associated with the new period type
             const associatedLecturer = lecturers.find(lecturer =>
                 lecturer.period_type_id_fk === parseInt(selectedPeriodTypeId) &&
                 lecturer.subject_id_fk === parseInt(selectedSubjectId)
@@ -357,12 +256,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
 
-    // Fetching and creating the period type select input
     async function fetchAndCreatePeriodTypeSelect(periodTypeId) {
         const periodTypes = await getPeriodTypes();
         const form = document.querySelector("#deleteSubjectForm");
         const lecturers = await getLecturers();
-        // const lecturerParagraph = await fetchAndCreateLecturerSelect();
 
         const existingPeriodTypeDiv = form.querySelector('.formInput.periodType');
         if (existingPeriodTypeDiv) existingPeriodTypeDiv.remove();
@@ -386,7 +283,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         defaultOption.selected = true;
         periodTypeSelect.appendChild(defaultOption);
 
-        // Populating the period type options
         for (const periodType of periodTypes) {
             const periodTypeOption = document.createElement('option');
             periodTypeOption.textContent = periodType.period_type_name;
@@ -408,7 +304,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             submitButton = document.createElement('button');
             submitButton.classList.add('submit');
             submitButton.textContent = "Изтриване";
-            // submitButton.disabled = true;
             submitDiv.appendChild(submitButton);
             form.appendChild(submitDiv);
         }
@@ -417,20 +312,16 @@ document.addEventListener("DOMContentLoaded", async function () {
         const selectedSubjectId = event.target.value;
 
         if (selectedSubjectId) {
-            // Намерете избрания предмет от масива subjectsHalf
             const subjectHalf = subjectsHalf.find(subject => subject.subject_id == selectedSubjectId);
 
             if (subjectHalf) {
-                // Извиквайте fetchAndCreatePeriodTypeSelect за да добавите вид предмет
                 await fetchAndCreatePeriodTypeSelect(subjectHalf.period_type_id_fk);
 
 
-                // await fetchAndCreateLecturerSelect(subjectHalf.lecturer_id_fk);
             } else {
                 console.warn("Не е намерен избраният предмет.");
             }
         } else {
-            // Премахнете всички полета, ако предметът не е избран
             const existingPeriodDiv = document.querySelector('.formInput.period');
             if (existingPeriodDiv) existingPeriodDiv.remove();
 
@@ -440,7 +331,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             const existingEditHeader = document.querySelector('.editHeader');
             if (existingEditHeader) existingEditHeader.remove();
 
-            // Деактивирайте бутона за промяна
             const submitButton = document.querySelector(".submit");
             if (submitButton) {
                 submitButton.disabled = true;
@@ -448,69 +338,5 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
-
-    // async function fetchAndCreateLecturerSelect(lecturerId) {
-    //     const lecturers = await getLecturers();
-    //     const form = document.querySelector("#deleteSubjectForm");
-
-    //     const existingLecturerDiv = form.querySelector('.formInput.lecturers');
-    //     if (existingLecturerDiv) existingLecturerDiv.remove();
-
-    //     const lecturersDiv = document.createElement("div");
-    //     lecturersDiv.classList.add("formInput", "lecturers");
-
-    //     const labelLecturerParagraph = document.createElement('label');
-    //     labelLecturerParagraph.textContent = "Преподавател";
-    //     lecturersDiv.appendChild(labelLecturerParagraph);
-    //     const lecturerParagraph = document.createElement('p');
-    //     lecturerParagraph.name = "selectLecturer";
-    //     lecturerParagraph.classList.add("selectLecturer");
-    //     lecturersDiv.appendChild(lecturerParagraph);
-
-    //     // const defaultOption = document.createElement('option');
-    //     // defaultOption.textContent = "Изберете преподавател";
-    //     // defaultOption.value = "";
-    //     // defaultOption.disabled = true;
-    //     // defaultOption.selected = true;
-    //     // lecturerSelect.appendChild(defaultOption);
-
-    //     for (const lecturer of lecturers) {
-    //         // const lecturerOption = document.createElement('option');
-
-    //         if (lecturerId == lecturer.lecturer_id) {
-    //             lecturerParagraph.textContent = `${lecturer.title_name} ${lecturer.name} ${lecturer.surname}`;
-    //             lecturerParagraph.value = lecturer.lecturer_id;
-    //             break;
-    //         }
-    //     }
-
-    //     form.appendChild(lecturersDiv);
-
-    //     const submitDiv = document.createElement("div");
-    //     submitDiv.classList.add("formInput");
-
-    //     let submitButton = form.querySelector('button');
-    //     if (!submitButton) {
-    //         submitButton = document.createElement('button');
-    //         submitButton.classList.add('submit');
-    //         submitButton.textContent = "Изтриване";
-    //         // submitButton.disabled = true;
-    //         submitDiv.appendChild(submitButton);
-    //         form.appendChild(submitDiv);
-    //     }
-
-    //     const periodTypeSelect = form.querySelector('.selectPeriodType');
-    //     console.log('PeriodTypeSelect exists:', !!periodTypeSelect);
-
-    //     // lecturerSelect.addEventListener('change', () => {
-    //     //     if (periodTypeSelect) {
-    //     //         submitButton.disabled = !lecturerParagraph.value;
-    //     //     }
-    //     // });
-
-
-    // }
-
-    // Populate specialties on page load
     await populateSpecialtiesDropdown();
 });

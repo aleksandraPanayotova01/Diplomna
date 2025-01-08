@@ -2,11 +2,10 @@ document.addEventListener('DOMContentLoaded', () => {
     fetch('/lecturer/get/subjects')
         .then(response => response.json())
         .then(data => {
-            console.log('Fetched Subjects Data:', data);  // Log the data for debugging
+            console.log('Fetched Subjects Data:', data);
 
-            // Check for any subject with period_type_id_fk == 1 and show the button
             if (checkForAddGradesButton(data)) {
-                console.log('Adding the button');  // Debugging log to check if the button should be added
+                console.log('Adding the button');
                 displayAddGradesButton();
             } else {
                 console.log('No subject with period_type_id_fk = 1 found');
@@ -16,15 +15,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function checkForAddGradesButton(subjects) {
-    // Log each subject to check if the period_type_id_fk exists
     subjects.forEach(subject => console.log('Subject:', subject));
 
-    // Check if any subject has period_type_id_fk equal to 1
     return subjects.some(subject => subject.period_type_id_fk === 1);
 }
 
 function displayAddGradesButton() {
-    // Create the button element
     const addGradesButton = document.createElement('div');
     addGradesButton.innerHTML = `
     <div>
@@ -34,7 +30,6 @@ function displayAddGradesButton() {
     </div>
 `;
 
-    // Append it to the container with id `addGradesContainer`
     const container = document.getElementById('addGradesContainer');
     container.appendChild(addGradesButton);
 }

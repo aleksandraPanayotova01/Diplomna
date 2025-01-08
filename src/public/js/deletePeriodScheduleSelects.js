@@ -134,7 +134,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         } catch (error) {
             console.error('Error fetching subjects:', error);
         }
-        // Add period type select after subject select
     }
 
     async function createPeriodTypeSelect(subjectDiv) {
@@ -145,7 +144,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
 
             const periodTypes = await response.json();
-            console.log("Fetched period types:", periodTypes); // Debugging log
+            console.log("Fetched period types:", periodTypes);
 
             if (!Array.isArray(periodTypes) || periodTypes.length === 0) {
                 console.warn("No period types available.");
@@ -178,7 +177,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                 periodTypeSelect.appendChild(option);
             });
 
-            // Insert the period type select right after the subject div
             subjectDiv.insertAdjacentElement('afterend', periodTypeDiv);
             periodTypeSelect.addEventListener("change", handlePeriodTypeChange(periodTypeDiv));
         } catch (error) {
@@ -188,212 +186,18 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
 
-
-    // async function createPeriodInput() {
-    //     const form = document.querySelector("#updatePeriodScheduleForm");
-    //     const existingPeriodDiv = form.querySelector('.formInput.period');
-
-    //     if (existingPeriodDiv) existingPeriodDiv.remove();
-
-    //     const selectPeriodType = document.querySelector(".selectPeriodType").value;
-    //     console.log("Period type: ", selectPeriodType);
-    //     const selectSubject = document.querySelector("#selectSubject").value;
-    //     console.log("Group half subject id: ", selectSubject);
-
-    //     try {
-    //         const response = await fetch(`/admin/get/period`, {
-    //             method: "POST",
-    //             body: JSON.stringify({ groupHalfSubjectId: selectSubject, periodType: selectPeriodType }),
-    //             headers: { 'Content-Type': 'application/json' }
-    //         });
-
-    //         const period = await response.json();
-    //         // fetchAndCreateSubjectSelect(subjectsHalf);
-    //         console.log("period", period);
-    //         const periodDiv = document.createElement("div");
-    //         periodDiv.classList.add("formInput", "period");
-
-    //         createTimeInputs(periodDiv, period);
-    //         await createWeekdaySelect(periodDiv, period);
-    //         await createRoomSelect(periodDiv, period);
-    //         await createLecturerSelect(periodDiv, period);
-    //         createSubmitButton(periodDiv);
-
-    //         form.appendChild(periodDiv);
-    //     } catch (error) {
-    //         console.error('Error fetching period:', error);
-    //     }
-    // }
-
-    // async function createWeekdaySelect(parentDiv, period) {
-    //     try {
-    //         const response = await fetch(`/admin/get/weekdays`);
-    //         const weekdays = await response.json();
-
-    //         const weekdayDiv = document.createElement("div");
-    //         weekdayDiv.classList.add("formField");
-
-    //         const labelWeekdaySelect = document.createElement('label');
-    //         labelWeekdaySelect.textContent = "Ден от седмицата";
-    //         weekdayDiv.appendChild(labelWeekdaySelect);
-
-    //         const weekdaySelect = document.createElement('select');
-    //         weekdaySelect.name = "weekday";
-    //         weekdaySelect.classList.add("selectWeekday");
-    //         weekdayDiv.appendChild(weekdaySelect);
-
-    //         const defaultOption = document.createElement('option');
-    //         defaultOption.textContent = "Изберете ден";
-    //         defaultOption.value = "";
-    //         defaultOption.disabled = true;
-    //         defaultOption.selected = true;
-    //         weekdaySelect.appendChild(defaultOption);
-
-    //         weekdays.forEach(weekday => {
-
-    //             const option = document.createElement('option');
-    //             option.textContent = weekday.weekday_name;
-    //             option.value = weekday.weekday_id;
-    //             console.log("period.weekday_id_fk:", period.weekday_id_fk);
-    //             if (period[0].weekday_id_fk == weekday.weekday_id) {
-    //                 option.selected = true;
-    //             }
-    //             weekdaySelect.appendChild(option);
-    //         });
-
-    //         parentDiv.appendChild(weekdayDiv);
-    //     } catch (error) {
-    //         console.error('Error fetching weekdays:', error);
-    //     }
-    // }
-
-    // async function createRoomSelect(parentDiv, period) {
-    //     try {
-    //         const response = await fetch(`/admin/get/rooms`);
-    //         const rooms = await response.json();
-
-    //         const roomDiv = document.createElement("div");
-    //         roomDiv.classList.add("formField");
-
-    //         const labelRoomSelect = document.createElement('label');
-    //         labelRoomSelect.textContent = "Стая";
-    //         roomDiv.appendChild(labelRoomSelect);
-
-    //         const roomSelect = document.createElement('select');
-    //         roomSelect.name = "room";
-    //         roomSelect.classList.add("selectRoom");
-    //         roomDiv.appendChild(roomSelect);
-
-    //         const defaultOption = document.createElement('option');
-    //         defaultOption.textContent = "Изберете стая";
-    //         defaultOption.value = "";
-    //         defaultOption.disabled = true;
-    //         defaultOption.selected = true;
-    //         roomSelect.appendChild(defaultOption);
-
-    //         rooms.forEach(room => {
-    //             const option = document.createElement('option');
-    //             option.textContent = `${room.room_number} ${room.building_abbreviation}`;
-    //             option.value = room.room_id;
-    //             if (period[0].room_id_fk == room.room_id) {
-    //                 option.selected = true;
-    //             }
-    //             roomSelect.appendChild(option);
-    //         });
-
-    //         parentDiv.appendChild(roomDiv);
-    //     } catch (error) {
-    //         console.error('Error fetching rooms:', error);
-    //     }
-    // }
-
-    // async function createLecturerSelect(parentDiv, period) {
-    //     try {
-    //         const response = await fetch(`/admin/get/lecturers`);
-    //         const lecturers = await response.json();
-
-    //         const lecturerDiv = document.createElement("div");
-    //         lecturerDiv.classList.add("formField");
-
-    //         const labelLecturerSelect = document.createElement('label');
-    //         labelLecturerSelect.textContent = "Преподавател";
-    //         lecturerDiv.appendChild(labelLecturerSelect);
-
-    //         const lecturerSelect = document.createElement('select');
-    //         lecturerSelect.name = "lecturer";
-    //         lecturerSelect.classList.add("selectLecturer");
-    //         lecturerDiv.appendChild(lecturerSelect);
-
-    //         const defaultOption = document.createElement('option');
-    //         defaultOption.textContent = "Изберете преподавател";
-    //         defaultOption.value = "";
-    //         defaultOption.disabled = true;
-    //         defaultOption.selected = true;
-    //         lecturerSelect.appendChild(defaultOption);
-
-    //         lecturers.forEach(lecturer => {
-    //             const option = document.createElement('option');
-    //             option.textContent = `${lecturer.title_name} ${lecturer.name} ${lecturer.surname}`;
-    //             option.value = lecturer.lecturer_id;
-    //             if (period[0].lecturer_id_fk == lecturer.lecturer_id) {
-    //                 option.selected = true;
-    //             }
-    //             lecturerSelect.appendChild(option);
-    //         });
-
-    //         parentDiv.appendChild(lecturerDiv);
-    //     } catch (error) {
-    //         console.error('Error fetching lecturers:', error);
-    //     }
-    // }
-    // // async function createRoomSelect(parentDiv) { /* Implementation here */ }
-    // const createTimeInputs = (parentDiv, period) => {
-    //     // Create period start time input
-    //     const startTimeDiv = document.createElement('div');
-    //     startTimeDiv.classList.add('timeInput');
-    //     const labelStartTime = document.createElement('label');
-    //     labelStartTime.textContent = 'Начален час';
-    //     const inputStartTime = document.createElement('input');
-    //     inputStartTime.type = 'time';
-    //     inputStartTime.name = 'period_start_time';
-    //     inputStartTime.value = period[0].period_start_time;
-    //     inputStartTime.required = true;
-    //     startTimeDiv.appendChild(labelStartTime);
-    //     startTimeDiv.appendChild(inputStartTime);
-    //     parentDiv.appendChild(startTimeDiv);
-
-    //     // Create period end time input
-    //     const endTimeDiv = document.createElement('div');
-    //     endTimeDiv.classList.add('timeInput');
-    //     const labelEndTime = document.createElement('label');
-    //     labelEndTime.textContent = 'Краен час';
-    //     const inputEndTime = document.createElement('input');
-    //     inputEndTime.type = 'time';
-    //     inputEndTime.name = 'period_end_time';
-    //     inputEndTime.value = period[0].period_end_time;
-    //     endTimeDiv.appendChild(labelEndTime);
-    //     endTimeDiv.appendChild(inputEndTime);
-    //     parentDiv.appendChild(endTimeDiv);
-    // }
     function createSubmitButton(parentDiv) {
         const submitButton = document.createElement('button');
         console.log('Creating submit button:', submitButton);
         submitButton.textContent = 'Изтриване';
         submitButton.classList.add('submit');
-        // submitButton.style.display = 'none'; // Initially hidden
-        // submitButton.addEventListener('click', handleSubmit);
         parentDiv.appendChild(submitButton);
 
-        // Return the submitButton element so it can be used elsewhere
         return submitButton;
     }
 
     function handlePeriodTypeChange(periodTypeDiv) {
-        // const selectedSubjectId = event.target.value;
-        // if (selectedSubjectId) {
-        // createPeriodInput(selectedSubjectId);
         createSubmitButton(periodTypeDiv);
 
-        // }
     }
 });

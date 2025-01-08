@@ -16,7 +16,6 @@ router
     .route("/lecturerLogin")
     .post(accountController.lecturerLogin);
 
-// ** LOGOUT **
 router
     .route("/logout")
     .post(accountController.logoutUser);

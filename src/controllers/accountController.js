@@ -1,5 +1,4 @@
 const accountService = require('../services/accountService');
-const periodService = require('../services/periodService');
 module.exports = {
     showLoginPage: (req, res) => {
         res.render("partials/loginPage")//view/filename

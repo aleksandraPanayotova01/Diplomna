@@ -29,7 +29,6 @@
                 <h3>Присъединете се сега</h3>
 
                 <div class="accordion-container">
-                    <!-- Card student login -->
                     <div class="card">
                         <div class="card-header" id="loginStudent">
                             <h2 class="mb-0">
@@ -44,7 +43,6 @@
                             <%- include('../student/studentLoginForm') %>
                         </div>
                     </div>
-                    <!--Card lecturer login-->
                     <div class="card">
                         <div class="card-header" id="loginLecturer">
                             <h2 class="mb-0">
@@ -60,7 +58,6 @@
                         </div>
                     </div>
 
-                    <!-- Card admin login-->
                     <div class="card">
                         <div class="card-header" id="loginAdmin">
                             <h2 class="mb-0">
@@ -76,42 +73,10 @@
                         </div>
                     </div>
                 </div>
-                <!-- <div class="adminRegister">
-                        <div class="card custom-center-card">
-                            <div class="card-header" id="adminRegister">
-                                <h2 class="mb-1">
-                                    <button class="btn btn-light accordion-button" type="button" data-toggle="collapse"
-                                        data-target="#collapseAdminRegister" aria-expanded="true"
-                                        aria-controls="collapseAdminRegister">
-                                        Регистрация за администратор
-                                    </button>
-                                </h2>
-                            </div>
-                            <div id="collapseAdminRegister" class="collapse" aria-labelledby="adminRegister">
-                               
-                            </div>
-                        </div>
-                    </div> -->
-                <!-- <div class="adminRegister d-flex justify-content-center">
-                        <div class="card custom-card-width">
-                            <div class="card-header d-flex justify-content-center" id="adminRegister">
-                                <h2 class="mb-1">
-                                    <button class="btn btn-light accordion-button custom-button" type="button" data-toggle="collapse"
-                                        data-target="#collapseAdminRegister" aria-expanded="true"
-                                        aria-controls="collapseAdminRegister">
-                                        Регистрация за администратор
-                                    </button>
-                                </h2>
-                            </div>
-                            <div id="collapseAdminRegister" class="collapse" aria-labelledby="adminRegister">
-                               
-                            </div>
-                        </div>
-                    </div> -->
+
         </div>
     </main>
     <script>
-        // JavaScript to close all accordions when clicking outside
         $(document).on('click', function (e) {
             var $accordion = $('.accordion-container');
             if (!$accordion.is(e.target) && $accordion.has(e.target).length === 0) {

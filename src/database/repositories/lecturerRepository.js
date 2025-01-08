@@ -24,7 +24,6 @@ module.exports = {
             consultationInformation.weekday,
             consultationInformation.room,
             consultationInformation.lecturerProfileId
-                // getLecturerSubjectId[0][0]['lecturer_subject_id']
             ]);
             console.log(result);
             return result;
@@ -248,7 +247,6 @@ module.exports = {
             const uniqueStudents = Array.from(new Set(result.map(row => row.student_name)))
                 .map(name => ({ student_name: name }));
 
-            // Group by subject and align marks to students
             const subjects = [];
             const subjectMap = {};
 
@@ -258,12 +256,11 @@ module.exports = {
                         subject_name: row.subject_name,
                         students: uniqueStudents.map(student => ({
                             student_name: student.student_name,
-                            mark_value: null // Default to null for alignment
+                            mark_value: null // Default is null 
                         }))
                     };
                     subjects.push(subjectMap[row.subject_name]);
                 }
-                // Match the student and update their mark
                 const student = subjectMap[row.subject_name].students.find(s => s.student_name === row.student_name);
                 if (student) {
                     student.mark_value = row.mark_value;

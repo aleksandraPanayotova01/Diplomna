@@ -134,7 +134,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         } catch (error) {
             console.error('Error fetching subjects:', error);
         }
-        // Add period type select after subject select
     }
 
     async function createPeriodTypeSelect(subjectDiv) {
@@ -145,7 +144,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
 
             const periodTypes = await response.json();
-            console.log("Fetched period types:", periodTypes); // Debugging log
+            console.log("Fetched period types:", periodTypes); 
 
             if (!Array.isArray(periodTypes) || periodTypes.length === 0) {
                 console.warn("No period types available.");
@@ -178,7 +177,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                 periodTypeSelect.appendChild(option);
             });
 
-            // Insert the period type select right after the subject div
             subjectDiv.insertAdjacentElement('afterend', periodTypeDiv);
             periodTypeSelect.addEventListener("change", handlePeriodTypeChange);
         } catch (error) {
@@ -208,7 +206,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             });
 
             const period = await response.json();
-            // fetchAndCreateSubjectSelect(subjectsHalf);
             console.log("period", period);
             const periodDiv = document.createElement("div");
             periodDiv.classList.add("formInput", "period");
@@ -255,9 +252,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                 option.textContent = weekday.weekday_name;
                 option.value = weekday.weekday_id;
                 console.log("period.weekday_id_fk:", period.weekday_id_fk);
-                // if (period[0].weekday_id_fk == weekday.weekday_id) {
-                //     option.selected = true;
-                // }
                 weekdaySelect.appendChild(option);
             });
 
@@ -295,9 +289,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                 const option = document.createElement('option');
                 option.textContent = `${room.room_number} ${room.building_abbreviation}`;
                 option.value = room.room_id;
-                // if (period[0].room_id_fk == room.room_id) {
-                //     option.selected = true;
-                // }
                 roomSelect.appendChild(option);
             });
 
@@ -335,9 +326,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                 const option = document.createElement('option');
                 option.textContent = `${lecturer.title_name} ${lecturer.name} ${lecturer.surname}`;
                 option.value = lecturer.lecturer_id;
-                // if (period[0].lecturer_id_fk == lecturer.lecturer_id) {
-                //     option.selected = true;
-                // }
                 lecturerSelect.appendChild(option);
             });
 
@@ -346,9 +334,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             console.error('Error fetching lecturers:', error);
         }
     }
-    // async function createRoomSelect(parentDiv) { /* Implementation here */ }
     const createTimeInputs = (parentDiv, period) => {
-        // Create period start time input
         const startTimeDiv = document.createElement('div');
         startTimeDiv.classList.add('timeInput');
         const labelStartTime = document.createElement('label');
@@ -356,13 +342,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         const inputStartTime = document.createElement('input');
         inputStartTime.type = 'time';
         inputStartTime.name = 'period_start_time';
-        // inputStartTime.value = period[0].period_start_time;
         inputStartTime.required = true;
         startTimeDiv.appendChild(labelStartTime);
         startTimeDiv.appendChild(inputStartTime);
         parentDiv.appendChild(startTimeDiv);
 
-        // Create period end time input
         const endTimeDiv = document.createElement('div');
         endTimeDiv.classList.add('timeInput');
         const labelEndTime = document.createElement('label');
@@ -370,7 +354,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         const inputEndTime = document.createElement('input');
         inputEndTime.type = 'time';
         inputEndTime.name = 'period_end_time';
-        // inputEndTime.value = period[0].period_end_time;
         endTimeDiv.appendChild(labelEndTime);
         endTimeDiv.appendChild(inputEndTime);
         parentDiv.appendChild(endTimeDiv);
@@ -380,11 +363,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.log('Creating submit button:', submitButton);
         submitButton.textContent = 'Добавяне';
         submitButton.classList.add('submit');
-        // submitButton.style.display = 'none'; // Initially hidden
-        // submitButton.addEventListener('click', handleSubmit);
         parentDiv.appendChild(submitButton);
 
-        // Return the submitButton element so it can be used elsewhere
         return submitButton;
     }
 

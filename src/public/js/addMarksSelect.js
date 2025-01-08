@@ -12,15 +12,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-    // async function fetchAndCreateMarksSelect() {
-    //     try {
-    //         const response = await fetch(`/admin/get/marks`);
-    //         const marks = await response.json();
-    //         createMarksSelect(marks);
-    //     } catch (error) {
-    //         console.error('Error fetching marks:', error);
-    //     }
-    // };
     async function fetchMarksAndCreateSelect() {
         try {
             const response = await fetch(`/admin/get/marks`);
@@ -90,14 +81,11 @@ document.addEventListener("DOMContentLoaded", function () {
     async function createGroupHalfInputs(groupHalfs) {
         const form = document.querySelector("#addMarkForm");
 
-        // Remove existing elements
         const existingGroupNumberDiv = form.querySelector('.formInput.groupNumber');
         if (existingGroupNumberDiv) existingGroupNumberDiv.remove();
 
         const existingGroupHalfDiv = form.querySelector('.formInput.groupHalf');
         if (existingGroupHalfDiv) existingGroupHalfDiv.remove();
-
-        // Create and append the group number select
         const groupNumberDiv = document.createElement("div");
         groupNumberDiv.classList.add("formInput", "groupNumber");
 
@@ -218,9 +206,7 @@ document.addEventListener("DOMContentLoaded", function () {
     async function handleSubjectChange(event) {
         const selectedSubjectId = event.target.value;
         if (selectedSubjectId) {
-            // await createPeriodTypeSelect();
         } else {
-            // Remove existing period inputs if subject is deselected
             const existingPeriodDiv = document.querySelector('.formInput.period');
             if (existingPeriodDiv) existingPeriodDiv.remove();
         }
@@ -266,11 +252,8 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             const form = document.querySelector("#addMarkForm");
 
-            // Create the marks select div
             const marksDiv = document.createElement("div");
             marksDiv.classList.add("formInput", "marks");
-            // const facultyNumbersDiv = document.createElement("div");
-            // facultyNumbersDiv.classList.add("formInput", "faculty_numbers");
 
             const labelMarksSelect = document.createElement('label');
             labelMarksSelect.textContent = "Оценка";
@@ -288,7 +271,6 @@ document.addEventListener("DOMContentLoaded", function () {
             defaultOption.selected = true;
             marksSelect.appendChild(defaultOption);
 
-            // Append each mark to the select element
             marks.forEach(mark => {
                 const option = document.createElement('option');
                 option.textContent = mark.mark_value;
@@ -296,11 +278,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 marksSelect.appendChild(option);
             });
 
-            // Append the marksDiv to the form
             form.appendChild(marksDiv);
             marksDiv.appendChild(document.createElement("br"));
 
-            // Create and append the submit button to the marksDiv
             createSubmitButton(marksDiv);
 
         } catch (error) {

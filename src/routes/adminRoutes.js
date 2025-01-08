@@ -29,11 +29,11 @@ router
     .get(adminController.showAdminRegisterForm)
     .post(adminController.adminRegister);
 
-router
-    .route("/add/building")
-    .all(checkUser.checkIfAdminIsLogged)
-    .get(adminController.showAddBuilding)
-    .post(adminController.addBuilding)
+// router
+//     .route("/add/building")
+//     .all(checkUser.checkIfAdminIsLogged)
+//     .get(adminController.showAddBuilding)
+//     .post(adminController.addBuilding)
 router
     .route("/add/subject")
     .all(checkUser.checkIfAdminIsLogged)
@@ -90,7 +90,7 @@ router
     .route("/delete/periodSchedule")
     .all(checkUser.checkIfAdminIsLogged)
     .get(adminController.showDeletePeriodScheduleForm)
-.post(adminController.deletePeriod);
+    .post(adminController.deletePeriod);
 router
     .route("/add/marks")
     .all(checkUser.checkIfAdminIsLogged)
@@ -194,12 +194,5 @@ router
     .all(checkUser.checkIfAdminIsLogged)
     .get(adminController.showDeleteSubjectToHalfsForm)
     .post(adminController.deleteSubjectToHalfs);
-router
-    .route("/review/curriculums")
-    .all(checkUser.checkIfAdminIsLogged)
-    .get(adminController.showCurriculums)
-    .post(adminController.searchCurriculums);
-
-// .post(adminController.searchConsultations);
 
 module.exports = router;

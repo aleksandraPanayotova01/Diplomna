@@ -76,46 +76,9 @@ document.addEventListener("DOMContentLoaded", async function () {
             console.error('Error fetching rooms:', error);
         }
     }
-    // async function createLecturerSubjectsSelect(parentDiv) {
-    //     try {
-    //         const response = await fetch(`/lecturer/get/subjects`);
-    //         const subjects = await response.json();
-
-    //         const subjectsDiv = document.createElement("div");
-    //         subjectsDiv.classList.add("formInput")
-
-    //         const labelSubjectsSelect = document.createElement('label');
-    //         labelSubjectsSelect.textContent = "Предмет";
-    //         subjectsDiv.appendChild(labelSubjectsSelect);
-
-    //         const subjectsSelect = document.createElement('select');
-    //         subjectsSelect.name = "subject";
-    //         subjectsSelect.classList.add("selectSubject");
-    //         subjectsSelect.required = true;
-    //         subjectsDiv.appendChild(subjectsSelect);
-
-    //         const defaultOption = document.createElement('option');
-    //         defaultOption.textContent = "Изберете предмет";
-    //         defaultOption.value = "";
-    //         defaultOption.disabled = true;
-    //         defaultOption.selected = true;
-    //         subjectsSelect.appendChild(defaultOption);
-
-    //         subjects.forEach(subject => {
-    //             const option = document.createElement('option');
-    //             option.textContent = subject.subject_name;
-    //             option.value = subject.subject_abbreviation;
-    //             subjectsSelect.appendChild(option);
-    //         });
-
-    //         parentDiv.appendChild(subjectsDiv);
-    //     } catch (error) {
-    //         console.error('Error fetching subjects:', error);
-    //     }
-    // }
+  
     window.onload = function () {
         createWeekdaySelect(document.getElementById('weekdayContainer'));
         createRoomSelect(document.getElementById('roomContainer'));
-        // createLecturerSubjectsSelect(document.getElementById('subjectsContainer'));
     }
 });

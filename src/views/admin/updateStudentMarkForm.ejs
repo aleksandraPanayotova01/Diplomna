@@ -93,7 +93,6 @@
             defaultFacultyNumbersOption.selected = true;
             facultyNumbersSelect.appendChild(defaultFacultyNumbersOption);
 
-            // Populate options
             facultyNumbers.forEach(facultyNumber => {
                 const facultyNumberOption = document.createElement('option');
                 facultyNumberOption.textContent = `${facultyNumber.student_fac_num} - ${facultyNumber.name}`;
@@ -121,7 +120,6 @@
             defaultSubjectsOption.selected = true;
             subjectsSelect.appendChild(defaultSubjectsOption);
 
-            // Populate options
             subjects.forEach(subject => {
                 const subjectOption = document.createElement('option');
                 subjectOption.textContent = `${subject.subject_name}`;
@@ -149,12 +147,10 @@
             defaultMarksOption.selected = true;
             marksSelect.appendChild(defaultMarksOption);
 
-            // Populate options
             marks.forEach(mark => {
                 const markOption = document.createElement('option');
                 markOption.textContent = `${mark.mark_value}`;
                 markOption.value = mark.mark_id;
-                // marksSelect.appendChild(defaultMarksOption);
                 marksSelect.appendChild(markOption);
             });
 

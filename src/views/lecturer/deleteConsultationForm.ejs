@@ -87,7 +87,6 @@
         </form>
 
         <script>
-            //script to handle row selection and populate the hidden field
             document.addEventListener("DOMContentLoaded", () => {
                 const rows = document.querySelectorAll("tr[data-id]");
                 const form = document.querySelector("form");
@@ -106,13 +105,6 @@
                         e.preventDefault();
                         alert("Please select a consultation to delete.");
                     }
-                    //  else {
-                    //     const hiddenInput = document.createElement("input");
-                    //     hiddenInput.type = "hidden";
-                    //     hiddenInput.name = "consultationId";
-                    //     hiddenInput.value = selectedRowId;
-                    //     form.appendChild(hiddenInput); // Add the hidden input to the form
-                    // }
                 });
                 const table = document.querySelector("table");
                 let selectedRow = null;

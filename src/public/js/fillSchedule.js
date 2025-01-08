@@ -29,7 +29,6 @@ function fillSchedule(periods) {
             room_number, period_type_name, subject_name, title_name, surname
         } = period;
 
-        // Get the corresponding HTML element ID for the day
         const dayElement = document.querySelector(`#${getDayId(weekday_name)}
          #classes${getDayInitial(weekday_name)}`);
 
@@ -50,7 +49,6 @@ function fillSchedule(periods) {
     });
 }
 
-// Map weekday names to corresponding HTML element IDs
 function getDayId(weekday_name) {
     const days = {
         'Понеделник': 'monday',

@@ -16,7 +16,6 @@
             const statusSection = document.getElementById('statusSection');
             const submitStatusButton = document.getElementById('submitStatusButton');
 
-            // Скрийте статус секцията и бутона за промяна
             statusSection.style.display = 'none';
             submitStatusButton.style.display = 'none';
             userInfoDiv.textContent = '';
@@ -61,11 +60,9 @@
         <p><strong>Текущ статус:</strong> ${userInfo.status}</p>
     `;
 
-            // Покажи бутона за промяна 
             statusSection.style.display = 'block';
             submitStatusButton.style.display = 'block';
 
-            // Избери текущия статус в падащото меню
             const statusSelect = document.getElementById('statusSelect');
             statusSelect.value = userInfo.statusId || ""; // Задайте съответния `statusId` от информацията за потребителя
             console.log(statusSelect.value);
@@ -82,7 +79,6 @@
             <div class="container page-content">
                 <h1>Промяна на статус на профил</h1>
                 <form id="changeStatusForm" method="POST" action="/admin/update/status">
-                    <!-- Въвеждане на username -->
                     <div class="formInput">
                         <label for="username">Потребителско име</label>
                         <input type="text" name="username" id="userName" placeholder="Въведете потребителско име"
@@ -90,10 +86,8 @@
                         <button type="button" id="confirmUsernameButton" onclick="fetchUserInfo()">Потвърди</button>
                     </div>
 
-                    <!-- Показване на информация за потребителя -->
                     <div id="userInfo" class="userInfo"></div>
 
-                    <!-- Избор на статус -->
                     <div class="formInput" id="statusSection" style="display: none;">
                         <label for="statusSelect">Нов статус</label>
                         <select name="status" id="statusSelect" required>
@@ -104,7 +98,6 @@
                         </select>
                     </div>
 
-                    <!-- Бутон за изпращане -->
                     <button type="submit" id="submitStatusButton" class="submit" style="display: none;">Запази
                         промяната</button>
                 </form>
