@@ -43,11 +43,11 @@ module.exports = {
     },
     addSubjectName: async (subjectInformation) => {
         try {
-            const subjectExists = await subjectRepository.checkIfSubjectExists(
-                subjectInformation
-            );
-
-            if (subjectExists) {
+            // const subjectExists = await subjectRepository.checkIfSubjectExists(
+            //     subjectInformation
+            // );
+            const subjectActiveExists=await subjectRepository.checkIfActiveSubject(subjectInformation);
+            if (subjectActiveExists) {
                 throw new Error("Subject with the same name and abbreviation already exists for this specialty.");
             }
 

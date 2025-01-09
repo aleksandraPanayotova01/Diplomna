@@ -25,6 +25,7 @@ module.exports = {
                     req.session.student_profile_id = user.student_profile_id;
                     req.session.profile_id = user.profile_id;
                     req.session.profile_status_id = user.profile_status_id_fk;
+                    req.flash("success", "Успешен вход");
                     res.redirect('/student/homePage');
 
                 }
@@ -60,6 +61,7 @@ module.exports = {
                     req.session.profile_status_id = lecturer.profile_status_id_fk;
                     // const lecturerProfileStatusId = req.session.profile_status_id;
                     // if (lecturerProfileStatusId === '1') {
+                    req.flash("success", "Успешен вход");
                     res.redirect('/lecturer/homePage');//vremenno
                 } else {
                     req.flash("error", "Профилът не е активен");
@@ -90,6 +92,7 @@ module.exports = {
                     req.session.admin_profile_id = admin.admin_profile_id;
                     req.session.profile_id = admin.profile_id;
                     req.session.profile_status_id = admin.profile_status_id_fk;
+                    req.flash("success", "Успешен вход");
                     res.redirect('/admin/homePage');
                 } else {
                     req.flash("error", "Профилът не е активен");

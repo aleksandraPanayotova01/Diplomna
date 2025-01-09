@@ -15,6 +15,23 @@ module.exports = {
             throw err;
         }
     },
+    checkIfActiveSubject: async (subjectInformation) => {
+        try {
+            const [rows] = await pool.query(`
+                SELECT * FROM subject
+                WHERE (subject_name = ? OR subject_abbreviation = ?) 
+                AND specialty_id_fk = ? 
+                AND is_active=?
+            `, [subjectInformation.subjectName,
+            subjectInformation.subjectAbbreviation,
+            subjectInformation.specialtyId, 1]);
+            return rows.length > 0; // Връща true, ако записът съществува
+        } catch (err) {
+            console.error('Error checking if subject exists:', err);
+            throw err;
+        }
+    },
+
     checkIfSubjectIsAddedToLecturer: async (subjectInformation) => {
         try {
 
@@ -115,15 +132,39 @@ module.exports = {
 
     addSubjectName: async (subjectInformation) => {
         try {
-            console.log("Adding: ", subjectInformation.subjectName,
+
+            const [isInactive] = await pool.query(`
+                    SELECT * FROM subject
+                    WHERE (subject_name = ? OR subject_abbreviation = ?) 
+                    AND specialty_id_fk = ?`,
+                [subjectInformation.subjectName,
                 subjectInformation.subjectAbbreviation,
-                subjectInformation.specialtyId);
-            await pool.query(`
+                subjectInformation.specialtyId]);
+            if (isInactive.length > 0) {
+                console.log("Activating: ", subjectInformation.subjectName,
+                    subjectInformation.subjectAbbreviation,
+                    subjectInformation.specialtyId);
+                const updateStatus = await pool.query(`
+                    UPDATE subject
+                    SET is_active=?
+                    WHERE (subject_name = ? OR subject_abbreviation = ?) 
+                    AND specialty_id_fk = ?`,
+                    [1,
+                        subjectInformation.subjectName,
+                        subjectInformation.subjectAbbreviation,
+                        subjectInformation.specialtyId]);
+            }
+            else {
+                console.log("Adding: ", subjectInformation.subjectName,
+                    subjectInformation.subjectAbbreviation,
+                    subjectInformation.specialtyId);
+                await pool.query(`
                 INSERT INTO subject(subject_name,subject_abbreviation,is_active,specialty_id_fk)
                 VALUES(?,?,1,?)
                 `, [subjectInformation.subjectName,
-            subjectInformation.subjectAbbreviation,
-            subjectInformation.specialtyId])
+                subjectInformation.subjectAbbreviation,
+                subjectInformation.specialtyId])
+            }
         }
         catch (err) {
             console.error('Error fetching periods for student:', err);

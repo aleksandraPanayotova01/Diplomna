@@ -254,6 +254,10 @@ body {
     border: 1px solid black;
 }
 
+.submitDelConsultation {
+    width: 20%;
+}
+
 .signButton:hover,
 .submitLoginForm :hover,
 .submit:hover,

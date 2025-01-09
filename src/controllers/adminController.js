@@ -241,8 +241,6 @@ module.exports = {
                         { periods: JSON.stringify(periods) });
                 }
             } else if (viewBy === 'lecturer') {
-                // Handle lecturer case
-
                 console.log('Lecturer:');
                 console.log(lecturer);
                 const periods = await accountService.getScheduleByLecturer(lecturer); // Adjust if necessary
@@ -358,7 +356,7 @@ module.exports = {
                 courses,
                 groups,
                 groupHalves
-            }
+            }//facNums added dynamicaly after geting groupHalfId
             console.log(studentMarksInfo);
             res.render('admin/reviewStudentMarks', { studentMarksInfo });
 
@@ -369,7 +367,9 @@ module.exports = {
     },
     resultStudentMarks: async (req, res) => {
         try {
-            facultyNumbersSelect = req.body;
+            const body = req.body;
+            const facultyNumbersSelect = body.facultyNumbersSelect;
+
             console.log(facultyNumbersSelect);
             const studentProfileId =
                 await studentService.getStudentProfileId(facultyNumbersSelect);
@@ -703,10 +703,9 @@ module.exports = {
             console.log("Body: ", body);
             console.log("Subject information: ", subjectInformation);
 
-            // Ако предметът съществува, покажете съобщение за грешка
-
 
             await subjectService.addSubjectName(subjectInformation);
+            req.flash("success", "Успешно добавен предмет!");
             res.redirect("/admin/add/subjectToHalfs");
         } catch (error) {
             console.log(error);
@@ -922,13 +921,12 @@ module.exports = {
                 weekday, room, lecturer, selectSubject,
                 period_type, selectGroupHalf
             } = req.body;
-            await periodService.deletePeriod(periodInformation);
-            req.flash('success', 'Часът е изтрит успешно.');
-            // Redirect to the period schedule page after successful addition
-            res.redirect("/admin/delete/periodSchedule");
+            await periodService.updatePeriod(periodInformation);
+            req.flash('success', 'Часът е променен успешно.');
+            res.redirect("/admin/update/periodSchedule");
         } catch (error) {
             req.flash('error', 'Възникна грешка. Моля опитайте отново');
-            console.error(error);
+            // console.error(error);
             res.status(500).send("Internal Server Error");
         }
     },

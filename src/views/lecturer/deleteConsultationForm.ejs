@@ -35,6 +35,11 @@
             background-color: #f0f0f0;
             font-weight: bold;
         }
+        #deleteConsultationButton{
+            width: 100%;
+            display: flex;
+            justify-content:center;
+        }
     </style>
 </head>
 
@@ -83,7 +88,9 @@
 
         <form action="/lecturer/deleteConsultation" method="POST">
             <input type="hidden" id="selectedConsultationId" name="consultationId" />
-            <button class="submitDelConsultation submit" type="submit" disabled>Изтриване</button>
+            <div id="deleteConsultationButton">
+                <button class="submitDelConsultation submit" type="submit" disabled>Изтриване</button>
+            </div>
         </form>
 
         <script>
@@ -94,9 +101,9 @@
 
                 rows.forEach((row) => {
                     row.addEventListener("click", () => {
-                        rows.forEach((r) => r.classList.remove("selected")); // Remove previous selection
-                        row.classList.add("selected"); // Highlight selected row
-                        selectedRowId = row.dataset.id; // Get the consultation ID
+                        rows.forEach((r) => r.classList.remove("selected"));
+                        row.classList.add("selected");
+                        selectedRowId = row.dataset.id;
                     });
                 });
 

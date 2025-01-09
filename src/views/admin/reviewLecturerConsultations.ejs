@@ -11,6 +11,66 @@
     <script src="https://kit.fontawesome.com/13ecc83974.js" crossorigin="anonymous"></script>
     <title>Консултации на преподаватели</title>
 </head>
+<style>
+    .container {
+        padding: 20px;
+        max-width: 1200px;
+        margin: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        border: 1px solid #ddd;
+        padding: 8px;
+    }
+
+    th {
+        background-color: #f4f4f4;
+    }
+
+    .form-consultation {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin: 20px 0;
+    }
+
+    .form-consultation input[type="text"] {
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        width: 300px;
+        transition: border-color 0.3s;
+    }
+
+    .form-consultation input[type="text"]:focus {
+        outline: none;
+        border-color: #0404065e;
+    }
+
+    .form-consultation button {
+        padding: 10px 20px;
+        font-size: 16px;
+        color: #fff;
+        background-color: #333;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .form-consultation button:hover {
+        background-color: #0404065e;
+        color: black;
+    }
+</style>
 
 <body>
     <%- include('../partials/studentHeader') %>
