@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
 
     function createGroupHalfInputs(groupHalfs) {
-        const form = document.querySelector("#updatePeriodScheduleForm");
+        const form = document.querySelector("#deletePeriodScheduleForm");
         const existingGroupHalfsDiv = form.querySelector('.formInput.groupHalfs');
         if (existingGroupHalfsDiv) existingGroupHalfsDiv.remove();
 
@@ -94,7 +94,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             const subjectsHalf = await response.json();
             console.log(subjectsHalf);
 
-            const form = document.querySelector("#updatePeriodScheduleForm");
+            const form = document.querySelector("#deletePeriodScheduleForm");
 
             const existingSubjectDiv = form.querySelector('.formInput.subject');
             if (existingSubjectDiv) existingSubjectDiv.remove();

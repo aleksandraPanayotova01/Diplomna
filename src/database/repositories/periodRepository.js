@@ -424,6 +424,30 @@ module.exports = {
             throw err;
         }
     },
+    checkIfStartTimeEarlier: async (periodInformation) => {
+        try {
+            const getMinutesFromMidnight = (time) => {
+                const [hours, minutes] = time.split(":").map(Number);
+                return hours * 60 + minutes;
+            };
+            
+            const startMinutes = getMinutesFromMidnight(periodInformation.period_start_time);
+            const endMinutes = getMinutesFromMidnight(periodInformation.period_end_time);
+    console.log("start min:",startMinutes," end min:",endMinutes);
+            // Проверка дали началният час е преди крайния, с обработка на преминаване през полунощ
+            if (startMinutes < endMinutes) {
+                return true; // Началният час е по-рано
+            } else if (startMinutes > endMinutes) {
+                // Крайният час преминава полунощ
+                return endMinutes + 1440 > startMinutes; // Добавяме 24 часа (1440 минути) към крайния час
+            } else {
+                return false; // Часовете са равни
+            }
+        } catch (err) {
+            console.error("Error in checkIfStartTimeEarlier:", err);
+            throw err;
+        }
+    },
     addPeriod: async (periodInformation) => {
         try {
             //get subject id

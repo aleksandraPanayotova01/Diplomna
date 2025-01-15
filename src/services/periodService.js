@@ -1,5 +1,6 @@
 const bcrypt = require('bcrypt');
 const periodRepository = require('../database/repositories/periodRepository');
+
 module.exports = {
     getWeekdays: async () => {
         return await periodRepository.getWeekdays();;
@@ -46,15 +47,26 @@ module.exports = {
     },
     addPeriod: async (periodInformation) => {
         let isAvailabile;
-        if (periodInformation.periodType === '1') {//in a lecture more than 1 group share lecturer and room
-            isAvailabile = await periodRepository.checkAvailabilityLecture(periodInformation);
-            console.log("Лекцията е свободна!", isAvailabile);
-        } else {
-            isAvailabile = await periodRepository.checkAvailabilityExcercise(periodInformation);
-            console.log("Упражнението е свободно!", isAvailabile);
-        } if (isAvailabile) {
-            return await periodRepository.addPeriod(periodInformation);
+        // const checkIfStartTimeEarlier = periodRepository.checkIfStartTimeEarlier(periodInformation);
+        const startTime=periodInformation.period_start_time;
+        const endTime=periodInformation.period_end_time;
+        const start = new Date(`1970-01-01T${startTime}:00`);
+        const end = new Date(`1970-01-01T${endTime}:00`);
+        if(start>end){
+        throw new Error("Start time is bigger");
         }
+        else{
+            if (periodInformation.periodType === '1') {//in a lecture more than 1 group share lecturer and room
+                isAvailabile = await periodRepository.checkAvailabilityLecture(periodInformation);
+                console.log("Лекцията е свободна!", isAvailabile);
+            } else {
+                isAvailabile = await periodRepository.checkAvailabilityExcercise(periodInformation);
+                console.log("Упражнението е свободно!", isAvailabile);
+            } if (isAvailabile) {
+                return await periodRepository.addPeriod(periodInformation);
+            }
+        }
+      
     },
     updatePeriod: async (periodInformation) => {
         let isAvailabile;
@@ -69,7 +81,7 @@ module.exports = {
         }
     },
     deletePeriod: async (periodInformation) => {
-            return await periodRepository.deletePeriod(periodInformation);
+        return await periodRepository.deletePeriod(periodInformation);
     },
 
     getStudentProfileInfo: async (studentProfileId) => {

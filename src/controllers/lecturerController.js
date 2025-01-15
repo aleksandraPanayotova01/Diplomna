@@ -2,6 +2,7 @@ const lecturerService = require('../services/lecturerService');
 const periodService = require('../services/periodService');
 const studentService = require('../services/studentService');
 const accountService = require('../services/accountService');
+const flash = require('connect-flash');
 module.exports = {
     showAddConsultationForm: (req, res) => {
         res.render("lecturer/addConsultationForm")
@@ -174,14 +175,18 @@ module.exports = {
                 consultationEnd: body.consultationEnd,
                 weekday: body.weekday,
                 room: body.room,
-                lecturerProfileId
+                lecturerProfileId,
+
             };
+
             console.log(body);
             console.log("Consultation info:", consultationInformation);
             await lecturerService.addConsultation(consultationInformation);
+            req.flash('success', 'Консултацията е добавена успешно.');
             res.redirect("/lecturer/addConsultation");
         } catch (error) {
-            console.log(error);
+            req.flash('error', 'Несъответствие при стойността на часовете. Консултацията не е добавена.');
+            res.redirect("/lecturer/addConsultation");
         }
 
     },

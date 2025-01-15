@@ -873,7 +873,7 @@ module.exports = {
 
             if (!subjectAddedToHalf || !subjectAddedToLecturer) {
                 await subjectService.addSubjectToGroup(subjectInformation);
-                req.flash('success', 'Успешно добавен предмет.');
+                req.flash('success', 'Успешно добавен предмет за половинка.');
             } else if (subjectAddedToHalf && subjectAddedToLecturer) {
                 req.flash('error', 'Предметът вече е добавен за избраната група и преподавател.');
             }
@@ -907,8 +907,8 @@ module.exports = {
             req.flash('success', 'Часът е добавен успешно.');
             res.redirect("/admin/add/periodSchedule");
         } catch (error) {
-            console.error(error);
-            res.status(500).send("Internal Server Error");
+            req.flash('error', 'Часовия диапазон не е свободен или има несъответствие при стойността на часовете. Часът не е добавен.');
+            res.redirect("/admin/add/periodSchedule");
         }
     },
 
@@ -943,13 +943,13 @@ module.exports = {
             const periodExists = await periodService.checkIfPeriodExists(periodInformation);
             if (!periodExists) {
                 req.flash('error', 'Не съществува такъв час.');
-                return res.redirect("/admin/add/periodSchedule");
+                return res.redirect("/admin/delete/periodSchedule");
             }
 
             await periodService.deletePeriod(periodInformation);
 
             req.flash('success', 'Часът е изтрит успешно.');
-            res.redirect("/admin/add/periodSchedule");
+            res.redirect("/admin/delete/periodSchedule");
         } catch (error) {
             console.error("Error in deletePeriod:", error);
             req.flash('error', 'Възникна грешка. Моля опитайте отново.');

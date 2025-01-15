@@ -110,25 +110,42 @@ module.exports = {
             throw err;
         }
     },
-    getLecturerGroupHalfs: async (lecturerProfileId) => {
+    checkIfConsultationsOverlap: async (consultationInformation) => {
         try {
             const [result] = await pool.query(`
-                SELECT g.group_number,gh.group_half_letter
-                FROM \`group\` g
-                INNER JOIN group_half gh
-                ON gh.group_id_fk=g.group_id
-                INNER JOIN group_half_subject ghs
-                ON ghs.group_half_id_fk=gh.group_half_id
-                INNER JOIN period p
-                ON p.group_half_subject_id_fk=ghs.group_half_subject_id
-                INNER JOIN lecturer l
-                ON p.lecturer_id_fk=l.lecturer_id
-                INNER JOIN lecturer_profile lp
-                ON lp.lecturer_id_fk=l.lecturer_id
-                WHERE lp.lecturer_profile_id=?
-                `, [lecturerProfileId]);
-            console.log(result);
-            return result;
+              SELECT *
+            FROM consultation_lecturer cl
+            INNER JOIN weekday w
+                ON cl.weekday_id_fk = w.weekday_id
+            INNER JOIN room r
+                ON cl.room_id_fk = r.room_id
+            INNER JOIN building b
+                ON r.building_id_fk = b.building_id
+            INNER JOIN lecturer_profile lp
+                ON cl.lecturer_profile_id_fk = lp.lecturer_profile_id
+            WHERE cl.lecturer_profile_id_fk = ?
+             AND cl.weekday_id_fk = ?
+            AND (
+              (cl.consultation_start < ? AND cl.consultation_end > ?) -- Припокриване
+              OR (cl.consultation_start >= ? AND cl.consultation_start < ?) -- Началото попада вътре
+              OR (cl.consultation_end > ? AND cl.consultation_end <= ?) -- Краят попада вътре
+          )
+           
+                `, [consultationInformation.lecturerProfileId,
+            consultationInformation.weekday,
+            consultationInformation.consultationEnd,
+            consultationInformation.consultationStart,
+            consultationInformation.consultationStart,
+            consultationInformation.consultationEnd,
+            consultationInformation.consultationStart,
+            consultationInformation.consultationEnd,
+
+            ]);
+            if (result.length === 0) {
+                return false;
+            }
+
+            return true;
         } catch (err) {
             console.error('Error fetching group halves for lecturer: ', err);
             throw err;
